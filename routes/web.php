@@ -6,23 +6,68 @@ use App\Http\Controllers\DonationController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\FrontPageController;
-use App\Http\Controllers\Auth\LoginController;
-// Frontend pages
-Route::get('/', [FrontPageController::class, 'index'])->name('home');
-Route::get('/contact', function () { return view('frontend.contact'); });
-Route::get('/join', function () { return view('frontend.join'); });
-Route::get('/terms', function () { return view('frontend.terms'); });
 
-// Donation Routes
+
+/*
+|--------------------------------------------------------------------------
+| FRONTEND ROUTES
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/', [FrontPageController::class, 'index'])->name('home');
+
+Route::get('/contact', function () {
+    return view('frontend.contact');
+});
+
+Route::get('/join', function () {
+    return view('frontend.join');
+});
+
+Route::get('/terms', function () {
+    return view('frontend.terms');
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| DONATION ROUTES
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/donate', [DonationController::class, 'create'])->name('donate.form');
 Route::post('/donate', [DonationController::class, 'store'])->name('donate.store');
 Route::get('/donation-receipt/{id}', [DonationController::class, 'receipt'])->name('donate.receipt');
 
-// Invoice PDF download
+
+/*
+|--------------------------------------------------------------------------
+| INVOICE DOWNLOAD
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/invoice/{id}/download', [InvoiceController::class, 'download'])->name('invoice.download');
 
-// Admin Routes
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN LOGIN ROUTES (PUBLIC)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login.submit');
+Route::get('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
+
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN PANEL ROUTES (PROTECTED)
+|--------------------------------------------------------------------------
+*/
+
 Route::prefix('admin')->middleware('auth')->group(function () {
+
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
     // Members
@@ -38,14 +83,11 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 });
 
 
-// Admin login form
-Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
-
-// Admin login POST
-Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login.submit');
-
-// Admin logout
-Route::get('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
+/*
+|--------------------------------------------------------------------------
+| AUTH MIDDLEWARE FIX (VERY IMPORTANT)
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/login', function () {
     return redirect()->route('admin.login');
