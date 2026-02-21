@@ -13,15 +13,27 @@ return new class extends Migration
     {
         Schema::create('donations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('donor_id')->constrained()->onDelete('cascade');
+    
+            $table->string('donor_name');
+            $table->string('donor_email');
+            $table->string('donor_phone')->nullable();
+            $table->text('donor_address')->nullable();
+    
             $table->decimal('amount', 10, 2);
-            $table->enum('payment_status', ['Pending', 'Success', 'Failed'])->default('Pending');
-            $table->string('payment_method')->nullable();
+    
+            $table->string('razorpay_order_id')->nullable();
+            $table->string('razorpay_payment_id')->nullable();
+            $table->string('razorpay_signature')->nullable();
+    
+            $table->enum('payment_status', ['Pending','Paid','Failed'])
+                  ->default('Pending');
+    
             $table->string('receipt_number')->nullable();
+    
             $table->timestamps();
         });
-        
     }
+    
 
     /**
      * Reverse the migrations.

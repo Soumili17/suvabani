@@ -2,17 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Donation extends Model
 {
-    use HasFactory;
-
-    protected $fillable = ['donor_id','amount','payment_status','payment_method','receipt_number'];
-
-    public function donor() {
-        return $this->belongsTo(Donor::class);
-    }
+    protected $fillable = [
+        'donor_name',
+        'donor_email',
+        'donor_phone',
+        'donor_address',
+        'amount',
+        'razorpay_order_id',
+        'razorpay_payment_id',
+        'razorpay_signature',
+        'payment_status',
+        'receipt_number'
+    ];
 }
 

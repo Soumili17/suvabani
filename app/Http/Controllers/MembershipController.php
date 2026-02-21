@@ -3,89 +3,108 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
 use App\Models\Membership;
-use App\Models\Invoice;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class MembershipController extends Controller
 {
-    // List all members
-    public function index()
+    public function submit(Request $request)
     {
-        $members = Membership::latest()->paginate(20);
-        return view('admin.members.index', compact('members'));
-    }
+        // ======================
+        // FILE UPLOAD
+        // ======================
 
-    // Show create member form
-    public function create()
-    {
-        return view('admin.members.create');
-    }
+        $photoPath = null;
+        $signaturePath = null;
+        $idfilePath = null;
 
-    // Store new member
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name'=>'required|string|max:255',
-            'email'=>'required|email|unique:memberships',
-            'paid_amount'=>'nullable|numeric|min:0'
-        ]);
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('photos', 'public');
+        }
+
+        if ($request->hasFile('signature')) {
+            $signaturePath = $request->file('signature')->store('signatures', 'public');
+        }
+
+        if ($request->hasFile('idfile')) {
+            $idfilePath = $request->file('idfile')->store('idproofs', 'public');
+        }
+
+        // ======================
+        // ARRAY → STRING
+        // ======================
+
+        $idproof    = $request->idproof ? implode(',', $request->idproof) : null;
+        $membershipType = $request->membership ? implode(',', $request->membership) : null;
+        $membertype = $request->membertype ? implode(',', $request->membertype) : null;
+        $interest   = $request->interest ? implode(',', $request->interest) : null;
+        $time       = $request->time ? implode(',', $request->time) : null;
+
+        // ======================
+        // SAVE DATA
+        // ======================
 
         $member = Membership::create([
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'phone'=>$request->phone,
-            'address'=>$request->address,
-            'membership_type'=>$request->membership_type,
-            'paid_amount'=>$request->paid_amount ?? 0,
-            'payment_status'=>'Success',
-            'joining_date'=>now()
+            'photo'            => $photoPath,
+            'signature'        => $signaturePath,
+            'fullname'         => $request->fullname,
+            'parentname'       => $request->parentname,
+            'dob'              => $request->dob,
+            'gender'           => $request->gender,
+            'nationality'      => $request->nationality,
+            'occupation'       => $request->occupation,
+            'address'          => $request->address,
+            'phone'            => $request->phone,
+            'email'            => $request->email,
+            'idproof'          => $idproof,
+            'membership'       => $membershipType,
+            'membertype'       => $membertype,
+            'interest'         => $interest,
+            'time'             => $time,
+            'idproof_other'    => $request->idproof_other,
+            'idnumber'         => $request->idnumber,
+            'idfile'           => $idfilePath,
+            'paidamount'       => $request->paidamount ?? 0,
+            'interest_other'   => $request->interest_other,
+            'experience'       => $request->experience,
+            'languages'        => $request->languages,
+            'reason'           => $request->reason,
+            'ref_name'         => $request->ref_name,
+            'ref_mobile'       => $request->ref_mobile,
+            'declaration_date' => $request->declaration_date,
         ]);
 
-        // Create membership invoice
-        $invoice = Invoice::create([
-            'user_id'=>$member->id,
-            'type'=>'membership',
-            'amount'=>$member->paid_amount,
-            'invoice_number'=>'MEM'.time()
-        ]);
+        // ======================
+        // GENERATE PDF
+        // ======================
 
-        // Generate PDF invoice
-        $pdf = Pdf::loadView('invoices.pdf', compact('invoice'));
-        $fileName = 'Invoice_'.$invoice->invoice_number.'.pdf';
-        $pdf->save(storage_path('app/public/invoices/'.$fileName));
-        $invoice->update(['pdf_path'=>'invoices/'.$fileName]);
+        $pdf = Pdf::loadView('frontend.idcard', compact('member'))
+          ->setPaper([0,0,520,400]);
 
-        return redirect()->route('admin.members')->with('success','Member added successfully.');
+return $pdf->download('membership_card_'.$member->id.'.pdf');
+
     }
-
-    // Edit member
     public function edit($id)
     {
         $member = Membership::findOrFail($id);
-        return view('admin.members.edit', compact('member'));
+        return view('layouts.edit_member',compact('member'));
     }
 
-    // Update member
-    public function update(Request $request, $id)
+    public function update(Request $request,$id)
     {
         $member = Membership::findOrFail($id);
-        $member->update($request->only('name','email','phone','address','membership_type','paid_amount','payment_status'));
-        return redirect()->route('admin.members')->with('success','Member updated successfully.');
+        $member->update($request->all()); // For simplicity, you can validate & filter
+
+        return redirect()->route('dashboard',['section'=>'members'])
+                         ->with('success','Member updated successfully');
     }
 
-    // Delete member
     public function destroy($id)
     {
-        Membership::findOrFail($id)->delete();
-        return redirect()->route('admin.members')->with('success','Member deleted successfully.');
+        $member = Membership::findOrFail($id);
+        $member->delete();
+
+        return redirect()->route('dashboard',['section'=>'members'])
+                         ->with('success','Member deleted successfully');
     }
 }
-
-
-
-

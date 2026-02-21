@@ -2,15 +2,37 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Membership extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'name','email','phone','address','membership_type','paid_amount','payment_status','joining_date'
+        'photo',
+        'signature',
+        'fullname',
+        'parentname',
+        'dob',
+        'gender',
+        'nationality',
+        'occupation',
+        'address',
+        'phone',
+        'email',
+        'idproof',
+        'idproof_other',
+        'idnumber',
+        'idfile',
+        'membership',
+        'paidamount',
+        'membertype',
+        'interest',
+        'interest_other',
+        'experience',
+        'languages',
+        'time',
+        'reason',
+        'ref_name',
+        'ref_mobile',
+        'declaration_date'
     ];
 }
-
