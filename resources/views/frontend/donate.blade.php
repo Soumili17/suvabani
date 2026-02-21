@@ -148,8 +148,23 @@
 
             <div class="form-group">
                 <label>Donation Amount (₹) *</label>
-                <input type="number" name="amount" min="1" value="{{ old('amount') }}" required>
+
+                <input type="number"
+                    id="donationAmount"
+                    name="amount"
+                    min="1"
+                    value="{{ old('amount') }}"
+                    required
+                    class="border p-2 w-full mb-3">
+
+                <div class="flex gap-2 flex-wrap">
+                    <button type="button" class="preset-btn px-3 py-1 bg-gray-200 rounded" data-amount="100">₹100</button>
+                    <button type="button" class="preset-btn px-3 py-1 bg-gray-200 rounded" data-amount="200">₹200</button>
+                    <button type="button" class="preset-btn px-3 py-1 bg-gray-200 rounded" data-amount="500">₹500</button>
+                    <button type="button" class="preset-btn px-3 py-1 bg-gray-200 rounded" data-amount="1000">₹1000</button>
+                </div>
             </div>
+
 
             <button type="submit" class="donate-btn">
                 Donate Securely
@@ -159,6 +174,22 @@
     </div>
 </div>
 <script>
+    const amountInput = document.getElementById('donationAmount');
+    const buttons = document.querySelectorAll('.preset-btn');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', function () {
+
+            // Set input value
+            amountInput.value = this.dataset.amount;
+
+            // Remove active style
+            buttons.forEach(btn => btn.classList.remove('bg-green-500', 'text-white'));
+
+            // Add active style
+            this.classList.add('bg-green-500', 'text-white');
+        });
+    });
 document.querySelector("form").addEventListener("submit", function(e) {
     e.preventDefault();
 
