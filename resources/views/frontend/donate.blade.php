@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <title>Donate Now | SUVABANI FOUNDATION</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Razorpay Checkout Script -->
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <!-- Razorpay Checkout Script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <style>
         body {
@@ -63,6 +64,24 @@
             outline: none;
         }
 
+        .radio-group {
+            display: flex;
+            gap: 20px;
+        }
+
+        .preset-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #e5e7eb;
+        }
+
+        .preset-btn.active {
+            background: #14b8a6;
+            color: white;
+        }
+
         .donate-btn {
             width: 100%;
             padding: 14px;
@@ -105,14 +124,12 @@
         <h2>Support SUVABANI FOUNDATION</h2>
         <p class="subtitle">Your contribution helps us create a better future.</p>
 
-        {{-- Success Message --}}
         @if(session('success'))
             <div class="alert-success">
                 {{ session('success') }}
             </div>
         @endif
 
-        {{-- Validation Errors --}}
         @if ($errors->any())
             <div class="alert-danger">
                 <ul style="margin:0; padding-left:18px;">
@@ -123,128 +140,167 @@
             </div>
         @endif
 
-        <form action="{{ route('donate.store') }}" method="POST">
-            @csrf
+        <form method="POST" action="{{ route('donate.store') }}">
+@csrf
 
-            <div class="form-group">
-                <label>Full Name *</label>
-                <input type="text" name="donor_name" value="{{ old('donor_name') }}" required>
-            </div>
+<div class="form-group">
+<label>Full Name *</label>
+<input type="text" name="donor_name" required>
+</div>
 
-            <div class="form-group">
-                <label>Email Address *</label>
-                <input type="email" name="donor_email" value="{{ old('donor_email') }}" required>
-            </div>
+<div class="form-group">
+<label>Email Address *</label>
+<input type="email" name="donor_email" required>
+</div>
 
-            <div class="form-group">
-                <label>Phone Number</label>
-                <input type="text" name="donor_phone" value="{{ old('donor_phone') }}">
-            </div>
+<div class="form-group">
+<label>Phone Number *</label>
+<input type="text" name="donor_phone" required>
+</div>
 
-            <div class="form-group">
-                <label>Address</label>
-                <textarea name="donor_address" rows="3">{{ old('donor_address') }}</textarea>
-            </div>
+<div class="form-group">
+<label>Address *</label>
+<textarea name="donor_address" rows="3" required></textarea>
+</div>
 
-            <div class="form-group">
-                <label>Donation Amount (₹) *</label>
+<div class="form-group">
+<label>City *</label>
+<input type="text" name="donor_city" required>
+</div>
 
-                <input type="number"
-                    id="donationAmount"
-                    name="amount"
-                    min="1"
-                    value="{{ old('amount') }}"
-                    required
-                    class="border p-2 w-full mb-3">
+<div class="form-group">
+<label>State *</label>
+<input type="text" name="donor_state" required>
+</div>
 
-                <div class="flex gap-2 flex-wrap">
-                    <button type="button" class="preset-btn px-3 py-1 bg-gray-200 rounded" data-amount="100">₹100</button>
-                    <button type="button" class="preset-btn px-3 py-1 bg-gray-200 rounded" data-amount="200">₹200</button>
-                    <button type="button" class="preset-btn px-3 py-1 bg-gray-200 rounded" data-amount="500">₹500</button>
-                    <button type="button" class="preset-btn px-3 py-1 bg-gray-200 rounded" data-amount="1000">₹1000</button>
-                </div>
-            </div>
+<div class="form-group">
+<label>Pincode *</label>
+<input type="text" name="donor_pincode" required>
+</div>
 
+<div class="form-group">
+<label>Purpose of Donation</label>
+<select name="donation_purpose">
+<option value="General Donation">General Donation</option>
+<option value="Education Support">Education Support</option>
+<option value="Medical Help">Medical Help</option>
+<option value="Food Distribution">Food Distribution</option>
+</select>
+</div>
 
-            <button type="submit" class="donate-btn">
-                Donate Securely
-            </button>
-        </form>
+<!-- 80G Selection -->
+<div class="form-group">
+<label>Do you require 80G tax exemption receipt? *</label>
+<div class="radio-group">
+<label><input type="radio" name="need_80g" value="Yes" required> Yes</label>
+<label><input type="radio" name="need_80g" value="No"> No</label>
+</div>
+</div>
+
+<div class="form-group" id="panField" style="display:none;">
+<label>PAN Card Number *</label>
+<input type="text" id="donorPan" name="donor_pan" placeholder="ABCDE1234F" style="text-transform:uppercase;">
+</div>
+
+<div class="form-group">
+<label>Donation Amount (₹) *</label>
+<input type="number" id="donationAmount" name="amount" min="1" required>
+
+<div style="margin-top:10px;">
+<button type="button" class="preset-btn" data-amount="100">₹100</button>
+<button type="button" class="preset-btn" data-amount="500">₹500</button>
+<button type="button" class="preset-btn" data-amount="1000">₹1000</button>
+<button type="button" class="preset-btn" data-amount="5000">₹5000</button>
+</div>
+</div>
+
+<input type="hidden" name="donation_date" value="{{ date('Y-m-d') }}">
+
+<button type="submit" class="donate-btn">Donate Securely</button>
+
+</form>
 
     </div>
 </div>
+
 <script>
-    const amountInput = document.getElementById('donationAmount');
-    const buttons = document.querySelectorAll('.preset-btn');
+const amountInput = document.getElementById('donationAmount');
+const presetButtons = document.querySelectorAll('.preset-btn');
 
-    buttons.forEach(button => {
-        button.addEventListener('click', function () {
-
-            // Set input value
-            amountInput.value = this.dataset.amount;
-
-            // Remove active style
-            buttons.forEach(btn => btn.classList.remove('bg-green-500', 'text-white'));
-
-            // Add active style
-            this.classList.add('bg-green-500', 'text-white');
-        });
+presetButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+        amountInput.value = this.dataset.amount;
+        presetButtons.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
     });
+});
+
+// 80G toggle
+const panField = document.getElementById('panField');
+const panInput = document.getElementById('donorPan');
+const radioButtons = document.querySelectorAll("input[name='need_80g']");
+
+radioButtons.forEach(radio => {
+    radio.addEventListener("change", function () {
+        if (this.value === "Yes") {
+            panField.style.display = "block";
+            panInput.setAttribute("required", "required");
+        } else {
+            panField.style.display = "none";
+            panInput.removeAttribute("required");
+            panInput.value = "";
+        }
+    });
+});
+
+// Razorpay Integration
 document.querySelector("form").addEventListener("submit", function(e) {
     e.preventDefault();
 
     let form = this;
+    let name = form.donor_name.value;
+    let email = form.donor_email.value;
+    let phone = form.donor_phone.value;
+    let amount = form.amount.value;
+    let need80g = form.need_80g.value;
+    let pan = form.donor_pan.value;
 
-    let name = form.querySelector("input[name='donor_name']").value;
-    let email = form.querySelector("input[name='donor_email']").value;
-    let phone = form.querySelector("input[name='donor_phone']").value;
-    let amount = form.querySelector("input[name='amount']").value;
-
-    if(amount < 1){
-        alert("Please enter valid amount");
+    if (amount < 1) {
+        alert("Enter valid donation amount");
         return;
     }
 
-    var options = {
-        "key": "{{ env('RAZORPAY_KEY') }}", // from .env
-        "amount": amount * 100, // paise
-        "currency": "INR",
-        "name": "SUVABANI FOUNDATION",
-        "description": "Donation Payment",
-        "image": "",
+    if (need80g === "Yes") {
+        let panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+        if (!panRegex.test(pan.toUpperCase())) {
+            alert("Enter valid PAN number (Example: ABCDE1234F)");
+            return;
+        }
+    }
 
-        "handler": function (response){
-            
-            // Create hidden inputs to send razorpay data
+    var options = {
+        key: "{{ env('RAZORPAY_KEY') }}",
+        amount: amount * 100,
+        currency: "INR",
+        name: "SUVABANI FOUNDATION",
+        description: "Donation Payment",
+        handler: function (response) {
+
             let inputPayment = document.createElement("input");
             inputPayment.type = "hidden";
             inputPayment.name = "razorpay_payment_id";
             inputPayment.value = response.razorpay_payment_id;
             form.appendChild(inputPayment);
 
-            let inputSignature = document.createElement("input");
-            inputSignature.type = "hidden";
-            inputSignature.name = "razorpay_signature";
-            inputSignature.value = response.razorpay_signature;
-            form.appendChild(inputSignature);
-
-            let inputStatus = document.createElement("input");
-            inputStatus.type = "hidden";
-            inputStatus.name = "payment_status";
-            inputStatus.value = "Paid";
-            form.appendChild(inputStatus);
-
             form.submit();
         },
-
-        "prefill": {
-            "name": name,
-            "email": email,
-            "contact": phone
+        prefill: {
+            name: name,
+            email: email,
+            contact: phone
         },
-
-        "theme": {
-            "color": "#0f766e"
+        theme: {
+            color: "#0f766e"
         }
     };
 
