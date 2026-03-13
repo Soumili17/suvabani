@@ -6,8 +6,8 @@
 }
 
 body{
-    background:#f9ffff;
-    color:#033;
+    background:#f5f8ff;
+    color:#002b5c;
     line-height:1.6;
 }
 
@@ -17,7 +17,7 @@ body{
     justify-content:space-between;
     align-items:center;
     padding:15px 40px;
-    background:#008080;
+    background:#003f88;
     position:sticky;
     top:0;
     z-index:1000;
@@ -40,25 +40,28 @@ nav a{
 }
 
 nav a:hover{
-    opacity:0.8;
+    background:#dc3545;
 }
+
+/* BUTTONS */
 
 .btn.home{
     background:white;
-    color:#008080;
+    color:#003f88;
 }
 
 .btn.join{
-    background:white;
-    color:#008080;
-    border:1px solid #008080;
+    background:#dc3545;
+    color:white;
+    border:none;
 }
 
 /* HEADER */
+
 .terms-header{
     text-align:center;
     padding:60px 20px 40px;
-    background:linear-gradient(to right, #00bfa5, #008080);
+    background:linear-gradient(to right, #0d6efd, #003f88);
     color:white;
 }
 
@@ -70,21 +73,25 @@ nav a:hover{
 .terms-header p{
     font-size:18px;
 }
-.faded-hr {
-    border: none;
-    height: 1px; 
-    background: linear-gradient(to right, rgba(0,128,128,0), rgba(0,128,128,0.5), rgba(0,128,128,0));
-    margin: 15px 0 20px;
-    opacity: 0;
-    animation: fadeLine 1s forwards;
-    animation-delay: 0.3s;
+
+/* HR LINE */
+
+.faded-hr{
+    border:none;
+    height:1px; 
+    background:linear-gradient(to right, rgba(13,110,253,0), rgba(13,110,253,0.6), rgba(13,110,253,0));
+    margin:15px 0 20px;
+    opacity:0;
+    animation:fadeLine 1s forwards;
+    animation-delay:0.3s;
 }
 
-@keyframes fadeLine {
-    to { opacity: 1; }
+@keyframes fadeLine{
+    to{opacity:1;}
 }
 
 /* TERMS CONTENT */
+
 .terms-container{
     padding:40px 20px;
     display:flex;
@@ -102,7 +109,7 @@ nav a:hover{
 
 .terms-card h2{
     margin-top:25px;
-    color:#008080;
+    color:#0d6efd;
 }
 
 .terms-card ul{
@@ -115,12 +122,14 @@ nav a:hover{
     margin-bottom:20px;
 }
 
+/* ACCEPT BOX */
+
 .accept-box{
     display:flex;
     align-items:center;
     gap:15px;
-    background:#e0f7f7;
-    border-left:4px solid #008080;
+    background:#ffe5e7;
+    border-left:4px solid #dc3545;
     padding:15px 20px;
     margin-top:30px;
     border-radius:8px;
@@ -128,12 +137,13 @@ nav a:hover{
 
 .accept-box i{
     font-size:28px;
-    color:#008080;
+    color:#dc3545;
 }
 
 /* FOOTER */
+
 .terms-footer{
-    background:#008080;
+    background:#003f88;
     color:white;
     text-align:center;
     padding:25px 20px;
@@ -141,10 +151,12 @@ nav a:hover{
 }
 
 /* RESPONSIVE */
+
 @media(max-width:768px){
     .terms-card{
         padding:25px;
     }
+
     .terms-header h1{
         font-size:32px;
     }

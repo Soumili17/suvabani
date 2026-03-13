@@ -16,6 +16,7 @@
 <!-- NAVBAR -->
 
     <header class="navbar">
+    <img src="{{ asset('assests/images/formlogo.png') }}" height="90px" width="80px">
     <div class="logo">SUVABANI FOUNDATION</div>
 
     <nav>
@@ -37,7 +38,7 @@
     <div class="slides">
 
         <div class="slide active"
-            style="background-image:url('{{ asset('frontend/images/slide1.jpg') }}');">
+        style="background-image:url('{{ asset('assests/images/slide1.jpg') }}');">
             <div class="content">
                 <h1>Empowering Lives,<br>Building a Better Future</h1>
                 <hr>
@@ -51,7 +52,7 @@
         </div>
 
         <div class="slide"
-            style="background-image:url('{{ asset('frontend/images/slide2.jpg') }}');">
+        style="background-image:url('{{ asset('assests/images/slide2.jpg') }}');">
             <div class="content">
                 <h1>Support Education,<br>Support Future</h1>
                 <hr>
@@ -104,22 +105,22 @@
     <div class="grid">
 
         <div class="box">
-            <img src="{{ asset('frontend/images/focus1.jpg') }}">
+        <img src="{{ asset('assests/images/focus/child.jpg') }}" alt="Child">
             <button class="img-btn green">Child Welfare</button>
         </div>
 
         <div class="box">
-            <img src="{{ asset('frontend/images/focus2.jpg') }}">
+        <img src="{{ asset('assests/images/focus/woman.jpg') }}" alt="Woman">
             <button class="img-btn blue">Women Empowerment</button>
         </div>
 
         <div class="box">
-            <img src="{{ asset('frontend/images/focus3.jpg') }}">
+        <img src="{{ asset('assests/images/focus/health.jpg') }}" alt="Health">
             <button class="img-btn teal">Healthcare Support</button>
         </div>
 
         <div class="box">
-            <img src="{{ asset('frontend/images/focus4.jpg') }}">
+        <img src="{{ asset('assests/images/focus/education.jpg') }}" alt="Education">
             <button class="img-btn navy">Education for All</button>
         </div>
 
@@ -134,17 +135,17 @@
     <div class="grid">
 
     <div class="box">
-        <img src="{{ asset('frontend/images/project1.jpg') }}">
+    <img src="{{ asset('assests/images/project/food.jpg') }}" alt="Food Project">
         <button class="img-btn blue">Food Distribution</button>
     </div>
 
     <div class="box">
-        <img src="{{ asset('frontend/images/project2.jpg') }}">
+    <img src="{{ asset('assests/images/project/medical.jpg') }}" alt="Medical Project">
         <button class="img-btn green">Free Medical Camp</button>
     </div>
 
     <div class="box">
-        <img src="{{ asset('frontend/images/project3.jpg') }}">
+    <img src="{{ asset('assests/images/project/skill.jpg') }}" alt="Skill Development">
         <button class="img-btn teal">Skill Development</button>
     </div>
 
@@ -165,9 +166,9 @@
             <p>Dedicated to social welfare and sustainable community development.</p>
 
             <div class="social-icons">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.facebook.com/SUVABANIFOUNDATION"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/suvabanifoundation_?igsh=dW05dzc5NDFiczJo"><i class="fab fa-instagram"></i></a>
+                <a href="https://youtube.com/@suvabanifoundation?si=vvx08zGmsC5jKG9l"><i class="fab fa-youtube"></i></a>
             </div>
         </div>
 
@@ -184,7 +185,7 @@
             <h3>Reach Us</h3>
             <p>Phone: 7059590022</p>
             <p>Email:
-                <a href="mailto:suvabanifoundation@gmail.com">
+                <a style="color:white;" href="mailto:suvabanifoundation@gmail.com">
                     suvabanifoundation@gmail.com
                 </a>
             </p>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Terms & Conditions | SUVABANI FOUNDATION</title>
-<link rel="stylesheet" href="{{ asset('assets/css/terms.css') }}">
+<link rel="stylesheet" href="{{ asset('assests/css/terms.css') }}">
 
 
 <!-- Font Awesome -->
@@ -18,7 +18,7 @@
   <div class="logo">SUVABANI FOUNDATION</div>
   <nav>
   <a href="{{ url('/join') }}" class="btn join">Join Us</a>
-    <a href="{{ url('/index') }}" class="btn home">Home</a>
+    <a href="{{ url('/') }}" class="btn home">Home</a>
 
   </nav>
 </header>

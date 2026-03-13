@@ -18,11 +18,19 @@ Route::get('/join', function () {
     return view('frontend.join');
 })->name('join');
 
-Route::post('/membership-submit', [MembershipController::class, 'submit'])->name('membership.submit');
+Route::post('/membership/submit',[MembershipController::class,'submit'])->name('membership.submit');
 
-Route::get('/membership/{id}/edit', [MembershipController::class, 'edit'])->name('membership.edit');
+Route::get('/dashboard/members',[MembershipController::class,'adminIndex'])->name('dashboard.members');
 
-Route::post('/membership/{id}/update', [MembershipController::class, 'update'])->name('membership.update');
+Route::get('/dashboard/members/view/{id}',[MembershipController::class,'view'])->name('dashboard.members.view');
+
+Route::get('/dashboard/members/edit/{id}',[MembershipController::class,'edit'])->name('dashboard.members.edit');
+
+Route::post('/dashboard/members/update/{id}',
+[MembershipController::class,'update'])
+->name('dashboard.members.update');
+
+Route::delete('/dashboard/members/delete/{id}',[MembershipController::class,'destroy'])->name('dashboard.members.delete');
 
 Route::get('/membership/{id}/pdf', [MembershipController::class, 'generatePdf'])->name('membership.pdf');
 
@@ -94,5 +102,13 @@ Route::delete('/dashboard/messages/{id}', [DashboardController::class,'deleteMes
 Route::get('/dashboard/members', [DashboardController::class, 'members'])->name('dashboard.members');
 Route::get('/dashboard/members/delete/{id}', [DashboardController::class, 'deleteMember'])->name('dashboard.members.delete');
 // Donations show
-Route::get('/dashboard/donors', [DashboardController::class, 'donors'])->name('dashboard.donors');
-Route::get('/dashboard/donors/delete/{id}', [DashboardController::class, 'deleteDonor'])->name('dashboard.donors.delete');
+
+Route::get('/dashboard/donors',[DonationController::class,'adminIndex'])->name('dashboard.donors');
+
+Route::get('/dashboard/donors/view/{id}',[DonationController::class,'viewDonor'])->name('dashboard.donors.view');
+
+Route::get('/dashboard/donors/edit/{id}',[DonationController::class,'editDonor'])->name('dashboard.donors.edit');
+
+Route::post('/dashboard/donors/update/{id}',[DonationController::class,'updateDonor'])->name('dashboard.donors.update');
+
+Route::delete('/dashboard/donors/delete/{id}',[DonationController::class,'deleteDonor'])->name('dashboard.donors.delete');

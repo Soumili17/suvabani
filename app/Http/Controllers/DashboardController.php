@@ -7,6 +7,7 @@ use App\Models\Donation;
 use App\Models\Membership;
 use App\Models\Contact;
 
+
 class DashboardController extends Controller
 {
     // Dashboard home
@@ -46,6 +47,8 @@ class DashboardController extends Controller
     }
 
     // Show all donations
+
+
     public function donors()
     {
         $donors = Donation::latest()->get();
