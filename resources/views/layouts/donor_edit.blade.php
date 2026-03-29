@@ -4,6 +4,7 @@
 
 <style>
 
+
 .edit-container{
     width:650px;
     background:#ffffff;
@@ -51,6 +52,39 @@ textarea{
     text-decoration:none;
     color:#333;
 }
+
+/* ================= MOBILE RESPONSIVE ================= */
+@media (max-width:768px){
+
+    .edit-container{
+        width:100%;
+        padding:15px;
+        border-radius:0;
+    }
+
+    input,select,textarea{
+        font-size:14px;
+        padding:10px;
+    }
+
+    textarea{
+        height:90px;
+    }
+
+    .btn-save{
+        width:100%;
+        margin-bottom:10px;
+    }
+
+    .btn-back{
+        display:block;
+        margin-left:0;
+        margin-top:10px;
+        text-align:center;
+    }
+}
+
+
 
 </style>
 

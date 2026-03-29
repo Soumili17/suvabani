@@ -7,116 +7,14 @@
 
     <!-- Razorpay Checkout Script -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: linear-gradient(135deg, #f8fafc, #e0f2f1);
-        }
-
-        .donation-wrapper {
-            padding: 80px 20px;
-        }
-
-        .donation-card {
-            max-width: 550px;
-            margin: auto;
-            background: #ffffff;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-        }
-
-        .donation-card h2 {
-            text-align: center;
-            color: #0f766e;
-            margin-bottom: 5px;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #555;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            font-weight: 600;
-            display: block;
-            margin-bottom: 6px;
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            font-size: 14px;
-        }
-
-        input:focus, textarea:focus {
-            border-color: #14b8a6;
-            outline: none;
-        }
-
-        .radio-group {
-            display: flex;
-            gap: 20px;
-        }
-
-        .preset-btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            background: #e5e7eb;
-        }
-
-        .preset-btn.active {
-            background: #14b8a6;
-            color: white;
-        }
-
-        .donate-btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #0f766e, #14b8a6);
-            color: white;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .donate-btn:hover {
-            opacity: 0.9;
-        }
-
-        .alert-success {
-            background-color: #dcfce7;
-            color: #166534;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .alert-danger {
-            background-color: #fee2e2;
-            color: #991b1b;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-    </style>
+<style>
+    body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: linear-gradient(135deg, #eef3ff, #d6e4ff); } .navbar{ display:flex; justify-content:space-between; align-items:center; padding:12px 40px; background:#003f88; color:white; flex-wrap:wrap; } /* LOGO WITH IMAGE */ .logo{ display:flex; align-items:center; gap:10px; } .logo img{ height:45px; width:auto; border-radius:5px; margin-top:10px; } .logo span{ font-size:18px; font-weight:bold; } /* NAV LINKS */ .navbar nav a{ color:white; text-decoration:none; margin:0 10px; font-weight:500; } .navbar nav a:hover{ color:#d6e4ff; } /* BUTTON STYLE */ .nav-btn{ padding:8px 16px; border-radius:6px; text-decoration:none; font-weight:bold; }  /* JOIN BUTTON */ .join-btn{ background:#dc3545; color:white; } .join-btn:hover{ background:#b02a37; } /* MOBILE */ @media(max-width:768px){ .navbar{ flex-direction:column; text-align:center; } .navbar nav{ margin-top:10px; } }.donation-wrapper { padding: 80px 20px; } .donation-card { max-width: 550px; margin: auto; background: #ffffff; padding: 40px; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); } .donation-card h2 { text-align: center; color: #003f88; margin-bottom: 5px; } .subtitle { text-align: center; color: #555; margin-bottom: 30px; font-size: 14px; } .form-group { margin-bottom: 20px; } label { font-weight: 600; display: block; margin-bottom: 6px; } input, textarea { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; font-size: 14px; } input:focus, textarea:focus { border-color: #0d6efd; outline: none; } .radio-group { display: flex; gap: 20px; } .preset-btn { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; background: #e5e7eb; } .preset-btn.active { background: #0d6efd; color: white; } .donate-btn { width: 100%; padding: 14px; border: none; border-radius: 8px; background: linear-gradient(135deg, #003f88, #0d6efd); color: white; font-weight: bold; font-size: 16px; cursor: pointer; } .donate-btn:hover { opacity: 0.9; } .alert-success { background-color: #fde2e4; color: #842029; padding: 10px; border-radius: 8px; margin-bottom: 20px; text-align: center; } .alert-danger { background-color: #fee2e2; color: #991b1b; padding: 10px; border-radius: 8px; margin-bottom: 20px; }
+</style>
 </head>
 <body>
+
+<!-- NAVBAR --> <div class="navbar"> <div class="logo"> <img src="{{ asset('assests/images/formlogo.png') }}"> <!-- change path if needed --> <span>SUVABANI FOUNDATION</span> </div> <nav><a href="{{ url('/') }}" >Home</a> <a href="{{ url('/contact') }}">Contact</a> <a href="{{ url('/terms') }}">Terms & Conditions</a> <a href="{{ url('/join') }}" class="nav-btn join-btn">Join Now</a>  </nav> </div>
+
 
 <div class="donation-wrapper">
     <div class="donation-card">

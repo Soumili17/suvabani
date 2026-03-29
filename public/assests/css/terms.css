@@ -1,3 +1,4 @@
+
 *{
     margin:0;
     padding:0;
@@ -21,6 +22,7 @@ body{
     position:sticky;
     top:0;
     z-index:1000;
+    flex-wrap:wrap;
 }
 
 .logo{
@@ -29,9 +31,15 @@ body{
     font-weight:bold;
 }
 
+nav{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+}
+
 nav a{
     color:white;
-    margin:0 10px;
+    margin:5px 8px;
     text-decoration:none;
     font-weight:600;
     padding:8px 16px;
@@ -44,7 +52,6 @@ nav a:hover{
 }
 
 /* BUTTONS */
-
 .btn.home{
     background:white;
     color:#003f88;
@@ -57,7 +64,6 @@ nav a:hover{
 }
 
 /* HEADER */
-
 .terms-header{
     text-align:center;
     padding:60px 20px 40px;
@@ -75,7 +81,6 @@ nav a:hover{
 }
 
 /* HR LINE */
-
 .faded-hr{
     border:none;
     height:1px; 
@@ -91,7 +96,6 @@ nav a:hover{
 }
 
 /* TERMS CONTENT */
-
 .terms-container{
     padding:40px 20px;
     display:flex;
@@ -123,7 +127,6 @@ nav a:hover{
 }
 
 /* ACCEPT BOX */
-
 .accept-box{
     display:flex;
     align-items:center;
@@ -141,7 +144,6 @@ nav a:hover{
 }
 
 /* FOOTER */
-
 .terms-footer{
     background:#003f88;
     color:white;
@@ -150,14 +152,104 @@ nav a:hover{
     margin-top:40px;
 }
 
-/* RESPONSIVE */
+/* ================= TABLET ================= */
+@media(max-width:992px){
 
-@media(max-width:768px){
-    .terms-card{
-        padding:25px;
+    .navbar{
+        padding:15px 20px;
     }
 
     .terms-header h1{
-        font-size:32px;
+        font-size:36px;
+    }
+
+    .terms-card{
+        padding:30px;
     }
 }
+
+/* ================= MOBILE ================= */
+@media(max-width:768px){
+
+    /* NAVBAR STACK */
+    .navbar{
+        flex-direction:column;
+        align-items:center;
+        padding:15px;
+    }
+
+    nav{
+        margin-top:10px;
+    }
+
+    nav a{
+        font-size:14px;
+        padding:6px 12px;
+    }
+
+    /* HEADER */
+    .terms-header{
+        padding:40px 15px;
+    }
+
+    .terms-header h1{
+        font-size:28px;
+    }
+
+    .terms-header p{
+        font-size:15px;
+    }
+
+    /* CARD */
+    .terms-card{
+        padding:20px;
+        border-radius:10px;
+    }
+
+    /* ACCEPT BOX STACK */
+    .accept-box{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+    }
+
+    .accept-box i{
+        font-size:24px;
+    }
+
+    /* TEXT SIZE */
+    .terms-card h2{
+        font-size:18px;
+    }
+
+    .terms-card p,
+    .terms-card li{
+        font-size:14px;
+    }
+}
+
+/* ================= SMALL MOBILE ================= */
+@media(max-width:480px){
+
+    .logo{
+        font-size:18px;
+    }
+
+    nav a{
+        margin:4px;
+        font-size:13px;
+    }
+
+    .terms-header h1{
+        font-size:24px;
+    }
+
+    .terms-header p{
+        font-size:14px;
+    }
+
+    .terms-card{
+        padding:15px;
+    }
+}
+

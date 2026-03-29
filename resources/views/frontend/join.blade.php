@@ -1,37 +1,5 @@
 <style>
-* { margin:0; padding:0; box-sizing:border-box; font-family:Segoe UI, sans-serif; }
-body { background:#f0f8f8; color:#033; line-height:1.6; padding:20px; }
-.header { display:flex; justify-content:space-between; background:#fff; padding:15px 30px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1); margin-bottom:20px; }
-.header img { height:150px; width:110px; margin-top:2.7%; }
-.header .details { text-align:right; line-height:1.4; }
-.header .details h2 { color:#008080; margin-bottom:5px; }
-.header .details p { font-size:14px; }
-form { max-width:900px; margin:0 auto; background:#fff; padding:30px; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.1); position:relative; overflow:hidden; }
-fieldset { border:1px solid #008080; border-radius:10px; padding:20px; display:none; }
-fieldset.active { display:block; animation:fadeIn 0.5s; }
-legend { font-weight:bold; color:#008080; padding:0 10px; }
-label { display:block; margin-top:10px; font-weight:600; }
-input[type="text"], input[type="email"], input[type="date"], input[type="file"], input[type="number"], select, textarea { width:100%; padding:8px 12px; margin-top:5px; border:1px solid #ccc; border-radius:6px; outline:none; transition:0.3s; }
-input:focus, textarea:focus, select:focus { border-color:#008080; box-shadow:0 0 5px rgba(0,128,128,0.3); }
-textarea { resize:vertical; min-height:60px; }
-input[type="checkbox"], input[type="radio"] { margin-right:10px; }
-button { background:#008080; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-size:16px; margin-top:10px; transition:0.3s; }
-button:hover { background:#006666; }
-/*  */
-.prevBtn { background:#ccc; color:#033; margin-right:10px; }
-/*  */
-#photoPreview, #signaturePreview { margin-top:10px; max-width:150px; max-height:150px; border-radius:8px; border:1px solid #ccc; }
-#progressbar { display:flex; justify-content:space-between; margin-bottom:20px; counter-reset: step; }
-#progressbar li { list-style-type:none; width:100%; text-align:center; position:relative; color:#ccc; font-weight:600; }
-#progressbar li::before { content:counter(step); counter-increment:step; width:30px; height:30px; line-height:30px; display:block; margin:0 auto 10px; border-radius:50%; background:#ccc; color:white; }
-#progressbar li.active { color:#008080; }
-#progressbar li.active::before { background:#008080; }
-#progressbar li::after { content:''; position:absolute; width:100%; height:3px; background:#ccc; top:15px; left:-50%; z-index:-1; }
-#progressbar li:first-child::after { content:none; }
-#progressbar li.active + li::after { background:#008080; }
-hr { border:none; height:1px; background:linear-gradient(to right, rgba(0,128,128,0), rgba(0,128,128,0.5), rgba(0,128,128,0)); margin:15px 0 20px; }
-@keyframes fadeIn { from {opacity:0; transform:translateX(50px);} to {opacity:1; transform:translateX(0);} }
-@media(max-width:768px){ form { padding:20px; } .header { flex-direction:column; text-align:center; } .header .details { text-align:center; margin-top:10px; } }
+* { margin:0; padding:0; box-sizing:border-box; font-family:Segoe UI, sans-serif; } body { background:#eef3ff; color:#003f88; line-height:1.6; padding:20px; } /* HEADER */ .header { display:flex; justify-content:space-between; background:#ffffff; padding:15px 30px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1); margin-bottom:20px; } .header img { height:150px; width:110px; margin-top:10px; } .header .details { text-align:right; line-height:1.4; } .header .details h2 { color:#003f88; margin-bottom:5px; } .header .details p { font-size:14px; } /* FORM */ form { max-width:900px; margin:0 auto; background:#ffffff; padding:30px; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.1); position:relative; overflow:hidden; } fieldset { border:1px solid #003f88; border-radius:10px; padding:20px; display:none; } fieldset.active { display:block; animation:fadeIn 0.5s; } legend { font-weight:bold; color:#003f88; padding:0 10px; } label { display:block; margin-top:10px; font-weight:600; } /* INPUTS */ input[type="text"], input[type="email"], input[type="date"], input[type="file"], input[type="number"], select, textarea { width:100%; padding:8px 12px; margin-top:5px; border:1px solid #ccc; border-radius:6px; outline:none; transition:0.3s; } input:focus, textarea:focus, select:focus { border-color:#0d6efd; box-shadow:0 0 5px rgba(13,110,253,0.3); } textarea { resize:vertical; min-height:60px; } input[type="checkbox"], input[type="radio"] { margin-right:10px; } /* BUTTONS */ button { background:#0d6efd; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-size:16px; margin-top:10px; transition:0.3s; } button:hover { background:#003f88; } .prevBtn { background:#dc3545; color:white; margin-right:10px; } /* IMAGE PREVIEW */ #photoPreview, #signaturePreview { margin-top:10px; max-width:150px; max-height:150px; border-radius:8px; border:1px solid #ccc; } /* PROGRESS BAR */ #progressbar { display:flex; justify-content:space-between; margin-bottom:20px; counter-reset: step; } #progressbar li { list-style-type:none; width:100%; text-align:center; position:relative; color:#ccc; font-weight:600; } #progressbar li::before { content:counter(step); counter-increment:step; width:30px; height:30px; line-height:30px; display:block; margin:0 auto 10px; border-radius:50%; background:#ccc; color:white; } #progressbar li.active { color:#003f88; } #progressbar li.active::before { background:#0d6efd; } #progressbar li::after { content:''; position:absolute; width:100%; height:3px; background:#ccc; top:15px; left:-50%; z-index:-1; } #progressbar li:first-child::after { content:none; } #progressbar li.active + li::after { background:#0d6efd; } /* LINE */ hr { border:none; height:1px; background:linear-gradient(to right, rgba(0,63,136,0), rgba(0,63,136,0.5), rgba(0,63,136,0)); margin:15px 0 20px; } /* ANIMATION */ @keyframes fadeIn { from {opacity:0; transform:translateX(50px);} to {opacity:1; transform:translateX(0);} } /* RESPONSIVE */ @media(max-width:768px){ form { padding:20px; } .header { flex-direction:column; text-align:center; } .header .details { text-align:center; margin-top:10px; } }
 </style>
 <div class="header">
 <img src="{{ asset('assests/images/formlogo.png') }}">

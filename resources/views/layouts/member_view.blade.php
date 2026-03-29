@@ -4,52 +4,7 @@
 
 <style>
 
-.container{
-width:90%;
-margin:auto;
-background:white;
-padding:30px;
-border-radius:10px;
-box-shadow:0 5px 20px rgba(0,0,0,0.1);
-}
-
-h2{
-margin-bottom:20px;
-color:#0f766e;
-}
-
-.section{
-margin-top:25px;
-}
-
-.section h3{
-background:#0f766e;
-color:white;
-padding:8px;
-border-radius:5px;
-margin-bottom:10px;
-}
-
-.row{
-display:flex;
-flex-wrap:wrap;
-margin-bottom:8px;
-}
-
-.label{
-width:250px;
-font-weight:bold;
-}
-
-.value{
-flex:1;
-}
-
-img{
-border-radius:8px;
-border:1px solid #ddd;
-margin-top:5px;
-}
+.container{ width:90%; margin:auto; background:white; padding:30px; border-radius:10px; box-shadow:0 5px 20px rgba(0,0,0,0.1); } h2{ margin-bottom:20px; color:#0f766e; } .section{ margin-top:25px; } .section h3{ background:#0f766e; color:white; padding:8px; border-radius:5px; margin-bottom:10px; } .row{ display:flex; flex-wrap:wrap; margin-bottom:8px; } .label{ width:250px; font-weight:bold; } .value{ flex:1; } img{ border-radius:8px; border:1px solid #ddd; margin-top:5px; } /* ================= MOBILE RESPONSIVE ================= */ @media (max-width:768px){ .container{ width:100%; padding:15px; border-radius:0; } h2{ font-size:20px; text-align:center; } .section h3{ font-size:16px; text-align:center; } /* Row becomes vertical */ .row{ flex-direction:column; } .label{ width:100%; margin-bottom:5px; font-size:14px; } .value{ width:100%; font-size:14px; } img{ width:100%; height:auto; } }
 
 </style>
 

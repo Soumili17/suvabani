@@ -3,44 +3,7 @@
 @section('content')
 
 <style>
-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:20px;
-}
-
-th,td{
-    border:1px solid #ddd;
-    padding:10px;
-    text-align:left;
-}
-
-th{
-    background:#0f9d94;
-    color:white;
-}
-
-.btn-action{
-    padding:6px 12px;
-    background:#008080;
-    color:white;
-    border-radius:6px;
-    text-decoration:none;
-    margin-right:5px;
-}
-
-.btn-action:hover{
-    background:#0b8077;
-}
-
-.success{
-    background:#d4edda;
-    color:#155724;
-    padding:10px;
-    margin-bottom:20px;
-    border-radius:5px;
-    text-align:center;
-}
+table{ width:100%; border-collapse:collapse; margin-top:20px; } th,td{ border:1px solid #ddd; padding:10px; text-align:left; } th{ background:#0f9d94; color:white; } .btn-action{ padding:6px 12px; background:#008080; color:white; border-radius:6px; text-decoration:none; margin-right:5px; } .btn-action:hover{ background:#0b8077; } .success{ background:#d4edda; color:#155724; padding:10px; margin-bottom:20px; border-radius:5px; text-align:center; } /* ================= MOBILE RESPONSIVE ================= */ @media (max-width:768px){ /* Table scroll */ table{ display:block; overflow-x:auto; white-space:nowrap; } th,td{ padding:8px; font-size:13px; } /* Buttons better fit */ .btn-action{ display:inline-block; margin-bottom:5px; font-size:12px; padding:5px 10px; } /* Success message */ .success{ font-size:14px; padding:8px; } }
 </style>
 
 <h2>Suvabani Members</h2>

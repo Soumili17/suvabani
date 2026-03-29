@@ -15,9 +15,12 @@
 
 <!-- NAVBAR -->
 
-    <header class="navbar">
-    <img src="{{ asset('assests/images/formlogo.png') }}" height="90px" width="80px">
-    <div class="logo">SUVABANI FOUNDATION</div>
+<header class="navbar">
+
+    <div class="logo-box">
+        <img src="{{ asset('assests/images/formlogo.png') }}" alt="logo">
+        <div class="logo">SUVABANI FOUNDATION</div>
+    </div>
 
     <nav>
         <a href="{{ route('home') }}">Home</a>
@@ -28,6 +31,7 @@
         <a href="{{ route('donate') }}" class="btn donate">Donate</a>
         <a href="{{ route('join') }}" class="btn join">Join Us</a>
     </nav>
+
 </header>
 
 
