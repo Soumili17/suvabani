@@ -78,7 +78,17 @@ input:focus, textarea:focus {
     background: #14b8a6;
     color: white;
 }
-
+.donate-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #0f766e, #14b8a6);
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
 .submit-btn {
     width: 100%;
     padding: 14px;
@@ -219,6 +229,12 @@ input:focus, textarea:focus {
 <button type="submit" class="submit-btn">Donate Securely</button>
 
 </form>
+<div style="margin-top:15px;text-align:center;">
+    <a href="{{ route('80g.form') }}" class="donate-btn" 
+       style="display:block;background:linear-gradient(135deg,#1e3a8a,#2563eb);text-decoration:none;">
+        Get 80G Tax Exemption Certificate
+    </a>
+</div>
 </div>
 </div>
 

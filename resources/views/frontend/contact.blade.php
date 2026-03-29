@@ -26,6 +26,7 @@ header {
 }
 header img { height:60px; }
 
+/* BUTTONS */
 .header-buttons a {
     text-decoration:none;
     margin-left:15px;
@@ -34,7 +35,6 @@ header img { height:60px; }
     font-weight:bold;
     transition:0.3s;
 }
-
 .home { background:white; color:#008080; }
 .home:hover { background:#006666; color:white; }
 
@@ -60,7 +60,7 @@ header img { height:60px; }
     padding:0 20px;
 }
 
-/* LEFT FORM */
+/* BOXES */
 .left, .right {
     flex:1;
     min-width:320px;
@@ -70,13 +70,8 @@ header img { height:60px; }
     box-shadow:0 10px 25px rgba(0,0,0,0.08);
 }
 
-.left h2 { margin-bottom:25px; }
-
-label {
-    display:block;
-    margin-top:18px;
-    font-weight:600;
-}
+/* FORM */
+label { display:block; margin-top:18px; font-weight:600; }
 
 input, textarea {
     width:100%;
@@ -84,16 +79,9 @@ input, textarea {
     margin-top:6px;
     border:1px solid #ccc;
     border-radius:6px;
-    outline:none;
-    transition:0.3s;
 }
 
-input:focus, textarea:focus {
-    border-color:#008080;
-    box-shadow:0 0 6px rgba(0,128,128,0.2);
-}
-
-textarea { resize:vertical; min-height:130px; }
+textarea { min-height:130px; }
 
 button {
     background:#008080;
@@ -101,92 +89,56 @@ button {
     border:none;
     padding:12px 28px;
     border-radius:6px;
-    cursor:pointer;
-    font-size:16px;
     margin-top:25px;
-    transition:0.3s;
 }
 
-button:hover { background:#006666; }
-
-/* RIGHT INFO */
-.right h3 { margin-bottom:20px; }
-
-.right p { margin-bottom:12px; }
-
-.icon { margin-right:8px; color:#008080; }
-
-/* SUCCESS MESSAGE */
-.success {
-    background:#d4edda;
-    color:#155724;
-    padding:10px;
-    margin-bottom:20px;
-    border-radius:5px;
-}
 /* GOVERNING BODY */
 .gov-section {
-    padding: 60px 20px;
-    background: #f9ffff;
-    text-align: center;
+    max-width:1100px;
+    margin:40px auto 60px;
+    padding:0 20px;
 }
 
 .gov-title {
-    font-size: 30px;
-    margin-bottom: 40px;
-    color: #008080;
-}
-
-.gov-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 25px;
+    text-align:center;
+    font-size:30px;
+    margin-bottom:30px;
+    color:#008080;
 }
 
 .gov-card {
-    background: white;
-    width: 220px;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    transition: 0.3s;
-}
-
-.gov-card:hover {
-    transform: translateY(-5px);
+    display:flex;
+    gap:20px;
+    background:white;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.08);
 }
 
 .gov-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 10px;
+    width:120px;
+    height:120px;
+    object-fit:cover;
+    border-radius:10px;
 }
 
 .gov-card h4 {
-    margin-top: 15px;
-    font-size: 18px;
+    color:#008080;
+    margin-bottom:8px;
 }
 
-.gov-card p {
-    color: #555;
-    font-weight: 600;
-    margin-top: 5px;
-}
-/* RESPONSIVE */
+/* MOBILE */
 @media(max-width:768px){
-    header { flex-direction:column; text-align:center; }
-    .header-buttons { margin-top:10px; }
     .container { flex-direction:column; }
+    .gov-card { flex-direction:column; text-align:center; }
 }
-
 </style>
 </head>
 <body>
 
 <header>
-    <img src="{{ asset('assets/images/formlogo.png') }}" alt="Logo">
+    <img src="{{ asset('assests/images/formlogo.png') }}" alt="Logo">
 
     <div class="header-buttons">
         <a href="{{ url('/') }}" class="home">Home</a>
@@ -198,14 +150,11 @@ button:hover { background:#006666; }
 
 <div class="container">
 
-    <!-- LEFT -->
     <div class="left">
         <h2>Send Us a Message</h2>
 
         @if(session('success'))
-            <div class="success">
-                {{ session('success') }}
-            </div>
+            <div class="success">{{ session('success') }}</div>
         @endif
 
         <form action="{{ route('contact.submit') }}" method="POST">
@@ -226,7 +175,6 @@ button:hover { background:#006666; }
         </form>
     </div>
 
-    <!-- RIGHT -->
     <div class="right">
         <h3>Contact Information</h3>
 
@@ -236,59 +184,69 @@ button:hover { background:#006666; }
             Kolkata – 700 154
         </p>
 
-        <p><i class="fas fa-phone icon"></i> <strong>Phone:</strong> 7059590022</p>
-
-        <p><i class="fas fa-envelope icon"></i> <strong>Email:</strong>
-            <a href="mailto:suvabanifoundation@gmail.com">
-                contact@suvabanifoundation.com
-            </a>
-        </p>
+        <p><i class="fas fa-phone"></i> 7059590022</p>
+        <p><i class="fas fa-envelope"></i> contact@suvabanifoundation.com</p>
     </div>
-    <!-- GOVERNING BODY -->
-    <div class="gov-section">
-        <h2 class="gov-title">Governing Body</h2>
 
-        <div class="gov-container">
+</div>
 
-            <!-- MEMBER -->
-            <div class="gov-card">
-                <img src="{{ asset('assests/images/officials/founder.webp') }}" alt="Founder">
-                <h4>Suvo Debnath</h4>
-                <p>Founder</p>
-            </div>
+<!-- GOVERNING BODY -->
+<div class="gov-section">
 
-            <div class="gov-card">
-                <img src="{{ asset('assests/images/officials/Secretary.png') }}" alt="Secretary">
-                <h4>Mihir Debnath</h4>
-                <p>Secretary</p>
-            </div>
+    <div class="gov-title">Governing Body</div>
 
-            <div class="gov-card">
-                <img src="{{ asset('assests/images/officials/casher.jpeg') }}" alt="Casher">
-                <h4>Suroj halder</h4>
-                <p>Casher</p>
-            </div>
-
-            <div class="gov-card">
-                <img src="{{ asset('assests/images/officials/co1.jpeg') }}" alt="Officer">
-                <h4>Smita Chakraborty</h4>
-                <p>Communicating Officer</p>
-            </div>
-
-            <div class="gov-card">
-                <img src="{{ asset('assests/images/officials/co2.jpeg') }}" alt="Officer">
-                <h4>Pulak Bhunre</h4>
-                <p>Communicating Officer</p>
-            </div>
-
+    <div class="gov-card">
+        <img src="{{ asset('assests/images/officials/founder.webp') }}">
+        <div>
+            <h4>Suvo Debnath – Founder & President</h4>
+            <p>SUVO DEBNATH is the Founder & President of the organization SUVABANI FOUNDATION, professionally working as a Businessman (Online Business) and holds a B.Com Degree in Accountancy from Calcutta University.
+Driven by a strong sense of social responsibility, he plays a key role in advancing our mission of SUVABANI FOUNDATION. He believes in the power of community-driven change and works tirelessly to support and uplift underprivileged sections of society. Through his efforts, he aims to build a more inclusive and sustainable future.</p>
         </div>
     </div>
+    <div class="gov-card">
+        <img src="{{ asset('assests/images/officials/Secretary.png') }}">
+        <div>
+            <h4>Mihir Debnath – Secretary</h4>
+            <p>MIHIR DEBNATH is the Secretary of the organization, responsible for administrative management, documentation, and communication. He ensures that the NGO operates efficiently and in compliance with all necessary guidelines.</p>
+        </div>
+    </div>
+    <div class="gov-card">
+        <img src="{{ asset('assests/images/officials/casher.jpeg') }}">
+        <div>
+            <h4>Suroj Halder – Cashier</h4>
+            <p>SUROJ HALDER serves as the Cashier of the organization SUVABANI FOUNDATION  and is responsible for managing financial transactions, maintaining accounts, and ensuring proper utilization of funds. He works at a Finance Company and holds a B.Com Degree in Accountancy from Calcutta University.
+With a strong understanding of financial management and accountability, Suroj Halder ensures transparency and accuracy in all financial matters of the organization.</p>
+        </div>
+    </div>
+
+    <div class="gov-card">
+        <img src="{{ asset('assests/images/officials/co1.jpeg') }}">
+        <div>
+            <h4>Smita Chakraborty – Communicating Officer</h4>
+            <p>SMITA CHAKRABORTY is the Communicating Officer of SUVABANI FOUNDATION and by profession she works as a Customs Sircar Executive at a CHA company. She holds a Post Graduate degree from Rabindra Bharati University & studying Astgrology at IIA.
+She manages communication strategies, media relations, and digital outreach. Her expertise helps the organization strengthen its public presence and effectively engage with the community.</p>
+        </div>
+    </div>
+
+    <div class="gov-card">
+        <img src="{{ asset('assests/images/officials/co2.jpeg') }}">
+        <div>
+            <h4>Pulak Bhunre – Communicating Officer</h4>
+            <p>As the Communicating Officer, PULAK BHUNRE manages the organization’s communication strategy, including public relations, digital outreach, and stakeholder engagement. He works as a Businessman and has completed Graduation Degree.
+He plays a vital role in ensuring clear messaging and strengthening the organization’s visibility and impact.</p>
+        </div>
+    </div>
+
+    
+
 </div>
+
 @if(session('success'))
 <script>
     alert("{{ session('success') }}");
     window.location.href = "{{ route('home') }}";
 </script>
 @endif
+
 </body>
 </html>
