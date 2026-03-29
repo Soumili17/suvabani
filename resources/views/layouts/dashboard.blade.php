@@ -39,6 +39,8 @@ a.btn-action:hover{background:#0b8077}
         <a href="{{ route('dashboard.members') }}">Members</a>
         <a href="{{ route('dashboard.messages') }}">Messages</a>
         <a href="{{ route('dashboard.donors') }}">Donors</a>
+        <a href="{{ route('dashboard.volunteers') }}">Volunteers</a>
+        <a href="{{ route('dashboard.gallery') }}">Gallery</a>
     </div>
 </div>
 

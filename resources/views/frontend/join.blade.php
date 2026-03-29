@@ -57,10 +57,19 @@ hr { border:none; height:1px; background:linear-gradient(to right, rgba(0,128,12
 <!-- PERSONAL DETAILS -->
 <fieldset>
 <legend>Personal Details</legend>
-<label for="fullname">Full Name:</label>
-<input type="text" id="fullname" name="fullname">
-<label for="parentname">Father's/Mother's/Spouse's Name:</label>
+<label for="fullname">Your Full Name:</label>
+<input type="text" name="name" id="fullname">
+<label for="parent_type">Relation:</label>
+<select id="parent_type" name="parent_type">
+    <option value="">Select</option>
+    <option value="Father">Father</option>
+    <option value="Mother">Mother</option>
+    <option value="Spouse">Spouse</option>
+</select>
+
+<label for="parentname">Name:</label>
 <input type="text" id="parentname" name="parentname">
+
 <label for="dob">Date of Birth:</label>
 <input type="date" id="dob" name="dob">
 <label>Gender:</label>
@@ -88,11 +97,10 @@ hr { border:none; height:1px; background:linear-gradient(to right, rgba(0,128,12
 <fieldset>
 <legend>ID Proof</legend>
 <label>ID Proof:</label>
-<input type="checkbox" name="idproof[]" value="Aadhaar"> Aadhaar
-<input type="checkbox" name="idproof[]" value="PAN"> PAN
-<input type="checkbox" name="idproof[]" value="Voter ID"> Voter ID
-<input type="checkbox" name="idproof[]" value="Passport"> Passport
-<input type="checkbox" name="idproof[]" value="Other"> Other: <input type="text" name="idproof_other">
+<input type="radio" name="idproof" value="Aadhaar"> Aadhaar
+<input type="radio" name="idproof" value="PAN"> PAN
+<input type="radio" name="idproof" value="Voter ID"> Voter ID
+<input type="radio" name="idproof" value="Passport"> Passport
 <label for="idnumber">ID Number:</label>
 <input type="text" id="idnumber" name="idnumber">
 <label for="idfile">Upload ID Proof:</label>
@@ -107,13 +115,35 @@ hr { border:none; height:1px; background:linear-gradient(to right, rgba(0,128,12
 <!-- MEMBERSHIP TYPE -->
 <fieldset>
 <legend>Membership Type</legend>
-<label><input type="checkbox" name="membership[]" value="Paid"> Paid - Rs. 200 or More Rs. <input type="number" name="paidamount" min="200"></label>
-<label><input type="checkbox" name="membership[]" value="Non-Paid"> Non-Paid</label>
+<label>
+<input type="radio" name="membership_type" value="Paid"> Paid
+</label>
+
+<label>Select Membership Plan:</label>
+
+<input type="radio" name="plan_id" value="plan_SVaR3a1MmEmmuJ">
+₹100 - Basic Plan
+
+<input type="radio" name="plan_id" value="plan_SRFl5J5teuIStk">
+₹200 - Standard Plan
+
+<input type="radio" name="plan_id" value="plan_SVaS0xDMQ4kpaE">
+₹500 - Premium Plan
+
+<input type="radio" name="plan_id" value="plan_SVaSS6ttAXZDx3">
+₹1000 - Gold Plan
+
+
+
+<label>
+<input type="radio" name="membership_type" value="Non-Paid"> Non-Paid
+</label>
+
 <label>Type of Membership:</label>
-<input type="checkbox" name="membertype[]" value="General Member"> General Member
-<input type="checkbox" name="membertype[]" value="Student Member"> Student Member
-<input type="checkbox" name="membertype[]" value="Donor Member"> Donor Member
-<input type="checkbox" name="membertype[]" value="Advisory Member"> Advisory Member
+<input type="radio" name="membertype" value="General Member"> General Member
+<input type="radio" name="membertype" value="Student Member"> Student Member
+<input type="radio" name="membertype" value="Donor Member"> Donor Member
+<input type="radio" name="membertype" value="Advisory Member"> Advisory Member
 <br>
 <!--  -->
 <button type="button" class="prevBtn">Previous</button>
@@ -146,10 +176,10 @@ hr { border:none; height:1px; background:linear-gradient(to right, rgba(0,128,12
 <label>Languages Known:</label>
 <input type="text" name="languages">
 <label>Time You Can Dedicate:</label>
-<input type="checkbox" name="time[]" value="1-2 hrs"> 1-2 hrs
-<input type="checkbox" name="time[]" value="3-5 hrs"> 3-5 hrs
-<input type="checkbox" name="time[]" value="Weekends only"> Weekends only
-<input type="checkbox" name="time[]" value="Full-time"> Full-time
+<input type="radio" name="time" value="1-2 hrs"> 1-2 hrs
+<input type="radio" name="time" value="3-5 hrs"> 3-5 hrs
+<input type="radio" name="time" value="Weekends only"> Weekends only
+<input type="radio" name="time" value="Full-time"> Full-time
 <label>Reason for Joining:</label>
 <textarea name="reason"></textarea>
 <label>Reference (if any):</label>
@@ -169,8 +199,7 @@ Mobile: <input type="text" name="ref_mobile">
 <label>Signature Upload:</label>
 <input type="file" id="signature" name="signature" accept="image/*">
 <img id="signaturePreview" src="#" alt="Signature Preview" style="display:none;">
-<label>Date:</label>
-<input type="date" name="declaration_date">
+<input type="date" name="declaration_date" id="declaration_date">
 <br>
 <!--  -->
 <button type="button" class="prevBtn">Previous</button>
@@ -180,100 +209,228 @@ Mobile: <input type="text" name="ref_mobile">
 
 
 </form>
+<div id="successModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
+    <div style="background:#fff; padding:30px; border-radius:10px; text-align:center; max-width:400px;">
+        <h3 style="color:#008080;">Success</h3>
+        <p>Your application is submitted successfully.<br>Wait for approval.</p>
+        <button onclick="closeModal()">OK</button>
+    </div>
+</div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-    // STEP-WISE FORM VALIDATION
-    const fieldsets = document.querySelectorAll('form fieldset');
-    const progressItems = document.querySelectorAll('#progressbar li');
-    let current = 0;
-    
-    function showStep(n){
-        fieldsets.forEach((fs,i)=> fs.classList.remove('active'));
-        fieldsets[n].classList.add('active');
-        progressItems.forEach((item,i)=> item.classList.toggle('active', i<=n));
-    }
-    showStep(current);
+const form = document.getElementById('membershipForm');
+const fieldsets = document.querySelectorAll('form fieldset');
+const progressItems = document.querySelectorAll('#progressbar li');
 
-// <!--  -->
-   // NEXT BUTTON
+let current = 0;
+
+// ---------- STEP ----------
+function showStep(n){
+    fieldsets.forEach((fs,i)=> fs.classList.remove('active'));
+    fieldsets[n].classList.add('active');
+    progressItems.forEach((item,i)=> item.classList.toggle('active', i<=n));
+}
+showStep(current);
+
 document.querySelectorAll('.nextBtn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
+    btn.onclick = ()=>{
         if(validateStep(current)){
-            if(current < fieldsets.length - 1){
-                current++;
-                showStep(current);
-            }
-        }
-    });
-});
-
-// PREVIOUS BUTTON
-document.querySelectorAll('.prevBtn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-        if(current > 0){
-            current--;
+            current++;
             showStep(current);
         }
-    });
-});
-// <!--  -->
-
-    // STEP-WISE VALIDATION
-    function validateStep(step){
-        const form = document.getElementById('membershipForm');
-        switch(step){
-            case 0: // Photo
-                if(!form.photo.files.length){
-                    alert('Please upload your photo.');
-                    return false;
-                }
-                break;
-            case 1: // Personal Details
-                if(form.fullname.value.trim()===''){ alert('Full Name is required.'); return false; }
-                if(form.parentname.value.trim()===''){ alert("Parent/Spouse Name is required."); return false; }
-                if(form.dob.value===''){ alert('Date of Birth is required.'); return false; }
-                if(!form.querySelector('input[name="gender"]:checked')){ alert('Please select gender.'); return false; }
-                if(form.nationality.value.trim()===''){ alert('Nationality is required.'); return false; }
-                if(form.occupation.value.trim()===''){ alert('Occupation is required.'); return false; }
-                if(form.address.value.trim()===''){ alert('Address is required.'); return false; }
-                if(form.phone.value.trim()===''){ alert('Phone number is required.'); return false; }
-                if(!/^\d{10}$/.test(form.phone.value)){ alert('Phone must be 10 digits.'); return false; }
-                if(form.email.value.trim()===''){ alert('Email is required.'); return false; }
-                if(!/^\S+@\S+\.\S+$/.test(form.email.value)){ alert('Enter a valid email.'); return false; }
-                break;
-            case 2: // ID Proof
-                if(!form.querySelector('input[name="idproof[]"]:checked')){ alert('Please select at least one ID proof.'); return false; }
-                if(form.idnumber.value.trim()===''){ alert('ID Number is required.'); return false; }
-                if(!form.idfile.files.length){ alert('Please upload your ID proof file.'); return false; }
-                break;
-            case 3: // Membership Type
-                if(!form.querySelector('input[name="membership[]"]:checked')){ alert('Please select at least one membership type.'); return false; }
-                if(!form.querySelector('input[name="membertype[]"]:checked')){ alert('Please select at least one member type.'); return false; }
-                break;
-            case 4: // Areas of Interest
-                if(!form.querySelector('input[name="interest[]"]:checked')){ alert('Please select at least one area of interest.'); return false; }
-                break;
-            case 5: // Other Information
-                // optional step, you can enforce certain fields if needed
-                break;
-            case 6: // Declaration
-                if(!form.signature.files.length){ alert('Please upload your signature image.'); return false; }
-                if(form.declaration_date.value===''){ alert('Please select declaration date.'); return false; }
-                break;
-        }
-        return true;
     }
-// <--!  -->
-    // FINAL SUBMIT VALIDATION
-document.getElementById('membershipForm').addEventListener('submit', function(e){
+});
+
+document.querySelectorAll('.prevBtn').forEach(btn=>{
+    btn.onclick = ()=>{
+        current--;
+        showStep(current);
+    }
+});
+
+// ---------- VALIDATION ----------
+function validateStep(step){
+
+    switch(step){
+
+        case 0:
+            if(!form.photo.files.length) return alert('Upload photo'), false;
+        break;
+
+        case 1:
+            if(!form.fullname.value.trim()) return alert('Name required'), false;
+            if(!form.parent_type.value) return alert('Select relation'), false;
+            if(!form.parentname.value.trim()) return alert('Relation name required'), false;
+            if(!form.dob.value) return alert('DOB required'), false;
+            if(!form.querySelector('[name="gender"]:checked')) return alert('Select gender'), false;
+            if(!form.nationality.value.trim()) return alert('Nationality required'), false;
+            if(!form.occupation.value.trim()) return alert('Occupation required'), false;
+            if(!form.address.value.trim()) return alert('Address required'), false;
+            if(!/^\d{10}$/.test(form.phone.value)) return alert('Invalid phone'), false;
+            if(!/^\S+@\S+\.\S+$/.test(form.email.value)) return alert('Invalid email'), false;
+        break;
+
+        case 2:
+            if(!form.querySelector('[name="idproof"]:checked')) return alert('Select ID proof'), false;
+            if(!form.idnumber.value.trim()) return alert('Enter ID number'), false;
+            if(!form.idfile.files.length) return alert('Upload ID file'), false;
+        break;
+
+        case 3:
+            const membershipType = form.querySelector('[name="membership_type"]:checked');
+            if(!membershipType) return alert('Select membership'), false;
+
+            if(!form.querySelector('[name="membertype"]:checked')){
+                return alert('Select member type'), false;
+            }
+
+            if(membershipType.value === "Paid"){
+                const plan = form.querySelector('[name="plan_id"]:checked');
+                if(!plan) return alert('Select plan'), false;
+            }
+        break;
+
+        case 4:
+            if(!form.querySelector('[name="interest[]"]:checked')) return alert('Select interest'), false;
+        break;
+
+        case 5:
+            if(!form.querySelector('[name="time"]:checked')) return alert('Select time'), false;
+        break;
+
+        case 6:
+            if(!form.signature.files.length) return alert('Upload signature'), false;
+            if(!form.declaration_date.value) return alert('Select date'), false;
+        break;
+    }
+
+    return true;
+}
+
+// ---------- DISABLE PLAN ----------
+const plans = document.querySelectorAll('[name="plan_id"]');
+document.querySelectorAll('[name="membership_type"]').forEach(r=>{
+    r.onchange = ()=>{
+        if(r.value === "Non-Paid"){
+            plans.forEach(p=>{
+                p.checked = false;
+                p.disabled = true;
+            });
+        } else {
+            plans.forEach(p=> p.disabled = false);
+        }
+    }
+});
+
+// ---------- SUBMIT ----------
+form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+
     for(let i=0;i<fieldsets.length;i++){
-        if(!validateStep(i)){ 
-            e.preventDefault();
-            current = i; 
-            showStep(current);
+        if(!validateStep(i)){
+            current = i;
+            showStep(i);
             return;
         }
     }
-});
-// <--!  -->
 
-    </script>
+    const membershipType = form.querySelector('[name="membership_type"]:checked');
+
+    // NON-PAID
+    if(membershipType.value === "Non-Paid"){
+        const res = await fetch(form.action,{
+            method:"POST",
+            headers:{ "X-CSRF-TOKEN":"{{ csrf_token() }}" },
+            body: new FormData(form)
+        });
+
+        const result = await res.json();
+
+        if(result.success){
+            document.getElementById("successModal").style.display="flex";
+        } else {
+            alert(result.error || "Error");
+        }
+        return;
+    }
+
+    // PAID
+    const plan = form.querySelector('[name="plan_id"]:checked');
+
+    try{
+        const res = await fetch("/create-membership-subscription",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json",
+                "X-CSRF-TOKEN":"{{ csrf_token() }}"
+            },
+            body: JSON.stringify({ plan_id: plan.value })
+        });
+
+        const data = await res.json();
+
+        if(!data.subscription_id){
+            alert("Subscription failed");
+            return;
+        }
+
+        const rzp = new Razorpay({
+            key: "{{ config('services.razorpay.key') }}",
+            subscription_id: data.subscription_id,
+
+            // ✅ ADD THIS
+            prefill: {
+                name: form.fullname.value || '',
+                email: form.email.value || '',
+                contact: form.phone.value || ''
+            },
+
+            // ✅ OPTIONAL BUT USEFUL
+            notes: {
+                name: form.fullname.value,
+                email: form.email.value,
+                phone: form.phone.value
+            },
+
+            handler: async function(response){
+
+                const formData = new FormData(form);
+                formData.append('razorpay_payment_id', response.razorpay_payment_id);
+                formData.append('razorpay_subscription_id', data.subscription_id);
+
+                const save = await fetch(form.action,{
+                    method:"POST",
+                    headers:{ "X-CSRF-TOKEN":"{{ csrf_token() }}" },
+                    body: formData
+                });
+
+                const result = await save.json();
+
+                if(result.success){
+                    document.getElementById("successModal").style.display="flex";
+                } else {
+                    alert(result.error || "Save failed");
+                }
+            }
+        });
+
+        rzp.open();
+
+    } catch(err){
+        console.error(err);
+        alert("Payment error");
+    }
+});
+
+// ---------- DATE ----------
+const today = new Date().toISOString().split('T')[0];
+const dateInput = document.getElementById('declaration_date');
+dateInput.value = today;
+dateInput.min = today;
+dateInput.max = today;
+
+// ---------- MODAL ----------
+function closeModal(){
+    document.getElementById("successModal").style.display="none";
+}
+</script>

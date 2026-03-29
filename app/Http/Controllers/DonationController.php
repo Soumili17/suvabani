@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Donation;
 use Barryvdh\DomPDF\Facade\Pdf;
-
+use Razorpay\Api\Api;
+use Illuminate\Support\Facades\DB;
+use Razorpay\Api\Errors\SignatureVerificationError;
 class DonationController extends Controller
 {
 
@@ -17,56 +19,144 @@ class DonationController extends Controller
 
 
     // Store Donation
+
     public function store(Request $request)
     {
-        $request->validate([
-            'donor_name' => 'required|string|max:255',
-            'donor_email' => 'required|email|max:255',
-            'donor_phone' => 'nullable|string|max:20',
-            'donor_address' => 'nullable|string',
-            'donor_city' => 'nullable|string|max:100',
-            'donor_state' => 'nullable|string|max:100',
-            'donor_pincode' => 'nullable|string|max:10',
-            'amount' => 'required|numeric|min:1',
-            'need_80g' => 'required|in:Yes,No',
-            'donor_pan' => 'nullable|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/',
-            'razorpay_payment_id' => 'required'
-        ]);
+        $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
 
-        // PAN validation for 80G
-        if ($request->need_80g === 'Yes' && empty($request->donor_pan)) {
-            return back()->withErrors([
-                'donor_pan' => 'PAN is required for 80G receipt'
-            ]);
+        $attributes = [
+            'razorpay_order_id' => $request->razorpay_order_id,
+            'razorpay_payment_id' => $request->razorpay_payment_id,
+            'razorpay_signature' => $request->razorpay_signature
+        ];
+
+        try {
+            $api->utility->verifyPaymentSignature($attributes);
+        } catch (SignatureVerificationError $e) {
+            return back()->withErrors("Payment verification failed");
+        }
+        // ✅ CONDITIONAL VALIDATION
+
+        $rules = [
+            'donor_phone' => 'required',
+            'amount' => 'required|numeric|min:1',
+            'need_80g' => 'required',
+            'razorpay_payment_id' => 'required'
+        ];
+
+        if ($request->need_80g === "Yes") {
+
+            $rules['donor_name'] = 'required';
+            $rules['donor_email'] = 'required|email';
+            $rules['donor_address'] = 'required';
+            $rules['donor_city'] = 'required';
+            $rules['donor_state'] = 'required';
+            $rules['donor_pincode'] = 'required';
+            $rules['donor_pan'] = 'required';
+
+        } else {
+
+            $rules['donor_email'] = 'nullable|email';
+
         }
 
-        $donation = Donation::create([
+        $request->validate($rules);
 
-            'donor_name' => $request->donor_name,
-            'donor_email' => $request->donor_email,
-            'donor_phone' => $request->donor_phone,
-            'donor_address' => $request->donor_address,
+        DB::beginTransaction();
 
-            'donor_city' => $request->donor_city,
-            'donor_state' => $request->donor_state,
-            'donor_pincode' => $request->donor_pincode,
+        try {
 
-            'donation_purpose' => $request->donation_purpose,
+            // ✅ FIND OR CREATE DONOR (PHONE BASED)
 
-            'amount' => $request->amount,
-            'donation_date' => now(),
+            $donor = DB::table('donors')
+                ->where('phone', $request->donor_phone)
+                ->first();
 
-            'need_80g' => $request->need_80g === 'Yes',
-            'donor_pan' => strtoupper($request->donor_pan),
+            if (!$donor) {
 
-            'razorpay_payment_id' => $request->razorpay_payment_id,
-            'payment_status' => 'Paid',
+                $donorId = DB::table('donors')->insertGetId([
+                    'name' => $request->donor_name ?? 'Anonymous',
+                    'email' => $request->donor_email,
+                    'phone' => $request->donor_phone,
+                    'address' => $request->donor_address,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
 
-            'receipt_number' => 'SVB-' . date('Y') . '-' . rand(1000,9999)
+            } else {
 
+                $donorId = $donor->id;
+
+            }
+
+            // ✅ CREATE DONATION
+
+            $donationId = DB::table('donations')->insertGetId([
+
+                'donor_id' => $donorId,
+                'amount' => $request->amount,
+                'need_80g' => $request->need_80g === "Yes" ? 1 : 0,
+                'pan_number' => $request->donor_pan,
+                'donation_purpose' => $request->donation_purpose,
+                'donation_date' => now(),
+                'razorpay_payment_id' => $request->razorpay_payment_id,
+                'payment_status' => 'Paid',
+                'payment_method' => 'Razorpay',
+                'receipt_number' => 'SVB-' . date('Y') . '-' . rand(1000,9999),
+                'created_at' => now(),
+                'updated_at' => now()
+
+            ]);
+
+            DB::commit();
+
+            // ✅ FETCH DATA FOR PDF
+
+            $donation = DB::table('donations')
+                ->join('donors','donors.id','=','donations.donor_id')
+                ->where('donations.id',$donationId)
+                ->select(
+                    'donations.*',
+                    'donors.name',
+                    'donors.email',
+                    'donors.phone',
+                    'donors.address'
+                )
+                ->first();
+
+            // ✅ GENERATE INVOICE PDF
+
+            $pdf = Pdf::loadView('frontend.invoice_pdf', compact('donation'));
+
+            return $pdf->download('invoice_'.$donation->receipt_number.'.pdf');
+
+        } catch (\Exception $e) {
+
+            DB::rollback();
+
+            return back()->withErrors($e->getMessage());
+
+        }
+    }
+
+
+    public function createOrder(Request $request)
+    {
+
+        $amount = $request->amount;
+
+        $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
+
+        $order = $api->order->create([
+            'receipt' => 'donation_'.time(),
+            'amount' => $amount * 100,
+            'currency' => 'INR'
         ]);
 
-        return redirect()->route('donation.receipt',$donation->id);
+        return response()->json([
+            'order_id' => $order['id'],
+            'amount' => $order['amount']
+        ]);
     }
 
 
@@ -75,19 +165,30 @@ class DonationController extends Controller
     public function adminIndex(Request $request)
     {
 
-        $query = Donation::query();
+        $query = DB::table('donations')
+                ->join('donors','donors.id','=','donations.donor_id')
+                ->select(
+                    'donations.*',
+                    'donors.name',
+                    'donors.email',
+                    'donors.phone',
+                    'donors.address'
+                );
 
         if ($request->search) {
 
-            $query->where('donor_name','like','%'.$request->search.'%')
-            ->orWhere('donor_email','like','%'.$request->search.'%')
-            ->orWhere('donor_phone','like','%'.$request->search.'%');
+            $query->where(function($q) use ($request){
+                $q->where('donors.name','like','%'.$request->search.'%')
+                ->orWhere('donors.email','like','%'.$request->search.'%')
+                ->orWhere('donors.phone','like','%'.$request->search.'%');
+            });
 
         }
 
-        $donors = $query->latest()->paginate(15);
+        $donors = $query->orderBy('donations.id','desc')->paginate(15);
 
         return view('layouts.donors_show', compact('donors'));
+
     }
 
 
@@ -157,58 +258,98 @@ class DonationController extends Controller
 
 
     // Show 80G Form Page
-    public function showForm10AC()
+  
+
+
+    public function show80GForm()
     {
-
-        $form = (object)[
-            'pan' => 'ABLTS3949L',
-            'name' => 'SUVABANI FOUNDATION',
-            'activity' => 'Charitable',
-            'building' => 'RANIA',
-            'village' => 'PRAVATPALLY',
-            'post' => 'Boral S.O',
-            'locality' => 'Sukantapally',
-            'district' => 'South 24 Parganas',
-            'state' => 'West Bengal',
-            'country' => 'India',
-            'pincode' => '700154',
-            'din' => 'ABLTS3949LF2025101',
-            'application_no' => '237126850030725',
-            'registration_no' => 'ABLTS3949LF20251',
-            'section' => '80G Approval',
-            'approval_date' => '10-07-2025',
-            'assessment_year' => 'AY 2026-27 to 2028-29',
-            'authority' => 'Principal Commissioner of Income Tax'
-        ];
-
-        return view('frontend.form10ac',compact('form'));
-
+        return view('frontend.search_80g');
     }
-
-
-
-    // Download Form10AC by mobile
-    public function downloadForm10AC(Request $request)
+    public function search80G(Request $request)
     {
 
         $request->validate([
-            'mobile' => 'required'
+        'mobile'=>'required'
         ]);
 
-        $donation = Donation::where('donor_phone',$request->mobile)->first();
+        $donations = DB::table('donations')
+            ->join('donors','donors.id','=','donations.donor_id')
+            ->where('donors.phone',$request->mobile)
+            ->where('donations.need_80g',1)
+            ->select(
+                'donations.id',
+                'donations.amount',
+                'donations.receipt_number',
+                'donations.created_at',
+                'donors.name'
+            )
+            ->get();
 
-        if (!$donation) {
-
-            return back()->withErrors([
-                'mobile' => 'No donation found for this mobile number'
-            ]);
-
+        if($donations->isEmpty()){
+        return back()->withErrors([
+        'mobile'=>'No 80G donations found'
+        ]);
         }
 
-        $pdf = Pdf::loadView('frontend.form10ac');
-
-        return $pdf->download('form10ac-certificate.pdf');
+        return view('frontend.80g_results',compact('donations'));
 
     }
+    
+    //download 80G
+    public function download80G($id)
+{
 
+    $donation = DB::table('donations')
+        ->join('donors','donors.id','=','donations.donor_id')
+        ->where('donations.id',$id)
+        ->select(
+            'donations.*',
+            'donors.name',
+            'donors.phone',
+            'donors.email',
+            'donors.address'
+        )
+        ->first();
+
+    if(!$donation){
+        abort(404);
+    }
+
+    $form = (object)[
+        'pan' => $donation->pan_number ?? '',
+        'name' => 'SUVABANI FOUNDATION',
+        'activity' => $donation->donation_purpose ?? 'Charitable',
+        'building' => $donation->address ?? '',
+        'village' => '',
+        'post' => '',
+        'locality' => '',
+        'district' => '',
+        'state' => 'West Bengal',
+        'country' => 'India',
+        'pincode' => '',
+        'din' => 'DIN-'.$donation->id,
+        'application_no' => $donation->receipt_number,
+        'registration_no' => '80G-REG-001',
+        'section' => '80G',
+        'approval_date' => date('d-m-Y', strtotime($donation->created_at)),
+        'assessment_year' => 'AY '.date('Y').'-'.(date('Y')+1),
+        'authority' => 'Principal Commissioner of Income Tax',
+
+        'order_a' => 'Donation received from '.$donation->name,
+        'order_b' => 'Amount donated ₹'.$donation->amount,
+        'order_c' => 'Receipt number '.$donation->receipt_number,
+
+        'condition_a' => 'Used for charitable purposes',
+        'condition_b' => 'Eligible under section 80G',
+        'condition_c' => 'Auto generated receipt',
+        'condition_d' => 'Retain for tax filing'
+    ];
+
+    $pdf = Pdf::loadView('frontend.form.from10AC', [
+        'form' => $form,
+        'donation' => $donation
+    ]);
+
+    return $pdf->download('80G_'.$donation->receipt_number.'.pdf');
+}
 }

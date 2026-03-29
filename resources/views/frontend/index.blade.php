@@ -23,7 +23,8 @@
         <a href="{{ route('home') }}">Home</a>
         <a href="#about">About</a>
         <a href="{{ route('contact') }}">Contact</a>
-        <a href="#gallery">Gallery</a>
+        <a href="/volunteers">Volunteer</a>
+        <a href="{{ route('gallery') }}">Gallery</a>
 
         <a href="{{ route('donate') }}" class="btn donate">Donate</a>
         <a href="{{ route('join') }}" class="btn join">Join Us</a>

@@ -124,13 +124,63 @@ button:hover { background:#006666; }
     margin-bottom:20px;
     border-radius:5px;
 }
+/* GOVERNING BODY */
+.gov-section {
+    padding: 60px 20px;
+    background: #f9ffff;
+    text-align: center;
+}
 
+.gov-title {
+    font-size: 30px;
+    margin-bottom: 40px;
+    color: #008080;
+}
+
+.gov-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+}
+
+.gov-card {
+    background: white;
+    width: 220px;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    transition: 0.3s;
+}
+
+.gov-card:hover {
+    transform: translateY(-5px);
+}
+
+.gov-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.gov-card h4 {
+    margin-top: 15px;
+    font-size: 18px;
+}
+
+.gov-card p {
+    color: #555;
+    font-weight: 600;
+    margin-top: 5px;
+}
 /* RESPONSIVE */
 @media(max-width:768px){
     header { flex-direction:column; text-align:center; }
     .header-buttons { margin-top:10px; }
     .container { flex-direction:column; }
 }
+
 </style>
 </head>
 <body>
@@ -190,11 +240,49 @@ button:hover { background:#006666; }
 
         <p><i class="fas fa-envelope icon"></i> <strong>Email:</strong>
             <a href="mailto:suvabanifoundation@gmail.com">
-                suvabanifoundation@gmail.com
+                contact@suvabanifoundation.com
             </a>
         </p>
     </div>
+    <!-- GOVERNING BODY -->
+    <div class="gov-section">
+        <h2 class="gov-title">Governing Body</h2>
 
+        <div class="gov-container">
+
+            <!-- MEMBER -->
+            <div class="gov-card">
+                <img src="{{ asset('assests/images/officials/founder.webp') }}" alt="Founder">
+                <h4>Suvo Debnath</h4>
+                <p>Founder</p>
+            </div>
+
+            <div class="gov-card">
+                <img src="{{ asset('assests/images/officials/Secretary.png') }}" alt="Secretary">
+                <h4>Mihir Debnath</h4>
+                <p>Secretary</p>
+            </div>
+
+            <div class="gov-card">
+                <img src="{{ asset('assests/images/officials/casher.jpeg') }}" alt="Casher">
+                <h4>Suroj halder</h4>
+                <p>Casher</p>
+            </div>
+
+            <div class="gov-card">
+                <img src="{{ asset('assests/images/officials/co1.jpeg') }}" alt="Officer">
+                <h4>Smita Chakraborty</h4>
+                <p>Communicating Officer</p>
+            </div>
+
+            <div class="gov-card">
+                <img src="{{ asset('assests/images/officials/co2.jpeg') }}" alt="Officer">
+                <h4>Pulak Bhunre</h4>
+                <p>Communicating Officer</p>
+            </div>
+
+        </div>
+    </div>
 </div>
 @if(session('success'))
 <script>

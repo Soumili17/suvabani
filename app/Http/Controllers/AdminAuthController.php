@@ -20,8 +20,8 @@ class AdminAuthController extends Controller
         ]);
 
         $admin = Admin::where('username', $request->username)
-                      ->where('password', $request->password)
-                      ->first();
+                      ->where('password', $request->password);
+                    //   ->first();
 
         if ($admin) {
             session(['admin_auth' => true]);

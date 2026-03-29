@@ -1,312 +1,338 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Donate Now | SUVABANI FOUNDATION</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Donate Now | SUVABANI FOUNDATION</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Razorpay Checkout Script -->
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: linear-gradient(135deg, #f8fafc, #e0f2f1);
-        }
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #f8fafc, #e0f2f1);
+}
 
-        .donation-wrapper {
-            padding: 80px 20px;
-        }
+.wrapper {
+    padding: 60px 20px;
+}
 
-        .donation-card {
-            max-width: 550px;
-            margin: auto;
-            background: #ffffff;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-        }
+.card {
+    max-width: 550px;
+    margin: auto;
+    background: #fff;
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
 
-        .donation-card h2 {
-            text-align: center;
-            color: #0f766e;
-            margin-bottom: 5px;
-        }
+h2 {
+    text-align: center;
+    color: #0f766e;
+}
 
-        .subtitle {
-            text-align: center;
-            color: #555;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
+.subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 25px;
+}
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+.form-group {
+    margin-bottom: 18px;
+}
 
-        label {
-            font-weight: 600;
-            display: block;
-            margin-bottom: 6px;
-        }
+label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+}
 
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            font-size: 14px;
-        }
+input, textarea, select {
+    width: 100%;
+    padding: 11px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
 
-        input:focus, textarea:focus {
-            border-color: #14b8a6;
-            outline: none;
-        }
+input:focus, textarea:focus {
+    border-color: #14b8a6;
+    outline: none;
+}
 
-        .radio-group {
-            display: flex;
-            gap: 20px;
-        }
+.radio-group {
+    display: flex;
+    gap: 20px;
+}
 
-        .preset-btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            background: #e5e7eb;
-        }
+.preset-btn {
+    padding: 6px 12px;
+    background: #e5e7eb;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
 
-        .preset-btn.active {
-            background: #14b8a6;
-            color: white;
-        }
+.preset-btn.active {
+    background: #14b8a6;
+    color: white;
+}
 
-        .donate-btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #0f766e, #14b8a6);
-            color: white;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-        }
+.submit-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #0f766e, #14b8a6);
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-        .donate-btn:hover {
-            opacity: 0.9;
-        }
+.hidden {
+    display: none;
+}
 
-        .alert-success {
-            background-color: #dcfce7;
-            color: #166534;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
+.alert-success {
+    background: #dcfce7;
+    color: #166534;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
 
-        .alert-danger {
-            background-color: #fee2e2;
-            color: #991b1b;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-    </style>
+.alert-danger {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+</style>
 </head>
+
 <body>
 
-<div class="donation-wrapper">
-    <div class="donation-card">
+<div class="wrapper">
+<div class="card">
 
-        <h2>Support SUVABANI FOUNDATION</h2>
-        <p class="subtitle">Your contribution helps us create a better future.</p>
+<h2>Support SUVABANI FOUNDATION</h2>
+<p class="subtitle">Your contribution makes a difference</p>
 
-        @if(session('success'))
-            <div class="alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
+@if(session('success'))
+<div class="alert-success">{{ session('success') }}</div>
+@endif
 
-        @if ($errors->any())
-            <div class="alert-danger">
-                <ul style="margin:0; padding-left:18px;">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+@if ($errors->any())
+<div class="alert-danger">
+<ul>
+@foreach ($errors->all() as $error)
+<li>{{ $error }}</li>
+@endforeach
+</ul>
+</div>
+@endif
 
-        <form method="POST" action="{{ route('donate.store') }}">
+<form method="POST" action="{{ route('donate.store') }}">
 @csrf
 
+<!-- 80G Choice -->
 <div class="form-group">
-<label>Full Name *</label>
-<input type="text" name="donor_name" required>
+<label>Do you need 80G receipt? *</label>
+<div class="radio-group">
+<label><input type="radio" name="need_80g" value="Yes"> Yes</label>
+<label><input type="radio" name="need_80g" value="No" checked> No</label>
+</div>
 </div>
 
-<div class="form-group">
-<label>Email Address *</label>
-<input type="email" name="donor_email" required>
-</div>
-
+<!-- BASIC -->
 <div class="form-group">
 <label>Phone Number *</label>
 <input type="text" name="donor_phone" required>
 </div>
 
 <div class="form-group">
+<label>Email (Optional)</label>
+<input type="email" name="donor_email">
+</div>
+
+<!-- EXTRA (80G) -->
+<div id="extraFields" class="hidden">
+
+<div class="form-group">
+<label>Full Name *</label>
+<input type="text" name="donor_name">
+</div>
+
+<div class="form-group">
 <label>Address *</label>
-<textarea name="donor_address" rows="3" required></textarea>
+<textarea name="donor_address"></textarea>
 </div>
 
 <div class="form-group">
 <label>City *</label>
-<input type="text" name="donor_city" required>
+<input type="text" name="donor_city">
 </div>
 
 <div class="form-group">
 <label>State *</label>
-<input type="text" name="donor_state" required>
+<input type="text" name="donor_state">
 </div>
 
 <div class="form-group">
 <label>Pincode *</label>
-<input type="text" name="donor_pincode" required>
+<input type="text" name="donor_pincode">
 </div>
 
 <div class="form-group">
-<label>Purpose of Donation</label>
+<label>PAN Number *</label>
+<input type="text" name="donor_pan" placeholder="ABCDE1234F">
+</div>
+
+</div>
+
+<!-- PURPOSE -->
+<div class="form-group">
+<label>Purpose</label>
 <select name="donation_purpose">
-<option value="General Donation">General Donation</option>
-<option value="Education Support">Education Support</option>
-<option value="Medical Help">Medical Help</option>
-<option value="Food Distribution">Food Distribution</option>
+<option>General Donation</option>
+<option>Education Support</option>
+<option>Medical Help</option>
+<option>Food Distribution</option>
 </select>
 </div>
 
-<!-- 80G Selection -->
+<!-- AMOUNT -->
 <div class="form-group">
-<label>Do you require 80G tax exemption receipt? *</label>
-<div class="radio-group">
-<label><input type="radio" name="need_80g" value="Yes" required> Yes</label>
-<label><input type="radio" name="need_80g" value="No"> No</label>
-</div>
-</div>
-
-<div class="form-group" id="panField" style="display:none;">
-<label>PAN Card Number *</label>
-<input type="text" id="donorPan" name="donor_pan" placeholder="ABCDE1234F" style="text-transform:uppercase;">
-</div>
-
-<div class="form-group">
-<label>Donation Amount (₹) *</label>
-<input type="number" id="donationAmount" name="amount" min="1" required>
+<label>Amount (₹) *</label>
+<input type="number" name="amount" id="amount" required>
 
 <div style="margin-top:10px;">
-<button type="button" class="preset-btn" data-amount="100">₹100</button>
-<button type="button" class="preset-btn" data-amount="500">₹500</button>
-<button type="button" class="preset-btn" data-amount="1000">₹1000</button>
-<button type="button" class="preset-btn" data-amount="5000">₹5000</button>
+<button type="button" class="preset-btn" data-amt="100">₹100</button>
+<button type="button" class="preset-btn" data-amt="500">₹500</button>
+<button type="button" class="preset-btn" data-amt="1000">₹1000</button>
+<button type="button" class="preset-btn" data-amt="5000">₹5000</button>
 </div>
 </div>
 
-<input type="hidden" name="donation_date" value="{{ date('Y-m-d') }}">
-
-<button type="submit" class="donate-btn">Donate Securely</button>
+<button type="submit" class="submit-btn">Donate Securely</button>
 
 </form>
-
-    </div>
+</div>
 </div>
 
 <script>
-const amountInput = document.getElementById('donationAmount');
-const presetButtons = document.querySelectorAll('.preset-btn');
 
-presetButtons.forEach(btn => {
-    btn.addEventListener('click', function() {
-        amountInput.value = this.dataset.amount;
-        presetButtons.forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-    });
+// preset buttons
+const amount = document.getElementById('amount');
+document.querySelectorAll('.preset-btn').forEach(btn => {
+    btn.onclick = () => {
+        amount.value = btn.dataset.amt;
+        document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+    }
 });
 
 // 80G toggle
-const panField = document.getElementById('panField');
-const panInput = document.getElementById('donorPan');
-const radioButtons = document.querySelectorAll("input[name='need_80g']");
+const radios = document.querySelectorAll("input[name='need_80g']");
+const extra = document.getElementById("extraFields");
+const requiredFields = extra.querySelectorAll("input, textarea");
 
-radioButtons.forEach(radio => {
-    radio.addEventListener("change", function () {
-        if (this.value === "Yes") {
-            panField.style.display = "block";
-            panInput.setAttribute("required", "required");
-        } else {
-            panField.style.display = "none";
-            panInput.removeAttribute("required");
-            panInput.value = "";
-        }
+function update80GFields(value) {
+    if (value === "Yes") {
+        extra.classList.remove("hidden");
+        requiredFields.forEach(f => f.setAttribute("required", "required"));
+    } else {
+        extra.classList.add("hidden");
+        requiredFields.forEach(f => {
+            f.removeAttribute("required");
+            // ❗ DO NOT clear values automatically (better UX)
+        });
+    }
+}
+
+// event listeners
+radios.forEach(r => {
+    r.addEventListener("change", function(){
+        update80GFields(this.value);
     });
 });
 
-// Razorpay Integration
-document.querySelector("form").addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    let form = this;
-    let name = form.donor_name.value;
-    let email = form.donor_email.value;
-    let phone = form.donor_phone.value;
-    let amount = form.amount.value;
-    let need80g = form.need_80g.value;
-    let pan = form.donor_pan.value;
-
-    if (amount < 1) {
-        alert("Enter valid donation amount");
-        return;
+// INIT on load
+window.addEventListener("DOMContentLoaded", function () {
+    const selected = document.querySelector("input[name='need_80g']:checked");
+    if (selected) {
+        update80GFields(selected.value);
     }
-
-    if (need80g === "Yes") {
-        let panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-        if (!panRegex.test(pan.toUpperCase())) {
-            alert("Enter valid PAN number (Example: ABCDE1234F)");
-            return;
-        }
-    }
-
-    var options = {
-        key: "{{ env('RAZORPAY_KEY') }}",
-        amount: amount * 100,
-        currency: "INR",
-        name: "SUVABANI FOUNDATION",
-        description: "Donation Payment",
-        handler: function (response) {
-
-            let inputPayment = document.createElement("input");
-            inputPayment.type = "hidden";
-            inputPayment.name = "razorpay_payment_id";
-            inputPayment.value = response.razorpay_payment_id;
-            form.appendChild(inputPayment);
-
-            form.submit();
-        },
-        prefill: {
-            name: name,
-            email: email,
-            contact: phone
-        },
-        theme: {
-            color: "#0f766e"
-        }
-    };
-
-    var rzp = new Razorpay(options);
-    rzp.open();
 });
+
+
+// Razorpay
+document.querySelector("form").addEventListener("submit", async function(e){
+
+e.preventDefault();
+
+let form = this;
+
+let res = await fetch("/create-order",{
+    method:"POST",
+    headers:{
+        "Content-Type":"application/json",
+        "X-CSRF-TOKEN":"{{ csrf_token() }}"
+    },
+    body:JSON.stringify({
+        amount:form.amount.value
+    })
+});
+
+let data = await res.json();
+
+let options = {
+
+key: "{{ env('RAZORPAY_KEY') }}",
+amount: data.amount,
+currency: "INR",
+name: "SUVABANI FOUNDATION",
+description: "Donation",
+order_id: data.order_id,
+
+handler: function (response) {
+
+    let input1 = document.createElement("input");
+    input1.type = "hidden";
+    input1.name = "razorpay_payment_id";
+    input1.value = response.razorpay_payment_id;
+
+    let input2 = document.createElement("input");
+    input2.type = "hidden";
+    input2.name = "razorpay_order_id";
+    input2.value = response.razorpay_order_id;
+
+    let input3 = document.createElement("input");
+    input3.type = "hidden";
+    input3.name = "razorpay_signature";
+    input3.value = response.razorpay_signature;
+
+    form.appendChild(input1);
+    form.appendChild(input2);
+    form.appendChild(input3);
+
+    form.submit();
+},
+
+prefill:{
+name: form.donor_name?.value || "",
+email: form.donor_email?.value || "",
+contact: form.donor_phone.value
+}
+
+};
+
+new Razorpay(options).open();
+
+});
+
 </script>
 
 </body>

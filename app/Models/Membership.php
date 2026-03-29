@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Membership extends Model
 {
     protected $fillable = [
+
         'photo',
         'signature',
-        'fullname',
+
+        'name',
         'parentname',
         'dob',
         'gender',
@@ -18,21 +20,33 @@ class Membership extends Model
         'address',
         'phone',
         'email',
+
         'idproof',
-        'idproof_other',
         'idnumber',
         'idfile',
-        'membership',
-        'paidamount',
-        'membertype',
+
+        'membership_type',
+        'paid_amount',
+
         'interest',
-        'interest_other',
         'experience',
         'languages',
         'time',
         'reason',
+
         'ref_name',
         'ref_mobile',
-        'declaration_date'
+
+        'declaration_date',
+
+        'razorpay_payment_id',
+        'razorpay_subscription_id',
+
+        'membership_id',
+        'payment_status',
+        'subscription_status',
+
+        'approval_status',
+        'approved_at'
     ];
 }

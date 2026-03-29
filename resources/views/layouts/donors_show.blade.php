@@ -84,7 +84,7 @@ Reset
 <th>Name</th>
 <th>Email</th>
 <th>Phone</th>
-<th>City</th>
+<th>Address</th>
 <th>Amount</th>
 <th>Purpose</th>
 <th>80G</th>
@@ -93,20 +93,19 @@ Reset
 <th>Date</th>
 <th>Action</th>
 </tr>
-
 @foreach($donors as $donor)
 
 <tr>
 
-<td>{{ $donor->donor_name }}</td>
+<td>{{ $donor->name }}</td>
 
-<td>{{ $donor->donor_email }}</td>
+<td>{{ $donor->email }}</td>
 
-<td>{{ $donor->donor_phone }}</td>
+<td>{{ $donor->phone }}</td>
 
-<td>{{ $donor->donor_city }}</td>
+<td>{{ $donor->address }}</td>
 
-<td>₹{{ $donor->amount }}</td>
+<td>₹{{ number_format($donor->amount,2) }}</td>
 
 <td>{{ $donor->donation_purpose }}</td>
 
@@ -132,7 +131,7 @@ No
 
 <td>{{ $donor->receipt_number }}</td>
 
-<td>{{ $donor->donation_date }}</td>
+<td>{{ date('d-m-Y', strtotime($donor->donation_date)) }}</td>
 
 <td>
 
