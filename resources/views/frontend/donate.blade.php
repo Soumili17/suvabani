@@ -124,8 +124,11 @@ input:focus, textarea:focus {
 
 <body>
 
-<div class="wrapper">
-<div class="card">
+<!-- NAVBAR --> <div class="navbar"> <div class="logo"> <img src="{{ asset('assests/images/formlogo.png') }}"> <!-- change path if needed --> <span>SUVABANI FOUNDATION</span> </div> <nav><a href="{{ url('/') }}" >Home</a> <a href="{{ url('/contact') }}">Contact</a> <a href="{{ url('/terms') }}">Terms & Conditions</a> <a href="{{ url('/join') }}" class="nav-btn join-btn">Join Now</a>  </nav> </div>
+
+
+<div class="donation-wrapper">
+    <div class="donation-card">
 
 <h2>Support SUVABANI FOUNDATION</h2>
 <p class="subtitle">Your contribution makes a difference</p>

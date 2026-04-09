@@ -4,71 +4,7 @@
 
 <style>
 
-.container{
-width:90%;
-margin:auto;
-background:#fff;
-padding:30px;
-border-radius:10px;
-box-shadow:0 5px 20px rgba(0,0,0,0.1);
-}
-
-h2{
-color:#0f766e;
-margin-bottom:20px;
-}
-
-.section{
-margin-top:25px;
-}
-
-.section h3{
-background:#0f766e;
-color:white;
-padding:8px;
-border-radius:5px;
-margin-bottom:10px;
-}
-
-.row{
-display:flex;
-flex-wrap:wrap;
-margin-bottom:10px;
-}
-
-.row label{
-width:200px;
-font-weight:bold;
-}
-
-.row input,
-.row textarea,
-.row select{
-flex:1;
-padding:8px;
-border:1px solid #ccc;
-border-radius:5px;
-}
-
-img{
-margin-top:10px;
-border-radius:6px;
-border:1px solid #ddd;
-}
-
-button{
-background:#0f766e;
-color:white;
-padding:10px 20px;
-border:none;
-border-radius:6px;
-margin-top:20px;
-cursor:pointer;
-}
-
-button:hover{
-background:#0c5c58;
-}
+.container{ width:90%; margin:auto; background:#fff; padding:30px; border-radius:10px; box-shadow:0 5px 20px rgba(0,0,0,0.1); } h2{ color:#0f766e; margin-bottom:20px; } .section{ margin-top:25px; } .section h3{ background:#0f766e; color:white; padding:8px; border-radius:5px; margin-bottom:10px; } .row{ display:flex; flex-wrap:wrap; margin-bottom:10px; } .row label{ width:200px; font-weight:bold; } .row input, .row textarea, .row select{ flex:1; padding:8px; border:1px solid #ccc; border-radius:5px; } img{ margin-top:10px; border-radius:6px; border:1px solid #ddd; } button{ background:#0f766e; color:white; padding:10px 20px; border:none; border-radius:6px; margin-top:20px; cursor:pointer; } button:hover{ background:#0c5c58; } /* ================= MOBILE RESPONSIVE ================= */ @media (max-width:768px){ .container{ width:100%; padding:15px; border-radius:0; } h2{ font-size:20px; text-align:center; } .section h3{ font-size:16px; text-align:center; } /* Row becomes column */ .row{ flex-direction:column; } .row label{ width:100%; margin-bottom:5px; } .row input, .row textarea, .row select{ width:100%; font-size:14px; padding:10px; } img{ width:100%; height:auto; } button{ width:100%; padding:12px; font-size:15px; } }
 
 </style>
 

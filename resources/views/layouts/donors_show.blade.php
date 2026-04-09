@@ -3,57 +3,7 @@
 @section('content')
 
 <style>
-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:20px;
-}
-
-th,td{
-    border:1px solid #ddd;
-    padding:10px;
-    text-align:left;
-}
-
-th{
-    background:#0f766e;
-    color:white;
-}
-
-.btn-action{
-    padding:6px 12px;
-    background:#0f766e;
-    color:white;
-    border-radius:6px;
-    text-decoration:none;
-    margin-right:5px;
-    border:none;
-    cursor:pointer;
-}
-
-.btn-action:hover{
-    background:#115e59;
-}
-
-.status-paid{
-    color:green;
-    font-weight:bold;
-}
-
-.status-pending{
-    color:orange;
-    font-weight:bold;
-}
-
-.status-failed{
-    color:red;
-    font-weight:bold;
-}
-
-.page-title{
-    font-size:24px;
-    margin-bottom:10px;
-}
+table{ width:100%; border-collapse:collapse; margin-top:20px; } th,td{ border:1px solid #ddd; padding:10px; text-align:left; } th{ background:#0f766e; color:white; } .btn-action{ padding:6px 12px; background:#0f766e; color:white; border-radius:6px; text-decoration:none; margin-right:5px; border:none; cursor:pointer; } .btn-action:hover{ background:#115e59; } .status-paid{ color:green; font-weight:bold; } .status-pending{ color:orange; font-weight:bold; } .status-failed{ color:red; font-weight:bold; } .page-title{ font-size:24px; margin-bottom:10px; } /* ================= MOBILE RESPONSIVE ================= */ @media (max-width:768px){ /* Make table scrollable */ table{ display:block; overflow-x:auto; white-space:nowrap; } th,td{ padding:8px; font-size:13px; } /* Buttons stack better */ .btn-action{ display:inline-block; margin-bottom:5px; font-size:12px; padding:5px 10px; } /* Title adjust */ .page-title{ font-size:18px; text-align:center; } }
 </style>
 
 <h2 class="page-title">All Donations</h2>
