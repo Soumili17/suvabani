@@ -49,71 +49,102 @@ class MembershipController extends Controller
     public function submit(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'phone' => 'required|digits:10|unique:memberships,phone',
-            'email' => 'required|email|unique:memberships,email',
-            'photo' => 'required|image|max:2048',
-            'signature' => 'required|image|max:1024',
-            'idfile' => 'required|max:4096',
+            'fullname'       => 'required|string|max:255',
+            'parent_type'    => 'required',
+            'parentname'     => 'required|string|max:255',
+            'dob'            => 'required|date',
+            'gender'         => 'required',
+            'nationality'    => 'required|string',
+            'occupation'     => 'required|string',
+            'address'        => 'required|string',
+            'phone'          => 'required|digits:10|unique:memberships,phone',
+            'email'          => 'required|email|unique:memberships,email',
+            'idproof'        => 'required',
+            'idnumber'       => 'required|string',
+            'photo'          => 'required|image|max:2048',
+            'signature'      => 'required|image|max:1024',
+            'idfile'         => 'required|file|max:4096',
+            'membership_type'=> 'required',
+            'membertype'     => 'required',
+            'time'           => 'required',
+            'declaration_date'=> 'required|date',
         ]);
 
         try {
 
-            // 🔴 If Paid → VERIFY PAYMENT
-            if ($request->membership_type === 'Paid') {
-
-                if (!$request->razorpay_payment_id || !$request->razorpay_subscription_id) {
-                    return response()->json(['error' => 'Payment not completed'], 400);
-                }
-
-                $api = new Api(
-                    config('services.razorpay.key'),
-                    config('services.razorpay.secret')
-                );
-
-                // 🔍 Verify payment
-                $payment = $api->payment->fetch($request->razorpay_payment_id);
-
-                if ($payment->status !== 'captured') {
-                    return response()->json(['error' => 'Payment not verified'], 400);
-                }
-            }
-
-            // ✅ STORE ONLY AFTER VERIFICATION
             $member = Membership::create([
 
-                'name' => $request->name,
-                'phone' => $request->phone,
-                'email' => $request->email,
-                'address' => $request->address,
-
-                'membership_type' => $request->membership_type,
-
-                // store plan instead of amount
-                'plan_id' => $request->plan_id,
-
-                // files
-                'photo' => $request->file('photo')->store('photos', 'public'),
+                // FILES
+                'photo'     => $request->file('photo')->store('photos', 'public'),
                 'signature' => $request->file('signature')->store('signatures', 'public'),
-                'idfile' => $request->file('idfile')->store('idproofs', 'public'),
+                'idfile'    => $request->file('idfile')->store('idproofs', 'public'),
 
-                // payment
-                'razorpay_payment_id' => $request->razorpay_payment_id,
-                'razorpay_subscription_id' => $request->razorpay_subscription_id,
+                // BASIC INFO
+                'fullname'    => $request->fullname,
+                'parentname'  => $request->parentname,
+                'dob'         => $request->dob,
+                'gender'      => $request->gender,
+                'nationality' => $request->nationality,
+                'occupation'  => $request->occupation,
+                'address'     => $request->address,
+                'phone'       => $request->phone,
+                'email'       => $request->email,
 
-                'payment_status' => $request->membership_type === 'Paid' ? 'Success' : 'Free',
-                'subscription_status' => $request->membership_type === 'Paid' ? 'Active' : 'N/A',
+                // ID
+                'idproof'  => $request->idproof,
+                'idnumber' => $request->idnumber,
 
-                'approval_status' => 'Pending'
+                // MEMBERSHIP
+                'membership' => $request->membership_type,
+                'membertype' => $request->membertype,
+                'paidamount' => $request->membership_type === 'Paid'
+                    ? $this->getPlanAmount($request->plan_id)
+                    : null,
+
+                // INTEREST (JSON)
+                'interest'       => json_encode($request->interest ?? []),
+                'interest_other' => $request->interest_other,
+
+                // OTHER
+                'experience' => $request->experience,
+                'languages'  => $request->languages,
+                'time'       => json_encode($request->time), // safe for JSON column
+                'reason'     => $request->reason,
+                'ref_name'   => $request->ref_name,
+                'ref_mobile' => $request->ref_mobile,
+
+                'declaration_date' => $request->declaration_date,
+
+                // PAYMENT
+                'razorpay_payment_id'      => $request->razorpay_payment_id,
+                'razorpay_subscription_id' => $request->razorpay_subscription_id
             ]);
 
-            return response()->json(['success' => true]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Membership submitted successfully'
+            ]);
 
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
+
+    private function getPlanAmount($planId)
+    {
+        $plans = [
+            'plan_SVaR3a1MmEmmuJ' => 100,
+            'plan_SRFl5J5teuIStk' => 200,
+            'plan_SVaS0xDMQ4kpaE' => 500,
+            'plan_SVaSS6ttAXZDx3' => 1000,
+        ];
+
+        return $plans[$planId] ?? 0;
+    }
 
     /*
     |--------------------------------------------------------------------------

@@ -58,7 +58,7 @@ hr { border:none; height:1px; background:linear-gradient(to right, rgba(0,128,12
 <fieldset>
 <legend>Personal Details</legend>
 <label for="fullname">Your Full Name:</label>
-<input type="text" name="name" id="fullname">
+<input type="text" name="fullname" id="fullname">
 <label for="parent_type">Relation:</label>
 <select id="parent_type" name="parent_type">
     <option value="">Select</option>
@@ -67,7 +67,7 @@ hr { border:none; height:1px; background:linear-gradient(to right, rgba(0,128,12
     <option value="Spouse">Spouse</option>
 </select>
 
-<label for="parentname">Name:</label>
+<label for="parentname">Gardian Name:</label>
 <input type="text" id="parentname" name="parentname">
 
 <label for="dob">Date of Birth:</label>
@@ -97,9 +97,9 @@ hr { border:none; height:1px; background:linear-gradient(to right, rgba(0,128,12
 <fieldset>
 <legend>ID Proof</legend>
 <label>ID Proof:</label>
-<input type="radio" name="idproof" value="Aadhaar"> Aadhaar
+<input type="radio" name="idproof" value="Aadhar"> Aadhaar
 <input type="radio" name="idproof" value="PAN"> PAN
-<input type="radio" name="idproof" value="Voter ID"> Voter ID
+<input type="radio" name="idproof" value="Voter"> Voter ID
 <input type="radio" name="idproof" value="Passport"> Passport
 <label for="idnumber">ID Number:</label>
 <input type="text" id="idnumber" name="idnumber">
