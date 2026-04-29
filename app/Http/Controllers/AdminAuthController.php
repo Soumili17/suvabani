@@ -4,9 +4,30 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Admin;
+use \Illuminate\Support\Facades\Hash;
 
 class AdminAuthController extends Controller
 {
+    
+
+    public function register(Request $request)
+    {
+        // print_r($request->all());die;
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required|min:6',
+        ]);
+
+        $admin = Admin::create([
+            'username' => $request->username,
+            'password' => Hash::make($request->password),
+        ]);
+
+        return response()->json([
+            'message' => 'Admin registered successfully',
+            'data' => $admin
+        ], 201);
+    }
     public function showLogin()
     {
         return view('layouts.admin_login');
@@ -19,12 +40,10 @@ class AdminAuthController extends Controller
             'password' => 'required'
         ]);
 
-        $admin = Admin::where('username', $request->username)
-                      ->where('password', $request->password);
-                    //   ->first();
+        $admin = Admin::where('username', $request->username)->first();
 
-        if ($admin) {
-            session(['admin_auth' => true]);
+        if ($admin && Hash::check($request->password, $admin->password)) {
+            session(['admin_auth' => true, 'admin_id' => $admin->id]);
             return redirect('/dashboard');
         }
 
@@ -33,6 +52,10 @@ class AdminAuthController extends Controller
 
     public function dashboard()
     {
+        if (!session('admin_auth')) {
+            return redirect('/admin/login');
+        }
+
         return view('layouts.dashboard');
     }
 

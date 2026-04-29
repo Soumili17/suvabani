@@ -120,13 +120,33 @@ input:focus, textarea:focus {
     margin-bottom: 15px;
 }
 </style>
+<link rel="stylesheet" href="{{ asset('assests/css/style.css') }}">
 </head>
 
 <body>
 
-<!-- NAVBAR --> <div class="navbar"> <div class="logo"> <img src="{{ asset('assests/images/formlogo.png') }}"> <!-- change path if needed --> <span>SUVABANI FOUNDATION</span> </div> <nav><a href="{{ url('/') }}" >Home</a> <a href="{{ url('/contact') }}">Contact</a> <a href="{{ url('/terms') }}">Terms & Conditions</a> <a href="{{ url('/join') }}" class="nav-btn join-btn">Join Now</a>  </nav> </div>
+<header class="navbar">
 
+    <div class="logo-box">
+        <a href="{{ route('home') }}" style="style:none;">
+            <img src="{{ asset('assests/images/formlogo.png') }}" alt="logo">
+        </a>
+        <div class="logo">SUVABANI FOUNDATION</div>
+        
+    </div>
 
+    <nav>
+        <a href="{{ route('home') }}">Home</a>
+        <a href="#about">About</a>
+        <a href="{{ route('contact') }}">Contact</a>
+        <a href="/volunteers">Volunteer</a>
+        <a href="{{ route('gallery') }}">Gallery</a>
+
+        <a href="{{ route('donate') }}" class="btn donate">Donate</a>
+        <a href="{{ route('join') }}" class="btn join">Join Us</a>
+    </nav>
+
+</header>
 <div class="donation-wrapper">
     <div class="donation-card">
 
@@ -243,17 +263,24 @@ input:focus, textarea:focus {
 
 <script>
 
-// preset buttons
-const amount = document.getElementById('amount');
+// =======================
+// PRESET AMOUNT BUTTONS
+// =======================
+const amountInput = document.getElementById('amount');
+
 document.querySelectorAll('.preset-btn').forEach(btn => {
-    btn.onclick = () => {
-        amount.value = btn.dataset.amt;
-        document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+    btn.addEventListener('click', () => {
+        amountInput.value = btn.dataset.amt;
+
+        document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-    }
+    });
 });
 
-// 80G toggle
+
+// =======================
+// 80G TOGGLE
+// =======================
 const radios = document.querySelectorAll("input[name='need_80g']");
 const extra = document.getElementById("extraFields");
 const requiredFields = extra.querySelectorAll("input, textarea");
@@ -264,21 +291,16 @@ function update80GFields(value) {
         requiredFields.forEach(f => f.setAttribute("required", "required"));
     } else {
         extra.classList.add("hidden");
-        requiredFields.forEach(f => {
-            f.removeAttribute("required");
-            // ❗ DO NOT clear values automatically (better UX)
-        });
+        requiredFields.forEach(f => f.removeAttribute("required"));
     }
 }
 
-// event listeners
 radios.forEach(r => {
     r.addEventListener("change", function(){
         update80GFields(this.value);
     });
 });
 
-// INIT on load
 window.addEventListener("DOMContentLoaded", function () {
     const selected = document.querySelector("input[name='need_80g']:checked");
     if (selected) {
@@ -287,68 +309,106 @@ window.addEventListener("DOMContentLoaded", function () {
 });
 
 
-// Razorpay
-document.querySelector("form").addEventListener("submit", async function(e){
-
-e.preventDefault();
-
-let form = this;
-
-let res = await fetch("/create-order",{
-    method:"POST",
-    headers:{
-        "Content-Type":"application/json",
-        "X-CSRF-TOKEN":"{{ csrf_token() }}"
-    },
-    body:JSON.stringify({
-        amount:form.amount.value
-    })
-});
-
-let data = await res.json();
-
-let options = {
-
-key: "{{ env('RAZORPAY_KEY') }}",
-amount: data.amount,
-currency: "INR",
-name: "SUVABANI FOUNDATION",
-description: "Donation",
-order_id: data.order_id,
-
-handler: function (response) {
-
-    let input1 = document.createElement("input");
-    input1.type = "hidden";
-    input1.name = "razorpay_payment_id";
-    input1.value = response.razorpay_payment_id;
-
-    let input2 = document.createElement("input");
-    input2.type = "hidden";
-    input2.name = "razorpay_order_id";
-    input2.value = response.razorpay_order_id;
-
-    let input3 = document.createElement("input");
-    input3.type = "hidden";
-    input3.name = "razorpay_signature";
-    input3.value = response.razorpay_signature;
-
-    form.appendChild(input1);
-    form.appendChild(input2);
-    form.appendChild(input3);
-
-    form.submit();
-},
-
-prefill:{
-name: form.donor_name?.value || "",
-email: form.donor_email?.value || "",
-contact: form.donor_phone.value
+// =======================
+// HELPER FUNCTION
+// =======================
+function createHiddenInput(name, value){
+    let input = document.createElement("input");
+    input.type = "hidden";
+    input.name = name;
+    input.value = value;
+    return input;
 }
 
-};
 
-new Razorpay(options).open();
+// =======================
+// MAIN SUBMIT LOGIC (FIXED FLOW)
+// =======================
+document.querySelector("form").addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    let form = this;
+    let formData = new FormData(form);
+
+    try {
+
+        // =======================
+        // STEP 1: VALIDATE FIRST
+        // =======================
+        let validateRes = await fetch("/validate-donation", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: formData
+        });
+
+        if (!validateRes.ok) {
+            alert("Validation failed. Please check your inputs.");
+            return;
+        }
+
+
+        // =======================
+        // STEP 2: CREATE ORDER
+        // =======================
+        let res = await fetch("/create-order", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({
+                amount: form.amount.value
+            })
+        });
+
+        let data = await res.json();
+
+
+        // =======================
+        // STEP 3: OPEN RAZORPAY
+        // =======================
+        let options = {
+            key: "{{ env('RAZORPAY_KEY') }}",
+            amount: data.amount,
+            currency: "INR",
+            name: "SUVABANI FOUNDATION",
+            description: "Donation",
+            order_id: data.order_id,
+
+            handler: function (response) {
+
+                // attach payment data
+                form.appendChild(createHiddenInput("razorpay_payment_id", response.razorpay_payment_id));
+                form.appendChild(createHiddenInput("razorpay_order_id", response.razorpay_order_id));
+                form.appendChild(createHiddenInput("razorpay_signature", response.razorpay_signature));
+
+                // =======================
+                // STEP 4: FINAL SUBMIT
+                // =======================
+                form.submit();
+            },
+
+            prefill: {
+                name: form.donor_name?.value || "",
+                email: form.donor_email?.value || "",
+                contact: form.donor_phone.value
+            },
+
+            theme: {
+                color: "#0f766e"
+            }
+        };
+
+        let rzp = new Razorpay(options);
+        rzp.open();
+
+    } catch (error) {
+        console.error(error);
+        alert("Something went wrong. Try again.");
+    }
 
 });
 

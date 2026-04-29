@@ -343,4 +343,16 @@ class MembershipController extends Controller
 
         return view('layouts.members_show', compact('member'));
     }
+
+    public function destroy($id)
+    {
+        $member = Membership::findOrFail($id);
+
+        // Optional: you can delete uploaded files from storage here if needed
+        // \Illuminate\Support\Facades\Storage::disk('public')->delete([$member->photo, $member->signature, $member->idfile]);
+
+        $member->delete();
+
+        return redirect()->route('dashboard.members')->with('success', 'Member deleted successfully');
+    }
 }

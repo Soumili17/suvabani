@@ -9,13 +9,12 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('galleries', function (Blueprint $table) {
+        Schema::create('home_videos', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('category'); // section name
-            $table->string('image')->nullable();    // image path
+            $table->string('title')->nullable();
+            $table->text('youtube_url');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('galleries');
+        Schema::dropIfExists('home_videos');
     }
 };

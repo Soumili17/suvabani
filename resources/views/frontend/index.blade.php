@@ -18,8 +18,11 @@
 <header class="navbar">
 
     <div class="logo-box">
-        <img src="{{ asset('assests/images/formlogo.png') }}" alt="logo">
+        <a href="{{ route('home') }}" style="style:none;">
+            <img src="{{ asset('assests/images/formlogo.png') }}" alt="logo">
+        </a>
         <div class="logo">SUVABANI FOUNDATION</div>
+        
     </div>
 
     <nav>
@@ -72,7 +75,17 @@
 
     </div>
 </section>
-
+<div class="social-bar">
+    <a href="https://youtube.com/@suvabanifoundation?si=vvx08zGmsC5jKG9l" target="_blank" class="icon youtube">
+        <i class="fab fa-youtube"></i>
+    </a>
+    <a href="https://www.facebook.com/SUVABANIFOUNDATION" target="_blank" class="icon facebook">
+        <i class="fab fa-facebook-f"></i>
+    </a>
+    <a href="https://www.instagram.com/suvabanifoundation_?igsh=dW05dzc5NDFiczJo" target="_blank" class="icon instagram">
+        <i class="fab fa-instagram"></i>
+    </a>
+</div>
 
 <!-- ABOUT -->
 <section class="about" id="about">
@@ -99,6 +112,17 @@
             <p>Become a volunteer and make an impact.</p>
         </div>
 
+    </div>
+</section>
+
+<section class="home-video">
+    <h2>{{ $video->title ?? 'Our Work in Action' }}</h2>
+
+    <div class="video-wrapper">
+        <iframe 
+            src="{{ youtubeEmbedUrl('https://youtu.be/D7Y-nJ8uiEA?si=0l81Uhlg6OqNGi1s') }}" 
+            allowfullscreen>
+        </iframe>
     </div>
 </section>
 
@@ -159,6 +183,41 @@
     <div class="projects-btn-wrap">
         <a href="#" class="view-all-btn">View All Projects →</a>
     </div>
+</section>
+
+<!-- GALLERY -->
+<section class="home-gallery">
+    <div class="section-title-row">
+        <div>
+            <h2>Gallery</h2>
+            <p>Photos and videos from our recent work.</p>
+        </div>
+
+        <a href="{{ route('gallery') }}" class="view-all-btn">View Gallery →</a>
+    </div>
+
+    @if($homeGallery->isEmpty())
+        <p>No gallery items found.</p>
+    @else
+        <div class="home-gallery-grid">
+            @foreach($homeGallery as $item)
+                <div class="home-gallery-card">
+                    <div class="home-gallery-media">
+                        @if($item->type === 'image' && $item->image)
+                            <img src="{{ asset('storage/'.$item->image) }}" alt="{{ $item->title }}">
+                        @elseif($item->type === 'youtube' && $item->video_url)
+                            <iframe src="{{ youtubeEmbedUrl($item->video_url) }}" allowfullscreen></iframe>
+                        @endif
+                    </div>
+
+                    <div class="home-gallery-info">
+                        <strong>{{ $item->title }}</strong>
+                        <span>{{ $item->category }}</span>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @endif
 </section>
 
 

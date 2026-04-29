@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Gallery;
 use Illuminate\Http\Request;
 
 class FrontendController extends Controller
@@ -11,8 +12,8 @@ class FrontendController extends Controller
     {
         $heroBanners = [];
         $recentProjects = [];
+        $homeGallery = Gallery::latest()->take(6)->get();
 
-        return view('frontend.index', compact('heroBanners', 'recentProjects'));
+        return view('frontend.index', compact('heroBanners', 'recentProjects', 'homeGallery'));
     }
 }
-

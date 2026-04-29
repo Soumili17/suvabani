@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Gallery</title>
+
 <link rel="stylesheet" href="{{ asset('assests/css/style.css') }}">
 
 <style>
@@ -11,7 +12,6 @@
 }
 
 .gallery-section h2{
-  text-align:left;
   margin-bottom:15px;
   border-left:5px solid #0d6efd;
   padding-left:10px;
@@ -29,16 +29,39 @@
   overflow:hidden;
   box-shadow:0 5px 15px rgba(0,0,0,0.1);
   transition:0.3s;
+  position:relative;
 }
 
 .gallery-card:hover{
   transform:translateY(-5px);
 }
 
-.gallery-card img{
+.media-box{
   width:100%;
   height:200px;
+  position:relative;
+  overflow:hidden;
+}
+
+.media-box img,
+.media-box iframe{
+  width:100%;
+  height:100%;
   object-fit:cover;
+  border:0;
+}
+
+/* Play icon for videos */
+.play-icon{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  font-size:40px;
+  color:white;
+  background:rgba(0,0,0,0.5);
+  padding:10px 15px;
+  border-radius:50%;
 }
 
 .gallery-title{
@@ -49,10 +72,11 @@
 </style>
 
 </head>
+
 <body>
 
 <header class="navbar">
-    <img src="{{ asset('assests/images/formlogo.png') }}" height="90px" width="80px">
+    <img src="{{ asset('assests/images/formlogo.png') }}" height="90" width="80">
     <div class="logo">SUVABANI FOUNDATION</div>
 
     <nav>
@@ -61,7 +85,6 @@
         <a href="{{ route('contact') }}">Contact</a>
         <a href="/volunteers">Volunteer</a>
         <a href="{{ route('gallery') }}">Gallery</a>
-
         <a href="{{ route('donate') }}" class="btn donate">Donate</a>
         <a href="{{ route('join') }}" class="btn join">Join Us</a>
     </nav>
@@ -71,53 +94,58 @@
   <h1>Our Gallery</h1>
 
   @if($grouped->isEmpty())
-    <p>No gallery images found.</p>
+    <p>No gallery items found.</p>
   @else
 
-  @foreach($grouped as $category => $items)
+    @foreach($grouped as $category => $items)
 
-    <div class="gallery-section">
-      <h2>{{ $category }}</h2>
+      <div class="gallery-section">
+        <h2>{{ $category }}</h2>
 
-      <div class="gallery-grid">
+        <div class="gallery-grid">
 
-        @foreach($items as $item)
-          <div class="gallery-card">
+          @foreach($items as $item)
 
-            <img src="{{ asset('storage/'.$item->image) }}" 
-                 style="width:100%;height:200px;object-fit:cover;">
+            <div class="gallery-card">
 
-            <div class="gallery-title">
-              {{ $item->title }}
+              <div class="media-box">
+
+                {{-- IMAGE --}}
+                @if($item->type === 'image')
+                    <img src="{{ asset('storage/'.$item->image) }}" alt="{{ $item->title }}">
+                @endif
+
+                {{-- YOUTUBE VIDEO --}}
+                @if($item->type === 'youtube' && $item->video_url)
+                    <iframe 
+                        src="{{ youtubeEmbedUrl($item->video_url) }}"
+                        allowfullscreen>
+                    </iframe>
+
+                    <div class="play-icon">▶</div>
+                @endif
+
+              </div>
+
+              <div class="gallery-title">
+                {{ $item->title }}
+              </div>
+
             </div>
 
-          </div>
-        @endforeach
+          @endforeach
 
+        </div>
       </div>
-    </div>
 
-  @endforeach
+    @endforeach
 
   @endif
-
 </section>
+
 <div class="footer">
   <div class="footer-bottom">© 2026 NGO</div>
 </div>
-
-<script>
-function searchGallery(){
-  let input = document.getElementById('search').value.toLowerCase();
-  let cards = document.querySelectorAll('.gallery-card');
-
-  cards.forEach(card => {
-    let text = card.innerText.toLowerCase();
-
-    card.style.display = text.includes(input) ? "" : "none";
-  });
-}
-</script>
 
 </body>
 </html>

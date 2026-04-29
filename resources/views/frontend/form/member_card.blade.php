@@ -131,8 +131,8 @@ font-size:16px;
 
 <!-- HEADER -->
 <div class="header">
+<a href="/"><img src="{{ asset('assests/images/formlogo.png') }}"></a>
 
-<img src="{{ public_path('assests/images/formlogo.png') }}">
 
 <h3>SUVABANI FOUNDATION</h3>
 

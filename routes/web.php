@@ -39,6 +39,7 @@ Route::post('/contact-submit', [ContactController::class, 'submit'])->name('cont
 Route::get('/donate', [DonationController::class, 'create'])->name('donate');
 Route::post('/donate', [DonationController::class, 'store'])->name('donate.store');
 Route::post('/create-order', [DonationController::class, 'createOrder']);
+Route::post('/validate-donation', [DonationController::class, 'validateForm']); // ✅ ADD THIS
 
 /*
 |--------------------------------------------------------------------------
@@ -204,7 +205,7 @@ Route::get('/gallery', [GalleryController::class, 'index'])
 | ADMIN GALLERY
 |--------------------------------------------------------------------------
 */
-Route::prefix('dashboard')->group(function(){ //->middleware('auth')
+Route::prefix('dashboard')->middleware('admin.auth')->group(function(){
 
     // List
     Route::get('/gallery', [GalleryController::class, 'adminIndex'])
@@ -217,6 +218,14 @@ Route::prefix('dashboard')->group(function(){ //->middleware('auth')
     // Store
     Route::post('/gallery', [GalleryController::class, 'store'])
         ->name('dashboard.gallery.store');
+
+    // Edit form
+    Route::get('/gallery/{id}/edit', [GalleryController::class, 'edit'])
+        ->name('dashboard.gallery.edit');
+
+    // Update
+    Route::put('/gallery/{id}', [GalleryController::class, 'update'])
+        ->name('dashboard.gallery.update');
 
     // Delete
     Route::delete('/gallery/{id}', [GalleryController::class, 'destroy'])

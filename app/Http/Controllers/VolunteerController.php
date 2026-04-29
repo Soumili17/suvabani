@@ -92,7 +92,7 @@ class VolunteerController extends Controller
     public function edit($id)
     {
         $volunteer = Volunteer::findOrFail($id);
-        return view('dashboard.volunteers.edit', compact('volunteer'));
+        return view('layouts.volenteer_edit', compact('volunteer'));
     }
 
     /*

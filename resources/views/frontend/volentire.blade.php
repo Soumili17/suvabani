@@ -8,7 +8,8 @@
 <body>
 
 <header class="navbar">
-    <img src="{{ asset('assests/images/formlogo.png') }}" height="90px" width="80px">
+  <a href="/"><img src="{{ asset('assests/images/formlogo.png') }}" height="90px" width="80px"></a>
+    
     <div class="logo">SUVABANI FOUNDATION</div>
 
     <nav>

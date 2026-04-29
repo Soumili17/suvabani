@@ -3,16 +3,35 @@
 @section('content')
 
 <style>
+.gallery-admin-header{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    align-items:center;
+    margin-bottom:20px;
+}
+
 .form-container{
-    max-width:600px;
+    max-width:700px;
     background:white;
-    padding:25px;
-    border-radius:10px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    padding:22px;
+    border:1px solid #e5e7eb;
+    border-radius:8px;
+    margin-bottom:25px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:15px;
 }
 
 .form-group{
     margin-bottom:15px;
+}
+
+.form-group.full{
+    grid-column:1 / -1;
 }
 
 .form-group label{
@@ -29,83 +48,204 @@
     border-radius:6px;
 }
 
+.btn-action,
 .btn-submit{
+    display:inline-block;
     background:#0f766e;
     color:white;
-    padding:10px 20px;
+    padding:8px 14px;
     border:none;
     border-radius:6px;
     cursor:pointer;
+    text-decoration:none;
+    font-size:14px;
 }
 
-.preview-img{
-    margin-top:10px;
-    width:150px;
-    height:150px;
+.btn-danger{
+    background:#dc3545;
+}
+
+.preview,
+.thumb{
+    width:120px;
+    height:80px;
     object-fit:cover;
-    display:none;
     border-radius:6px;
+    border:1px solid #ddd;
+}
+
+.preview{
+    margin-top:10px;
+    display:none;
+}
+
+.video-link{
+    color:#0f766e;
+    font-weight:600;
 }
 
 .error{
     color:red;
     font-size:14px;
 }
+
+.gallery-table-wrap{
+    overflow-x:auto;
+}
+
+@media (max-width:768px){
+    .gallery-admin-header,
+    .form-grid{
+        display:block;
+    }
+}
 </style>
 
-<h2>Upload Gallery Image</h2>
+<div class="gallery-admin-header">
+    <div>
+        <h2>Gallery Admin</h2>
+        <p>Upload images or YouTube videos and manage the public gallery.</p>
+    </div>
+
+    <a href="{{ route('gallery') }}" target="_blank" class="btn-action">View Public Gallery</a>
+</div>
 
 <div class="form-container">
+    <h3>Upload Gallery Item</h3>
 
-<form method="POST" action="{{ route('dashboard.gallery.store') }}" enctype="multipart/form-data">
-@csrf
+    <form method="POST" action="{{ route('dashboard.gallery.store') }}" enctype="multipart/form-data">
+        @csrf
 
-<!-- TITLE -->
-<div class="form-group">
-    <label>Title</label>
-    <input type="text" name="title" value="{{ old('title') }}">
-    @error('title') <div class="error">{{ $message }}</div> @enderror
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" name="title" value="{{ old('title') }}">
+                @error('title') <div class="error">{{ $message }}</div> @enderror
+            </div>
+
+            <div class="form-group">
+                <label>Category</label>
+                <select name="category">
+                    <option value="">-- Select Category --</option>
+                    @foreach(['Child Welfare', 'Women Empowerment', 'Healthcare Support', 'Education for All'] as $category)
+                        <option value="{{ $category }}" @selected(old('category') === $category)>{{ $category }}</option>
+                    @endforeach
+                </select>
+                @error('category') <div class="error">{{ $message }}</div> @enderror
+            </div>
+
+            <div class="form-group">
+                <label>Upload Type</label>
+                <select name="type" id="typeSelect" onchange="toggleFields(this.value)">
+                    <option value="image" @selected(old('type', 'image') === 'image')>Image</option>
+                    <option value="youtube" @selected(old('type') === 'youtube')>YouTube Video</option>
+                </select>
+                @error('type') <div class="error">{{ $message }}</div> @enderror
+            </div>
+
+            <div class="form-group" id="imageField">
+                <label>Upload Image</label>
+                <input type="file" name="image" accept="image/*" onchange="previewImage(event)">
+                <img id="imagePreview" class="preview" alt="Image preview">
+                @error('image') <div class="error">{{ $message }}</div> @enderror
+            </div>
+
+            <div class="form-group full" id="videoField" style="display:none;">
+                <label>YouTube URL</label>
+                <input type="text" name="video_url" value="{{ old('video_url') }}" placeholder="https://youtube.com/watch?v=...">
+                <iframe id="videoPreview" class="preview" height="150" frameborder="0" allowfullscreen></iframe>
+                @error('video_url') <div class="error">{{ $message }}</div> @enderror
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Upload</button>
+    </form>
 </div>
 
-<!-- CATEGORY -->
-<div class="form-group">
-    <label>Category</label>
-    <select name="category">
-        <option value="">-- Select Category --</option>
-        <option value="Child Welfare">Child Welfare</option>
-        <option value="Women Empowerment">Women Empowerment</option>
-        <option value="Healthcare Support">Healthcare Support</option>
-        <option value="Education for All">Education for All</option>
-    </select>
-    @error('category') <div class="error">{{ $message }}</div> @enderror
-</div>
+<h3>All Gallery Items</h3>
 
-<!-- IMAGE -->
-<div class="form-group">
-    <label>Upload Image</label>
-    <input type="file" name="image" accept="image/*" onchange="previewImage(event)">
-    
-    <img id="preview" class="preview-img">
+@if($images->isEmpty())
+    <p>No gallery items found.</p>
+@else
+    <div class="gallery-table-wrap">
+        <table>
+            <tr>
+                <th>Preview</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
 
-    @error('image') <div class="error">{{ $message }}</div> @enderror
-</div>
+            @foreach($images as $item)
+                <tr>
+                    <td>
+                        @if($item->type === 'image' && $item->image)
+                            <img class="thumb" src="{{ asset('storage/'.$item->image) }}" alt="{{ $item->title }}">
+                        @elseif($item->type === 'youtube' && $item->video_url)
+                            <a class="video-link" href="{{ $item->video_url }}" target="_blank">YouTube Video</a>
+                        @else
+                            N/A
+                        @endif
+                    </td>
+                    <td>{{ $item->title }}</td>
+                    <td>{{ $item->category }}</td>
+                    <td>{{ ucfirst($item->type) }}</td>
+                    <td>{{ $item->created_at->format('d-m-Y') }}</td>
+                    <td>
+                        <a href="{{ route('dashboard.gallery.edit', $item->id) }}" class="btn-action">Edit</a>
 
-<button type="submit" class="btn-submit">Upload</button>
+                        <form action="{{ route('dashboard.gallery.delete', $item->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" onclick="return confirm('Delete this gallery item?')" class="btn-action btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
+        </table>
+    </div>
 
-</form>
-
-</div>
+    <div style="margin-top:20px;">
+        {{ $images->links() }}
+    </div>
+@endif
 
 <script>
+function toggleFields(type){
+    document.getElementById('imageField').style.display = type === 'image' ? 'block' : 'none';
+    document.getElementById('videoField').style.display = type === 'youtube' ? 'block' : 'none';
+}
+
 function previewImage(event){
     const file = event.target.files[0];
-    const preview = document.getElementById('preview');
+    const preview = document.getElementById('imagePreview');
 
     if(file){
         preview.src = URL.createObjectURL(file);
-        preview.style.display = "block";
+        preview.style.display = 'block';
     }
 }
+
+function extractYouTubeId(url){
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/);
+    return match ? match[1] : null;
+}
+
+document.querySelector('input[name="video_url"]').addEventListener('input', function(){
+    const iframe = document.getElementById('videoPreview');
+    const videoId = extractYouTubeId(this.value);
+
+    if(videoId){
+        iframe.src = 'https://www.youtube.com/embed/' + videoId;
+        iframe.style.display = 'block';
+    } else {
+        iframe.style.display = 'none';
+    }
+});
+
+toggleFields(document.getElementById('typeSelect').value);
 </script>
 
 @endsection

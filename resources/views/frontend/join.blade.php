@@ -1,9 +1,31 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; font-family:Segoe UI, sans-serif; } body { background:#eef3ff; color:#003f88; line-height:1.6; padding:20px; } /* HEADER */ .header { display:flex; justify-content:space-between; background:#ffffff; padding:15px 30px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1); margin-bottom:20px; } .header img { height:150px; width:110px; margin-top:10px; } .header .details { text-align:right; line-height:1.4; } .header .details h2 { color:#003f88; margin-bottom:5px; } .header .details p { font-size:14px; } /* FORM */ form { max-width:900px; margin:0 auto; background:#ffffff; padding:30px; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.1); position:relative; overflow:hidden; } fieldset { border:1px solid #003f88; border-radius:10px; padding:20px; display:none; } fieldset.active { display:block; animation:fadeIn 0.5s; } legend { font-weight:bold; color:#003f88; padding:0 10px; } label { display:block; margin-top:10px; font-weight:600; } /* INPUTS */ input[type="text"], input[type="email"], input[type="date"], input[type="file"], input[type="number"], select, textarea { width:100%; padding:8px 12px; margin-top:5px; border:1px solid #ccc; border-radius:6px; outline:none; transition:0.3s; } input:focus, textarea:focus, select:focus { border-color:#0d6efd; box-shadow:0 0 5px rgba(13,110,253,0.3); } textarea { resize:vertical; min-height:60px; } input[type="checkbox"], input[type="radio"] { margin-right:10px; } /* BUTTONS */ button { background:#0d6efd; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-size:16px; margin-top:10px; transition:0.3s; } button:hover { background:#003f88; } .prevBtn { background:#dc3545; color:white; margin-right:10px; } /* IMAGE PREVIEW */ #photoPreview, #signaturePreview { margin-top:10px; max-width:150px; max-height:150px; border-radius:8px; border:1px solid #ccc; } /* PROGRESS BAR */ #progressbar { display:flex; justify-content:space-between; margin-bottom:20px; counter-reset: step; } #progressbar li { list-style-type:none; width:100%; text-align:center; position:relative; color:#ccc; font-weight:600; } #progressbar li::before { content:counter(step); counter-increment:step; width:30px; height:30px; line-height:30px; display:block; margin:0 auto 10px; border-radius:50%; background:#ccc; color:white; } #progressbar li.active { color:#003f88; } #progressbar li.active::before { background:#0d6efd; } #progressbar li::after { content:''; position:absolute; width:100%; height:3px; background:#ccc; top:15px; left:-50%; z-index:-1; } #progressbar li:first-child::after { content:none; } #progressbar li.active + li::after { background:#0d6efd; } /* LINE */ hr { border:none; height:1px; background:linear-gradient(to right, rgba(0,63,136,0), rgba(0,63,136,0.5), rgba(0,63,136,0)); margin:15px 0 20px; } /* ANIMATION */ @keyframes fadeIn { from {opacity:0; transform:translateX(50px);} to {opacity:1; transform:translateX(0);} } /* RESPONSIVE */ @media(max-width:768px){ form { padding:20px; } .header { flex-direction:column; text-align:center; } .header .details { text-align:center; margin-top:10px; } }
 </style>
-<div class="header">
-<img src="{{ asset('assests/images/formlogo.png') }}">
-<div class="details"> <h2>SUVABANI FOUNDATION ( শুভাবনী ফাউন্ডেশন )</h2> <p>Govt. Registration No. IV-160300107/2025</p> <p>Rania Pravat Pally, P.O. Boral, P.S. Narendrapur, Kolkata- 700 154</p> <p>Contact No.: 7059590022 | Email: suvabanifoundation@gmail.com</p> </div> </div>
+    <link rel="stylesheet" href="{{ asset('assests/css/style.css') }}">
+
+<header class="navbar">
+
+    <div class="logo-box">
+        <a href="{{ route('home') }}" style="style:none;">
+            <img src="{{ asset('assests/images/formlogo.png') }}" alt="logo">
+        </a>
+        <div class="logo">SUVABANI FOUNDATION</div>
+        
+    </div>
+
+    <nav>
+        <a href="{{ route('home') }}">Home</a>
+        <a href="#about">About</a>
+        <a href="{{ route('contact') }}">Contact</a>
+        <a href="/volunteers">Volunteer</a>
+        <a href="{{ route('gallery') }}">Gallery</a>
+
+        <a href="{{ route('donate') }}" class="btn donate">Donate</a>
+        <a href="{{ route('join') }}" class="btn join">Join Us</a>
+    </nav>
+
+</header>
+
 
 <h1 style="text-align:center; margin-bottom:20px;">Membership Application Form</h1>
 <!-- Progress Bar --> 
@@ -27,12 +49,12 @@
 <legend>Personal Details</legend>
 <label for="fullname">Your Full Name:</label>
 <input type="text" name="fullname" id="fullname">
-<label for="parent_type">Relation:</label>
+<label for="parent_type">Marrital Status:</label>
 <select id="parent_type" name="parent_type">
     <option value="">Select</option>
-    <option value="Father">Father</option>
-    <option value="Mother">Mother</option>
-    <option value="Spouse">Spouse</option>
+    <option value="Married">Married</option>
+    <option value="Unmarried">Unmarried</option>
+    <option value="Divorced">Divorced</option>
 </select>
 
 <label for="parentname">Gardian Name:</label>
@@ -218,9 +240,7 @@ document.querySelectorAll('.prevBtn').forEach(btn=>{
 
 // ---------- VALIDATION ----------
 function validateStep(step){
-
     switch(step){
-
         case 0:
             if(!form.photo.files.length) return alert('Upload photo'), false;
         break;
@@ -239,10 +259,27 @@ function validateStep(step){
         break;
 
         case 2:
-            if(!form.querySelector('[name="idproof"]:checked')) return alert('Select ID proof'), false;
-            if(!form.idnumber.value.trim()) return alert('Enter ID number'), false;
+            const idType = form.querySelector('[name="idproof"]:checked');
+            if(!idType) return alert('Select ID proof'), false;
+
+            const idNumber = form.idnumber.value.trim();
+
+            if(!idNumber) return alert('Enter ID number'), false;
+
+            if(idType.value === "Aadhar"){
+                if(!/^\d{12}$/.test(idNumber)){
+                    return alert('Aadhaar must be exactly 12 digits'), false;
+                }
+            }
+
+            if(idType.value === "PAN"){
+                if(!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(idNumber)){
+                    return alert('Invalid PAN format (ABCDE1234F)'), false;
+                }
+            }
+
             if(!form.idfile.files.length) return alert('Upload ID file'), false;
-        break;
+            break;
 
         case 3:
             const membershipType = form.querySelector('[name="membership_type"]:checked');
@@ -271,7 +308,6 @@ function validateStep(step){
             if(!form.declaration_date.value) return alert('Select date'), false;
         break;
     }
-
     return true;
 }
 
@@ -294,6 +330,7 @@ document.querySelectorAll('[name="membership_type"]').forEach(r=>{
 form.addEventListener('submit', async (e)=>{
     e.preventDefault();
 
+    // validate all steps
     for(let i=0;i<fieldsets.length;i++){
         if(!validateStep(i)){
             current = i;
@@ -304,25 +341,44 @@ form.addEventListener('submit', async (e)=>{
 
     const membershipType = form.querySelector('[name="membership_type"]:checked');
 
-    // NON-PAID
+    // =========================
+    // NON-PAID FLOW
+    // =========================
     if(membershipType.value === "Non-Paid"){
-        const res = await fetch(form.action,{
-            method:"POST",
-            headers:{ "X-CSRF-TOKEN":"{{ csrf_token() }}" },
-            body: new FormData(form)
-        });
+        try{
+            const res = await fetch(form.action,{
+                method:"POST",
+                headers:{
+                    "X-CSRF-TOKEN":"{{ csrf_token() }}",
+                    "Accept": "application/json"
+                },
+                body: new FormData(form)
+            });
 
-        const result = await res.json();
+            console.log("STATUS:", res.status);
 
-        if(result.success){
-            document.getElementById("successModal").style.display="flex";
-        } else {
-            alert(result.error || "Error");
+            const result = await res.json();
+            console.log("RESULT:", result);
+
+            if(result.success){
+                document.getElementById("successModal").style.display="flex";
+            } else if(result.errors){
+                alert(Object.values(result.errors)[0][0]);
+            } else {
+                alert(result.error || "Something went wrong");
+            }
+
+        } catch(err){
+            console.error(err);
+            alert("Request failed");
         }
+
         return;
     }
 
-    // PAID
+    // =========================
+    // PAID FLOW (RAZORPAY)
+    // =========================
     const plan = form.querySelector('[name="plan_id"]:checked');
 
     try{
@@ -336,6 +392,7 @@ form.addEventListener('submit', async (e)=>{
         });
 
         const data = await res.json();
+        console.log("SUBSCRIPTION:", data);
 
         if(!data.subscription_id){
             alert("Subscription failed");
@@ -346,38 +403,43 @@ form.addEventListener('submit', async (e)=>{
             key: "{{ config('services.razorpay.key') }}",
             subscription_id: data.subscription_id,
 
-            // ✅ ADD THIS
             prefill: {
                 name: form.fullname.value || '',
                 email: form.email.value || '',
                 contact: form.phone.value || ''
             },
 
-            // ✅ OPTIONAL BUT USEFUL
-            notes: {
-                name: form.fullname.value,
-                email: form.email.value,
-                phone: form.phone.value
-            },
-
             handler: async function(response){
+                try{
+                    const formData = new FormData(form);
+                    formData.append('razorpay_payment_id', response.razorpay_payment_id);
+                    formData.append('razorpay_subscription_id', data.subscription_id);
 
-                const formData = new FormData(form);
-                formData.append('razorpay_payment_id', response.razorpay_payment_id);
-                formData.append('razorpay_subscription_id', data.subscription_id);
+                    const save = await fetch(form.action,{
+                        method:"POST",
+                        headers:{
+                            "X-CSRF-TOKEN":"{{ csrf_token() }}",
+                            "Accept": "application/json"
+                        },
+                        body: formData
+                    });
 
-                const save = await fetch(form.action,{
-                    method:"POST",
-                    headers:{ "X-CSRF-TOKEN":"{{ csrf_token() }}" },
-                    body: formData
-                });
+                    console.log("SAVE STATUS:", save.status);
 
-                const result = await save.json();
+                    const result = await save.json();
+                    console.log("SAVE RESULT:", result);
 
-                if(result.success){
-                    document.getElementById("successModal").style.display="flex";
-                } else {
-                    alert(result.error || "Save failed");
+                    if(result.success){
+                        document.getElementById("successModal").style.display="flex";
+                    } else if(result.errors){
+                        alert(Object.values(result.errors)[0][0]);
+                    } else {
+                        alert(result.error || "Save failed");
+                    }
+
+                } catch(err){
+                    console.error(err);
+                    alert("Save error");
                 }
             }
         });
