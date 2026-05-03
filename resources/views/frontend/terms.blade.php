@@ -1,27 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Terms & Conditions | SUVABANI FOUNDATION</title>
+@extends('frontend.layouts.app')
+
+@section('title', 'Terms & Conditions | SUVABANI FOUNDATION')
+
+@push('styles')
 <link rel="stylesheet" href="{{ asset('assests/css/terms.css') }}">
+@endpush
 
-
-<!-- Font Awesome -->
-<link rel="stylesheet"
- href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-
-<body>
-
-<!-- NAVBAR -->
-<header class="navbar">
-  <div class="logo">SUVABANI FOUNDATION</div>
-  <nav>
-  <a href="{{ url('/join') }}" class="btn join">Join Us</a>
-    <a href="{{ url('/') }}" class="btn home">Home</a>
-
-  </nav>
-</header>
+@section('content')
 
 <!-- HEADER -->
 <header class="terms-header">
@@ -138,10 +123,4 @@
 
 </section>
 
-<!-- FOOTER -->
-<footer class="terms-footer">
-  © 2026 SUVABANI FOUNDATION | All Rights Reserved
-</footer>
-
-</body>
-</html>
+@endsection

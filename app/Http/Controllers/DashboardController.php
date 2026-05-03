@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Donation;
 use App\Models\Membership;
 use App\Models\Contact;
-
+use App\Models\HomeVideo;
 
 class DashboardController extends Controller
 {
@@ -61,5 +61,30 @@ class DashboardController extends Controller
         $donor = Donation::findOrFail($id);
         $donor->delete();
         return back()->with('success', 'Donation deleted successfully!');
+    }
+
+    // Home Video Settings
+    public function editHomeVideo()
+    {
+        $video = HomeVideo::first();
+        return view('layouts.home_video_edit', compact('video'));
+    }
+
+    public function updateHomeVideo(Request $request)
+    {
+        $request->validate([
+            'title' => 'nullable|string|max:255',
+            'youtube_url' => 'required|url'
+        ]);
+
+        $video = HomeVideo::first();
+
+        if ($video) {
+            $video->update($request->all());
+        } else {
+            HomeVideo::create($request->all());
+        }
+
+        return back()->with('success', 'Home Video updated successfully!');
     }
 }

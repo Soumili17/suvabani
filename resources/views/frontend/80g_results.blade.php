@@ -1,79 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Your 80G Donations</title>
+@extends('frontend.layouts.app')
 
-<style>
+@section('title', 'Your 80G Donations | SUVABANI FOUNDATION')
 
-body{
-font-family:Arial;
-background:#f8fafc;
-padding:50px;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-background:white;
-}
-
-th,td{
-padding:12px;
-border:1px solid #ddd;
-}
-
-th{
-background:#0f766e;
-color:white;
-}
-
-a.download{
-background:#14b8a6;
-color:white;
-padding:6px 12px;
-border-radius:5px;
-text-decoration:none;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<h2>Your 80G Donations</h2>
-
-<table>
-
-<tr>
-<th>Receipt</th>
-<th>Amount</th>
-<th>Date</th>
-<th>Download</th>
-</tr>
-
-@foreach($donations as $donation)
-
-<tr>
-
-<td>{{ $donation->receipt_number }}</td>
-
-<td>₹{{ $donation->amount }}</td>
-
-<td>{{ \Carbon\Carbon::parse($donation->created_at)->format('d-m-Y') }}</td>
-
-<td>
-<a class="download" href="{{ route('80g.download',$donation->id) }}">
-Download 80G
-</a>
-
-</td>
-
-</tr>
-
-@endforeach
-
-</table>
-
-</body>
-</html>
+@section('content')
+<div class="container my-5 overflow-auto bg-white p-4 rounded shadow-sm">
+    <h2 class="mb-4" style="color:#0f766e;">Your 80G Donations</h2>
+    <table class="table table-bordered table-striped mt-3">
+    <thead class="table-dark" style="background:#0f766e;">
+    <tr>
+    <th style="background:#0f766e; color:white;">Receipt</th>
+    <th style="background:#0f766e; color:white;">Amount</th>
+    <th style="background:#0f766e; color:white;">Date</th>
+    <th style="background:#0f766e; color:white;">Download</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach($donations as $donation)
+    <tr>
+    <td>{{ $donation->receipt_number }}</td>
+    <td>₹{{ $donation->amount }}</td>
+    <td>{{ \Carbon\Carbon::parse($donation->created_at)->format('d-m-Y') }}</td>
+    <td><a class="btn btn-sm" style="background:#14b8a6; color:white;" href="{{ route('80g.download',$donation->id) }}">Download 80G</a></td>
+    </tr>
+    @endforeach
+    </tbody>
+    </table>
+</div>
+@endsection

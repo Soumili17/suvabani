@@ -186,6 +186,14 @@ Route::prefix('dashboard')->group(function () {
 
     Route::delete('/donors/delete/{id}', [DonationController::class, 'deleteDonor'])->name('dashboard.donors.delete');
 
+    /*
+    |--------------------------------------------------------------------------
+    | HOME VIDEO
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/home-video', [DashboardController::class, 'editHomeVideo'])->name('dashboard.home_video');
+    Route::post('/home-video', [DashboardController::class, 'updateHomeVideo'])->name('dashboard.home_video.update');
+
 
 });
 

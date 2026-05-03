@@ -4,123 +4,100 @@
 <meta charset="UTF-8">
 
 <style>
-
-body{
-margin:0;
-font-family:Arial, Helvetica, sans-serif;
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-.card{
-
-width:520px;
-height:320px;
-
-border:2px solid #008080;
-border-radius:10px;
-
-position:relative;
-overflow:hidden;
-
+/* CARD SIZE (ID CARD RATIO) */
+.card {
+  width: 350px;
+  height: 220px;
+  border: 2px solid #008080;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 /* HEADER */
-
-.header{
-
-background:#008080;
-color:white;
-
-padding:10px;
-
-text-align:center;
-
+.header {
+  background: #008080;
+  color: #fff;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 6px;
+  position: relative;
 }
 
-.header img{
-height:40px;
-position:absolute;
-left:10px;
-top:5px;
+.logo {
+  position: absolute;
+  left: 8px;
+  top: 5px;
+  height: 28px;
 }
 
-.header h3{
-margin:0;
-font-size:18px;
-}
-
-/* BODY */
-
-.body{
-padding:10px;
-display:flex;
+/* TABLE STRUCTURE */
+.content {
+  width: 100%;
+  border-collapse: collapse;
 }
 
 /* PHOTO */
-
-.photo{
-
-width:120px;
-text-align:center;
-
+.photo {
+  width: 90px;
+  text-align: center;
+  padding: 8px;
 }
 
-.photo img{
-width:100px;
-height:120px;
-object-fit:cover;
-
-border:2px solid #ccc;
+.photo img {
+  width: 75px;
+  height: 95px;
+  object-fit: cover;
+  border: 1px solid #ccc;
 }
 
 /* DETAILS */
-
-.details{
-flex:1;
-padding-left:10px;
-font-size:14px;
+.details {
+  font-size: 12px;
+  padding: 5px;
+  vertical-align: top;
 }
 
-.details p{
-margin:5px 0;
+.details p {
+  margin: 3px 0;
+}
+
+.member-id {
+  font-weight: bold;
+  color: #008080;
+  font-size: 13px;
 }
 
 /* FOOTER */
+.footer {
+  background: #f5f5f5;
+  font-size: 11px;
+}
 
-.footer{
-
-position:absolute;
-bottom:0;
-
-width:100%;
-
-background:#f5f5f5;
-padding:8px;
-
-display:flex;
-justify-content:space-between;
-align-items:center;
-
+.footer td {
+  padding: 5px;
 }
 
 /* SIGNATURE */
-
-.signature img{
-height:40px;
+.signature img {
+  height: 28px;
 }
 
-.sign-label{
-font-size:10px;
-text-align:center;
+.sign-label {
+  font-size: 9px;
+  text-align: center;
 }
 
-/* MEMBER ID */
-
-.member-id{
-font-weight:bold;
-color:#008080;
-font-size:16px;
+/* RIGHT SIDE TEXT */
+.valid-text {
+  text-align: right;
+  font-weight: bold;
 }
-
 </style>
 
 </head>
@@ -129,79 +106,50 @@ font-size:16px;
 
 <div class="card">
 
-<!-- HEADER -->
-<div class="header">
-<a href="/"><img src="{{ asset('assests/images/formlogo.png') }}"></a>
+  <!-- HEADER -->
+  <div class="header">
+    <img src="{{ public_path('assets/images/formlogo.png') }}" class="logo">
+    SUVABANI FOUNDATION
+  </div>
 
+  <!-- BODY -->
+  <table class="content">
+    <tr>
 
-<h3>SUVABANI FOUNDATION</h3>
+      <!-- PHOTO -->
+      <td class="photo">
+        <img src="{{ public_path('storage/'.$member->photo) }}">
+      </td>
 
-</div>
+      <!-- DETAILS -->
+      <td class="details">
+        <p class="member-id">ID: {{ $member->membership_id }}</p>
+        <p><strong>Name:</strong> {{ $member->fullname }}</p>
+        <p><strong>Phone:</strong> {{ $member->phone }}</p>
+        <p><strong>Type:</strong> {{ $member->membertype }}</p>
+        <p><strong>Joined:</strong> {{ date('d-m-Y', strtotime($member->created_at)) }}</p>
+      </td>
 
+    </tr>
+  </table>
 
-<!-- BODY -->
-<div class="body">
+  <!-- FOOTER -->
+  <table class="footer" width="100%">
+    <tr>
 
-<div class="photo">
+      <!-- SIGNATURE -->
+      <td class="signature">
+        <img src="{{ public_path('assets/images/sign.png') }}">
+        <div class="sign-label">Chairman Signature</div>
+      </td>
 
-<img src="{{ storage_path('app/public/'.$member->photo) }}">
+      <!-- VALID TEXT -->
+      <td class="valid-text">
+        Valid Member
+      </td>
 
-</div>
-
-
-<div class="details">
-
-<p class="member-id">
-ID: {{ $member->membership_id }}
-</p>
-
-<p>
-<strong>Name:</strong>
-{{ $member->fullname }}
-</p>
-
-<p>
-<strong>Phone:</strong>
-{{ $member->phone }}
-</p>
-
-<p>
-<strong>Member Type:</strong>
-{{ $member->membertype }}
-</p>
-
-<p>
-<strong>Joined:</strong>
-{{ date('d-m-Y',strtotime($member->created_at)) }}
-</p>
-
-</div>
-
-</div>
-
-
-<!-- FOOTER -->
-
-<div class="footer">
-
-<div class="signature">
-
-<img src="{{ public_path('assests/images/sign.png') }}}">
-
-<div class="sign-label">
-Chairman Signature
-</div>
-
-</div>
-
-<div>
-
-Valid Member
-
-</div>
-
-</div>
-
+    </tr>
+  </table>
 
 </div>
 

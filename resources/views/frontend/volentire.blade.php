@@ -1,88 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Volunteer Page</title>
-<link rel="stylesheet" href="{{ asset('assests/css/style.css') }}">
-</head>
-<body>
+@extends('frontend.layouts.app')
 
-<header class="navbar">
-  <a href="/"><img src="{{ asset('assests/images/formlogo.png') }}" height="90px" width="80px"></a>
-    
-    <div class="logo">SUVABANI FOUNDATION</div>
+@section('title', 'Volunteer Page')
 
-    <nav>
-        <a href="{{ route('home') }}">Home</a>
-        <a href="#about">About</a>
-        <a href="{{ route('contact') }}">Contact</a>
-        <a href="/volunteers">Volunteer</a>
-        <a href="#gallery">Gallery</a>
+@section('content')
 
-        <a href="{{ route('donate') }}" class="btn donate">Donate</a>
-        <a href="{{ route('join') }}" class="btn join">Join Us</a>
-    </nav>
-</header>
+<div class="container my-5">
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-6 text-center">
+            <input type="text" id="search" placeholder="Search by name..." 
+                   class="form-control form-control-lg shadow-sm w-100" onkeyup="searchVolunteer()">
+        </div>
+    </div>
 
-<!-- SEARCH -->
-<section>
-  <input type="text" id="search" placeholder="Search by name..." 
-         class="btn" style="width:300px;" onkeyup="searchVolunteer()">
-</section>
+    <!-- VOLUNTEER LIST -->
+    <div class="text-center mb-4">
+        <h2 class="fw-bold" style="color: #003f88;">Our Volunteers</h2>
+    </div>
 
-<!-- VOLUNTEER LIST -->
-<section>
-  <h2>Our Volunteers</h2>
-
-  @if($volunteers->isEmpty())
-    <p>No volunteers found.</p>
-  @else
-
-  <div class="grid" id="volunteerContainer">
-
-    @foreach($volunteers as $v)
-      <div class="card volunteer-card">
-
-        @if($v->id_card)
-          <img src="{{ asset('storage/'.$v->id_card) }}" 
-               style="width:100%;height:200px;object-fit:cover;">
-        @else
-          <img src="{{ asset('assests/images/default-user.png') }}" 
-               style="width:100%;height:200px;object-fit:cover;">
-        @endif
-
-        <h3>{{ $v->name }}</h3>
-        <p>{{ $v->email }}</p>
-        <p>{{ $v->phone }}</p>
-
-      </div>
-    @endforeach
-
-  </div>
-
-  @endif
-</section>
-
-<div class="footer">
-  <div class="footer-bottom">© 2026 NGO</div>
+    @if($volunteers->isEmpty())
+        <p class="text-center text-muted">No volunteers found.</p>
+    @else
+        <div class="row g-4" id="volunteerContainer">
+            @foreach($volunteers as $v)
+                <div class="col-lg-3 col-md-4 col-sm-6 col-12 volunteer-card">
+                    <div class="card h-100 shadow-sm border-0 text-center">
+                        @if($v->id_card)
+                            <img src="{{ asset('storage/'.$v->id_card) }}" 
+                                 class="card-img-top" style="height:200px;object-fit:cover;">
+                        @else
+                            <img src="{{ asset('assests/images/default-user.png') }}" 
+                                 class="card-img-top" style="height:200px;object-fit:cover;">
+                        @endif
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-primary">{{ $v->name }}</h5>
+                            <p class="card-text mb-1 text-muted">{{ $v->email }}</p>
+                            <p class="card-text text-muted">{{ $v->phone }}</p>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @endif
 </div>
 
+@endsection
+
+@push('scripts')
 <script>
 function searchVolunteer(){
-  const input = document.getElementById('search').value.toLowerCase();
-  const cards = document.querySelectorAll('.volunteer-card');
+    const input = document.getElementById('search').value.toLowerCase();
+    const cards = document.querySelectorAll('.volunteer-card');
 
-  cards.forEach(card => {
-    const name = card.querySelector('h3').innerText.toLowerCase();
-
-    if(name.includes(input)){
-      card.style.display = "";
-    } else {
-      card.style.display = "none";
-    }
-  });
+    cards.forEach(card => {
+        const name = card.querySelector('h5').innerText.toLowerCase();
+        if(name.includes(input)){
+            card.style.display = "";
+        } else {
+            card.style.display = "none";
+        }
+    });
 }
 </script>
-
-</body>
-</html>
+@endpush

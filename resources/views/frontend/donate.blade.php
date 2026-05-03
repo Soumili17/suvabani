@@ -1,12 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Donate Now | SUVABANI FOUNDATION</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+@extends('frontend.layouts.app')
 
+@section('title', 'Donate Now | SUVABANI FOUNDATION')
+
+@push('scripts')
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+@endpush
 
+@push('styles')
 <style>
 body {
     margin: 0;
@@ -125,33 +125,18 @@ input:focus, textarea:focus {
 
 <body>
 
-<header class="navbar">
-
-    <div class="logo-box">
-        <a href="{{ route('home') }}" style="style:none;">
-            <img src="{{ asset('assests/images/formlogo.png') }}" alt="logo">
-        </a>
-        <div class="logo">SUVABANI FOUNDATION</div>
-        
-    </div>
-
-    <nav>
-        <a href="{{ route('home') }}">Home</a>
-        <a href="#about">About</a>
-        <a href="{{ route('contact') }}">Contact</a>
-        <a href="/volunteers">Volunteer</a>
-        <a href="{{ route('gallery') }}">Gallery</a>
-
-        <a href="{{ route('donate') }}" class="btn donate">Donate</a>
-        <a href="{{ route('join') }}" class="btn join">Join Us</a>
-    </nav>
-
-</header>
+@include('frontend.partials.navbar')
 <div class="donation-wrapper">
     <div class="donation-card">
 
 <h2>Support SUVABANI FOUNDATION</h2>
 <p class="subtitle">Your contribution makes a difference</p>
+
+<div style="margin-bottom: 25px; text-align: center;">
+    <a href="{{ route('80g.form') }}" style="display:inline-block; padding: 10px 20px; background: linear-gradient(135deg, #1e3a8a, #2563eb); color: white; border-radius: 6px; text-decoration: none; font-weight: bold;">
+        🔍 Search & Download 80G Certificate
+    </a>
+</div>
 
 @if(session('success'))
 <div class="alert-success">{{ session('success') }}</div>
@@ -252,12 +237,12 @@ input:focus, textarea:focus {
 <button type="submit" class="submit-btn">Donate Securely</button>
 
 </form>
-<div style="margin-top:15px;text-align:center;">
+<!-- <div style="margin-top:15px;text-align:center;">
     <a href="{{ route('80g.form') }}" class="donate-btn" 
        style="display:block;background:linear-gradient(135deg,#1e3a8a,#2563eb);text-decoration:none;">
-        Get 80G Tax Exemption Certificate
+        🔍 Search & Download 80G Certificate
     </a>
-</div>
+</div> -->
 </div>
 </div>
 
@@ -414,5 +399,4 @@ document.querySelector("form").addEventListener("submit", async function(e){
 
 </script>
 
-</body>
-</html>
+@endsection
