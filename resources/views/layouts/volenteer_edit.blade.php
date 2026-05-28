@@ -72,36 +72,28 @@
     @enderror
 </div>
 
-<!-- EMAIL -->
+<!-- DESIGNATION -->
 <div class="form-group">
-    <label>Email</label>
-    <input type="email" name="email" value="{{ old('email', $volunteer->email) }}">
-    @error('email')
+    <label>Designation</label>
+    <input type="text" name="designation" value="{{ old('designation', $volunteer->designation) }}" placeholder="e.g. Team Lead, Coordinator">
+    @error('designation')
         <div class="error">{{ $message }}</div>
     @enderror
 </div>
 
-<!-- PHONE -->
+<!-- PROFILE PIC -->
 <div class="form-group">
-    <label>Phone</label>
-    <input type="text" name="phone" value="{{ old('phone', $volunteer->phone) }}">
-    @error('phone')
-        <div class="error">{{ $message }}</div>
-    @enderror
-</div>
-
-<!-- ID CARD -->
-<div class="form-group">
-    <label>ID Card (JPEG)</label>
-    <input type="file" name="id_card" accept="image/jpeg, image/jpg" onchange="previewImage(event)">
+    <label>Profile Picture (JPEG/PNG)</label>
+    <input type="file" name="profile_pic" accept="image/jpeg,image/jpg,image/png" onchange="previewImage(event)">
     
-    @if($volunteer->id_card)
-        <img id="preview" class="preview-img" style="display:block;" src="{{ asset('storage/' . $volunteer->id_card) }}" alt="Current ID Card">
+    @if($volunteer->profile_pic)
+        <p style="margin-top:5px; font-size:13px; color:#555;">Current Profile Picture:</p>
+        <img id="preview" class="preview-img" style="display:block;" src="{{ asset('storage/' . $volunteer->profile_pic) }}" alt="Current Profile Picture">
     @else
         <img id="preview" class="preview-img" style="display:none;">
     @endif
     
-    @error('id_card')
+    @error('profile_pic')
         <div class="error">{{ $message }}</div>
     @enderror
 </div>

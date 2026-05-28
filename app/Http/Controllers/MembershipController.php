@@ -50,8 +50,6 @@ class MembershipController extends Controller
     {
         $request->validate([
             'fullname'       => 'required|string|max:255',
-            'parent_type'    => 'required',
-            'parentname'     => 'required|string|max:255',
             'dob'            => 'required|date',
             'gender'         => 'required',
             'nationality'    => 'required|string',
@@ -80,8 +78,7 @@ class MembershipController extends Controller
                 'idfile'    => $request->file('idfile')->store('idproofs', 'public'),
 
                 // BASIC INFO
-                'fullname'    => $request->fullname,
-                'parentname'  => $request->parentname,
+                'fullname'    => trim($request->fullname),
                 'dob'         => $request->dob,
                 'gender'      => $request->gender,
                 'nationality' => $request->nationality,
@@ -198,26 +195,57 @@ class MembershipController extends Controller
     {
         $member = Membership::findOrFail($id);
 
-        if (!$member->razorpay_subscription_id) {
-            return back()->withErrors('No subscription found');
-        }
-
         $api = new Api(config('services.razorpay.key'), config('services.razorpay.secret'));
 
         try {
 
-            $api->subscription
-                ->fetch($member->razorpay_subscription_id)
-                ->cancel();
+            if ($member->razorpay_subscription_id) {
+                $api->subscription
+                    ->fetch($member->razorpay_subscription_id)
+                    ->cancel();
+                $member->subscription_status = 'Cancelled';
+            }
 
-            $member->subscription_status = 'Cancelled';
+            $member->approval_status = 'Deactivated';
             $member->save();
 
-            return back()->with('success', 'Autopay cancelled');
+            return back()->with('success', 'Member deactivated and autopay cancelled');
 
         } catch (\Exception $e) {
             return back()->withErrors($e->getMessage());
         }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | EDIT & UPDATE DOCUMENTS
+    |--------------------------------------------------------------------------
+    */
+    public function edit($id)
+    {
+        $member = Membership::findOrFail($id);
+        return view('layouts.member_edit', compact('member'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $member = Membership::findOrFail($id);
+
+        if ($request->hasFile('photo')) {
+            $member->photo = $request->file('photo')->store('photos', 'public');
+        }
+        if ($request->hasFile('signature')) {
+            $member->signature = $request->file('signature')->store('signatures', 'public');
+        }
+        if ($request->hasFile('idfile')) {
+            $member->idfile = $request->file('idfile')->store('idproofs', 'public');
+        }
+
+        // Add additional field updates here if needed.
+
+        $member->save();
+
+        return redirect()->route('dashboard.members.view', $member->id)->with('success', 'Documents updated successfully');
     }
 
 
@@ -231,11 +259,10 @@ class MembershipController extends Controller
         $request->validate(['mobile' => 'required']);
 
         $member = Membership::where('phone', $request->mobile)
-            ->where('approval_status', 'Approved')
-            ->first();
+            ->first(); // search regardless of approval status
 
         if (!$member) {
-            return back()->withErrors(['mobile' => 'Member not found']);
+            return back()->withErrors(['mobile' => 'No membership found with this mobile number.']);
         }
 
         return view('frontend.member_download', compact('member'));

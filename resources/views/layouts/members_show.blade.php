@@ -85,8 +85,7 @@
 <div class="section">
 <h3>Personal Details</h3>
 
-<div class="row"><div class="label">Name</div><div class="value">{{ $member->name }}</div></div>
-<div class="row"><div class="label">Parent Name</div><div class="value">{{ $member->parentname ?? 'N/A' }}</div></div>
+<div class="row"><div class="label">Name</div><div class="value">{{ $member->fullname ?? $member->name ?? 'N/A' }}</div></div>
 <div class="row"><div class="label">DOB</div><div class="value">{{ $member->dob ?? 'N/A' }}</div></div>
 <div class="row"><div class="label">Gender</div><div class="value">{{ $member->gender ?? 'N/A' }}</div></div>
 <div class="row"><div class="label">Nationality</div><div class="value">{{ $member->nationality ?? 'N/A' }}</div></div>
@@ -142,13 +141,38 @@ N/A
 <div class="section">
 <h3>Documents</h3>
 
-@if($member->photo)
-<img src="{{ asset('storage/'.$member->photo) }}" width="120">
-@endif
+<div style="display:flex; gap:30px; flex-wrap:wrap; margin-top:10px;">
 
-@if($member->signature)
-<img src="{{ asset('storage/'.$member->signature) }}" width="120">
-@endif
+    <div style="text-align:center;">
+        <h4 style="margin-bottom:6px; color:#0f766e;">Photo</h4>
+        @if($member->photo)
+            <img src="{{ asset('storage/'.$member->photo) }}" width="120" style="border-radius:6px; border:1px solid #ccc;">
+        @else
+            <p style="color:#999;">Not uploaded</p>
+        @endif
+    </div>
+
+    <div style="text-align:center;">
+        <h4 style="margin-bottom:6px; color:#0f766e;">Signature</h4>
+        @if($member->signature)
+            <img src="{{ asset('storage/'.$member->signature) }}" width="120" style="border-radius:6px; border:1px solid #ccc;">
+        @else
+            <p style="color:#999;">Not uploaded</p>
+        @endif
+    </div>
+
+    <div style="text-align:center;">
+        <h4 style="margin-bottom:6px; color:#0f766e;">
+            {{ $member->idproof ? $member->idproof . ' Card' : 'ID Proof' }}
+        </h4>
+        @if($member->idfile)
+            <a href="{{ asset('storage/'.$member->idfile) }}" target="_blank" class="btn btn-update" style="display:inline-block; text-decoration:none;">View File</a>
+        @else
+            <p style="color:#999;">Not uploaded</p>
+        @endif
+    </div>
+
+</div>
 
 </div>
 
@@ -159,11 +183,24 @@ N/A
 <form action="{{ route('dashboard.members.update', $member->id) }}" method="POST" enctype="multipart/form-data">
 @csrf
 
-<input type="file" name="photo">
-<input type="file" name="signature">
-<input type="file" name="idfile">
+<div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:10px;">
+    <div>
+        <label style="font-weight:bold; display:block; margin-bottom:4px;">Photo</label>
+        <input type="file" name="photo" accept="image/*">
+    </div>
+    <div>
+        <label style="font-weight:bold; display:block; margin-bottom:4px;">Signature</label>
+        <input type="file" name="signature" accept="image/*">
+    </div>
+    <div>
+        <label style="font-weight:bold; display:block; margin-bottom:4px;">
+            {{ $member->idproof ? $member->idproof . ' Card' : 'ID Proof' }}
+        </label>
+        <input type="file" name="idfile" accept="image/*,.pdf">
+    </div>
+</div>
 
-<button class="btn btn-update">Update</button>
+<button class="btn btn-update">Update Documents</button>
 
 </form>
 
@@ -178,9 +215,18 @@ N/A
 <button class="btn btn-approve">Approve</button>
 </form>
 
+@if($member->approval_status === 'Approved')
+<a href="{{ route('membership.download', $member->id) }}" class="btn" style="background:#17a2b8; text-decoration:none; margin-left: 10px;">Download ID Card</a>
+@endif
+
 <form action="{{ route('dashboard.members.reject', $member->id) }}" method="POST" style="display:inline;">
 @csrf
 <button class="btn btn-reject">Reject</button>
+</form>
+
+<form action="{{ route('dashboard.members.cancel', $member->id) }}" method="POST" style="display:inline; margin-left: 10px;">
+@csrf
+<button class="btn btn-reject" style="background:#dc3545;" onclick="return confirm('Are you sure you want to deactivate this member and cancel their subscription?')">Deactivate & Cancel Subscription</button>
 </form>
 
 </div>

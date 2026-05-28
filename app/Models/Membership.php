@@ -12,7 +12,6 @@ class Membership extends Model
         'photo',
         'signature',
         'fullname',
-        'parentname',
         'dob',
         'gender',
         'nationality',

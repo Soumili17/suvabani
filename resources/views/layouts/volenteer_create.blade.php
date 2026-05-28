@@ -72,32 +72,23 @@
     @enderror
 </div>
 
-<!-- EMAIL -->
+<!-- DESIGNATION -->
 <div class="form-group">
-    <label>Email</label>
-    <input type="email" name="email" value="{{ old('email') }}">
-    @error('email')
+    <label>Designation</label>
+    <input type="text" name="designation" value="{{ old('designation') }}" placeholder="e.g. Team Lead, Coordinator">
+    @error('designation')
         <div class="error">{{ $message }}</div>
     @enderror
 </div>
 
-<!-- PHONE -->
+<!-- PROFILE PIC -->
 <div class="form-group">
-    <label>Phone</label>
-    <input type="text" name="phone" value="{{ old('phone') }}">
-    @error('phone')
-        <div class="error">{{ $message }}</div>
-    @enderror
-</div>
-
-<!-- ID CARD -->
-<div class="form-group">
-    <label>ID Card (JPEG)</label>
-    <input type="file" name="id_card" accept="image/jpeg" onchange="previewImage(event)">
+    <label>Profile Picture (JPEG/PNG)</label>
+    <input type="file" name="profile_pic" accept="image/jpeg,image/jpg,image/png" onchange="previewImage(event)">
     
     <img id="preview" class="preview-img">
     
-    @error('id_card')
+    @error('profile_pic')
         <div class="error">{{ $message }}</div>
     @enderror
 </div>

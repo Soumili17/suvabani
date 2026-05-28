@@ -86,56 +86,21 @@
 
     <div class="row g-4 justify-content-center">
 
+        @foreach($governingBodies as $member)
         <div class="col-lg-6 col-12">
             <div class="gov-card">
-                <img src="{{ asset('assests/images/officials/founder.webp') }}">
+                @if($member->image)
+                    <img src="{{ asset('storage/' . $member->image) }}" alt="{{ $member->name }}">
+                @else
+                    <div style="width:120px; height:120px; background:#eee; border-radius:10px; flex-shrink:0;"></div>
+                @endif
                 <div>
-                    <h4>Suvo Debnath – Founder & President</h4>
-                    <p>SUVO DEBNATH is the Founder & President of the organization SUVABANI FOUNDATION, professionally working as a Businessman (Online Business) and holds a B.Com Degree in Accountancy from Calcutta University.
-                    Driven by a strong sense of social responsibility, he plays a key role in advancing our mission of SUVABANI FOUNDATION. He believes in the power of community-driven change and works tirelessly to support and uplift underprivileged sections of society. Through his efforts, he aims to build a more inclusive and sustainable future.</p>
+                    <h4>{{ $member->name }} – {{ $member->post }}</h4>
+                    <p>{{ $member->description }}</p>
                 </div>
             </div>
         </div>
-
-        <div class="col-lg-6 col-12">
-            <div class="gov-card">
-                <img src="{{ asset('assests/images/officials/Secretary.png') }}">
-                <div>
-                    <h4>Mihir Debnath – Secretary</h4>
-                    <p>MIHIR DEBNATH is the Secretary of the organization, responsible for administrative management, documentation, and communication. He ensures that the NGO operates efficiently and in compliance with all necessary guidelines.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-6 col-12">
-            <div class="gov-card">
-                <img src="{{ asset('assests/images/officials/casher.jpeg') }}">
-                <div>
-                    <h4>Suroj Halder – Cashier</h4>
-                    <p>SUROJ HALDER serves as the Cashier of the organization SUVABANI FOUNDATION and is responsible for managing financial transactions, maintaining accounts, and ensuring proper utilization of funds. He works at a Finance Company and holds a B.Com Degree in Accountancy from Calcutta University. With a strong understanding of financial management and accountability, Suroj Halder ensures transparency and accuracy in all financial matters of the organization.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-6 col-12">
-            <div class="gov-card">
-                <img src="{{ asset('assests/images/officials/co1.jpeg') }}">
-                <div>
-                    <h4>Smita Chakraborty – Communicating Officer</h4>
-                    <p>SMITA CHAKRABORTY is the Communicating Officer of SUVABANI FOUNDATION and by profession she works as a Customs Sircar Executive at a CHA company. She holds a Post Graduate degree from Rabindra Bharati University & studying Astgrology at IIA. She manages communication strategies, media relations, and digital outreach. Her expertise helps the organization strengthen its public presence and effectively engage with the community.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-6 col-12 text-center mx-auto">
-            <div class="gov-card">
-                <img src="{{ asset('assests/images/officials/co2.jpeg') }}">
-                <div>
-                    <h4>Pulak Bhunre – Communicating Officer</h4>
-                    <p>As the Communicating Officer, PULAK BHUNRE manages the organization’s communication strategy, including public relations, digital outreach, and stakeholder engagement. He works as a Businessman and has completed Graduation Degree. He plays a vital role in ensuring clear messaging and strengthening the organization’s visibility and impact.</p>
-                </div>
-            </div>
-        </div>
+        @endforeach
 
     </div>
 </div>

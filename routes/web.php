@@ -198,6 +198,7 @@ Route::prefix('dashboard')->group(function () {
 });
 
 use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\GoverningBodyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -238,6 +239,33 @@ Route::prefix('dashboard')->middleware('admin.auth')->group(function(){
     // Delete
     Route::delete('/gallery/{id}', [GalleryController::class, 'destroy'])
         ->name('dashboard.gallery.delete');
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN GOVERNING BODY
+|--------------------------------------------------------------------------
+*/
+Route::prefix('dashboard')->middleware('admin.auth')->group(function(){
+
+    Route::get('/governing-body', [GoverningBodyController::class, 'index'])
+        ->name('dashboard.governing_body.index');
+
+    Route::get('/governing-body/create', [GoverningBodyController::class, 'create'])
+        ->name('dashboard.governing_body.create');
+
+    Route::post('/governing-body', [GoverningBodyController::class, 'store'])
+        ->name('dashboard.governing_body.store');
+
+    Route::get('/governing-body/{id}/edit', [GoverningBodyController::class, 'edit'])
+        ->name('dashboard.governing_body.edit');
+
+    Route::put('/governing-body/{id}', [GoverningBodyController::class, 'update'])
+        ->name('dashboard.governing_body.update');
+
+    Route::delete('/governing-body/{id}', [GoverningBodyController::class, 'destroy'])
+        ->name('dashboard.governing_body.delete');
 });
 
 

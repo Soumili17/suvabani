@@ -55,7 +55,7 @@ td, th{
 }
 
 .signature img{
-    height:50px;
+    height:100px; /* increased from 50px */
 }
 
 .footer{

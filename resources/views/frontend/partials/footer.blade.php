@@ -25,8 +25,8 @@
             <h3>Reach Us</h3>
             <p style="margin-top: 10px;">Phone: 7059590022</p>
             <p>Email:
-                <a style="color:white; text-decoration:none;" href="mailto:suvabanifoundation@gmail.com">
-                    suvabanifoundation@gmail.com
+                <a style="color:white; text-decoration:none;" href="mailto:contact@suvabanifoundation.com">
+                    contact@suvabanifoundation.com
                 </a>
             </p>
         </div>

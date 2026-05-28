@@ -11,7 +11,19 @@
 @section('content')
 
 
-<h1 style="text-align:center; margin-bottom:20px;">Membership Application Form</h1>
+<h1 style="text-align:center; margin-bottom:10px;">Membership Application Form</h1>
+
+<!-- DOWNLOAD ID CARD BUTTON -->
+<div style="text-align:center; margin-bottom:20px;">
+    <a href="{{ route('member.search.page') }}"
+       style="display:inline-block; padding:10px 24px; background:#008080; color:white;
+              border-radius:25px; text-decoration:none; font-size:14px; font-weight:600;
+              box-shadow:0 4px 12px rgba(0,128,128,0.3); transition:0.3s;"
+       onmouseover="this.style.background='#006666'" onmouseout="this.style.background='#008080'">
+        🪪 Already a Member? Download Your ID Card
+    </a>
+</div>
+
 <!-- Progress Bar --> 
 <ul id="progressbar"> <li class="active">Photo</li> <li>Personal</li> <li>ID Proof</li> <li>Membership</li> <li>Interest</li> <li>Other</li> <li>Declaration</li> </ul> <form id="membershipForm" action="{{ route('membership.submit') }}" method="POST" enctype="multipart/form-data"> @csrf
 
@@ -19,7 +31,9 @@
 <!-- PHOTO UPLOAD -->
 <fieldset class="active">
 <legend>Upload Photo</legend>
-<label for="photo">Upload Your Photo:</label>
+<h4 style="color:#003f88; margin-bottom:8px;">📷 Document 1: Passport-size Photo</h4>
+<p style="color:#555; font-size:13px; margin-bottom:10px;">Please upload a clear, recent passport-size photograph of yourself.</p>
+<label for="photo">Select Photo (JPEG/PNG):</label>
 <input type="file" id="photo" name="photo" accept="image/*">
 <img id="photoPreview" src="#" alt="Photo Preview" style="display:none;">
 <br>
@@ -33,19 +47,11 @@
 <legend>Personal Details</legend>
 <label for="fullname">Your Full Name:</label>
 <input type="text" name="fullname" id="fullname">
-<label for="parent_type">Marrital Status:</label>
-<select id="parent_type" name="parent_type">
-    <option value="">Select</option>
-    <option value="Married">Married</option>
-    <option value="Unmarried">Unmarried</option>
-    <option value="Divorced">Divorced</option>
-</select>
 
-<label for="parentname">Gardian Name:</label>
-<input type="text" id="parentname" name="parentname">
-
-<label for="dob">Date of Birth:</label>
-<input type="date" id="dob" name="dob">
+    <div class="form-group half">
+      <label for="dob">Date of Birth: <span style="color:red;">*</span></label>
+      <input type="date" id="dob" name="dob" required>
+    </div>
 <label>Gender:</label>
 <input type="radio" name="gender" value="Male"> Male
 <input type="radio" name="gender" value="Female"> Female
@@ -70,14 +76,16 @@
 <!-- ID PROOF -->
 <fieldset>
 <legend>ID Proof</legend>
-<label>ID Proof:</label>
+<h4 style="color:#003f88; margin-bottom:8px;">🪪 Document 2: Aadhar / PAN Card</h4>
+<p style="color:#555; font-size:13px; margin-bottom:10px;">Select your government-issued ID type and upload a copy (PDF, JPEG, or PNG).</p>
+<label>Select ID Type:</label>
 <input type="radio" name="idproof" value="Aadhar"> Aadhaar
 <input type="radio" name="idproof" value="PAN"> PAN
 <input type="radio" name="idproof" value="Voter"> Voter ID
 <input type="radio" name="idproof" value="Passport"> Passport
 <label for="idnumber">ID Number:</label>
 <input type="text" id="idnumber" name="idnumber">
-<label for="idfile">Upload ID Proof:</label>
+<label for="idfile">Upload ID Proof (PDF/JPEG/PNG):</label>
 <input type="file" id="idfile" name="idfile" accept=".pdf,.jpg,.jpeg,.png">
 <br>
 <!--  -->
@@ -170,9 +178,12 @@ Mobile: <input type="text" name="ref_mobile">
 <fieldset>
 <legend>Declaration</legend>
 <p>I hereby declare that the information provided is true and correct. I agree to follow the constitution, rules, and code of conduct of SUVABANI FOUNDATION.</p>
-<label>Signature Upload:</label>
+<h4 style="color:#003f88; margin:12px 0 6px;">✍️ Document 3: Your Signature</h4>
+<p style="color:#555; font-size:13px; margin-bottom:10px;">Please upload a clear image of your signature on a plain white background (JPEG/PNG).</p>
+<label for="signature">Upload Signature (JPEG/PNG):</label>
 <input type="file" id="signature" name="signature" accept="image/*">
 <img id="signaturePreview" src="#" alt="Signature Preview" style="display:none;">
+<label for="declaration_date" style="margin-top:12px;">Date of Declaration:</label>
 <input type="date" name="declaration_date" id="declaration_date">
 <br>
 <!--  -->
@@ -183,11 +194,12 @@ Mobile: <input type="text" name="ref_mobile">
 
 
 </form>
-<div id="successModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
-    <div style="background:#fff; padding:30px; border-radius:10px; text-align:center; max-width:400px;">
-        <h3 style="color:#008080;">Success</h3>
-        <p>Your application is submitted successfully.<br>Wait for approval.</p>
-        <button onclick="closeModal()">OK</button>
+<div id="successModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
+    <div style="background:#fff; padding:30px; border-radius:10px; text-align:center; max-width:400px; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+        <div style="color:green; font-size:50px; margin-bottom:15px;">&#10003;</div>
+        <h3 style="color:#008080; margin-bottom:10px;">Membership Submitted!</h3>
+        <p style="margin-bottom:20px; color:#555;">Your membership application has been submitted successfully. Once the admin verifies your uploaded documents and approves it, you will be able to download your ID card.</p>
+        <button onclick="closeModal()" type="button" style="background:#0d6efd; color:#fff; border:none; border-radius:5px; padding:10px 20px; cursor:pointer;">OK</button>
     </div>
 </div>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -231,8 +243,6 @@ function validateStep(step){
 
         case 1:
             if(!form.fullname.value.trim()) return alert('Name required'), false;
-            if(!form.parent_type.value) return alert('Select relation'), false;
-            if(!form.parentname.value.trim()) return alert('Relation name required'), false;
             if(!form.dob.value) return alert('DOB required'), false;
             if(!form.querySelector('[name="gender"]:checked')) return alert('Select gender'), false;
             if(!form.nationality.value.trim()) return alert('Nationality required'), false;

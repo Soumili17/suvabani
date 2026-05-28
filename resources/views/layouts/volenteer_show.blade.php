@@ -47,6 +47,14 @@ th{
     border-radius:6px;
     margin-bottom:15px;
 }
+
+.vol-thumb {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #0f766e;
+}
 </style>
 
 <h2 class="page-title">All Volunteers</h2>
@@ -67,7 +75,7 @@ th{
 <form method="GET" action="{{ route('dashboard.volunteers') }}" style="margin:15px 0;">
     <input type="text" 
            name="search" 
-           placeholder="Search name, email or phone"
+           placeholder="Search by name or designation"
            value="{{ request('search') }}"
            style="padding:8px;width:250px;">
 
@@ -82,10 +90,9 @@ th{
 
 <table>
 <tr>
+<th>Photo</th>
 <th>Name</th>
-<th>Email</th>
-<th>Phone</th>
-<th>ID Card</th>
+<th>Designation</th>
 <th>Date</th>
 <th>Action</th>
 </tr>
@@ -93,20 +100,15 @@ th{
 @foreach($volunteers as $v)
 
 <tr>
-<td>{{ $v->name }}</td>
-<td>{{ $v->email }}</td>
-<td>{{ $v->phone }}</td>
-
 <td>
-@if($v->id_card)
-    <a href="{{ asset('storage/'.$v->id_card) }}" target="_blank" class="btn-action">
-        View
-    </a>
+@if($v->profile_pic)
+    <img src="{{ asset('storage/'.$v->profile_pic) }}" class="vol-thumb" alt="{{ $v->name }}">
 @else
-    N/A
+    <span style="color:#aaa;">No Photo</span>
 @endif
 </td>
-
+<td>{{ $v->name }}</td>
+<td>{{ $v->designation ?? 'N/A' }}</td>
 <td>{{ $v->created_at->format('d-m-Y') }}</td>
 
 <td>
@@ -134,7 +136,7 @@ Delete
 
 </table>
 
-<!-- ✅ FIXED PAGINATION -->
+<!-- PAGINATION -->
 <div style="margin-top:20px;">
 {{ $volunteers->appends(request()->query())->links() }}
 </div>

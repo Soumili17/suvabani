@@ -11,18 +11,17 @@ class Volunteer extends Model
 
     protected $fillable = [
         'name',
-        'email',
-        'phone',
-        'id_card'
+        'designation',
+        'profile_pic',
     ];
 
-    // Optional: auto-append full image URL
-    protected $appends = ['id_card_url'];
+    // Auto-append full image URL
+    protected $appends = ['profile_pic_url'];
 
-    public function getIdCardUrlAttribute()
+    public function getProfilePicUrlAttribute()
     {
-        return $this->id_card 
-            ? asset('storage/' . $this->id_card) 
+        return $this->profile_pic
+            ? asset('storage/' . $this->profile_pic)
             : null;
     }
 }

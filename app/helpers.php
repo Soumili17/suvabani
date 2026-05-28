@@ -6,9 +6,8 @@ if (!function_exists('youtubeEmbedUrl')) {
     {
         if (!$url) return null;
 
-        // Match different YouTube formats
         preg_match(
-            '/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&]+)/',
+            '/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([^?&]+)/',
             $url,
             $matches
         );

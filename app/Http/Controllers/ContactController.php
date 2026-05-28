@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Contact;
+use App\Models\ContactMessage;
+use App\Models\GoverningBody;
 
 class ContactController extends Controller
 {
     public function index()
     {
-        return view('frontend.contact');
+        $governingBodies = GoverningBody::orderBy('order', 'asc')->get();
+        return view('frontend.contact', compact('governingBodies'));
     }
 
     public function submit(Request $request)

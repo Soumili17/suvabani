@@ -8,17 +8,12 @@
 
 @push('styles')
 <style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
+.donation-wrapper {
+    padding: 60px 20px;
     background: linear-gradient(135deg, #f8fafc, #e0f2f1);
 }
 
-.wrapper {
-    padding: 60px 20px;
-}
-
-.card {
+.donation-card {
     max-width: 550px;
     margin: auto;
     background: #fff;
@@ -120,12 +115,9 @@ input:focus, textarea:focus {
     margin-bottom: 15px;
 }
 </style>
-<link rel="stylesheet" href="{{ asset('assests/css/style.css') }}">
-</head>
+@endpush
 
-<body>
-
-@include('frontend.partials.navbar')
+@section('content')
 <div class="donation-wrapper">
     <div class="donation-card">
 

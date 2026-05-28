@@ -16,7 +16,7 @@ class VolunteerController extends Controller
     */
     public function index()
     {
-        $volunteers = Volunteer::latest()->get(); // or paginate later
+        $volunteers = Volunteer::latest()->get();
         return view('frontend.volentire', compact('volunteers'));
     }
 
@@ -29,12 +29,11 @@ class VolunteerController extends Controller
     {
         $query = Volunteer::query();
 
-        // ✅ FIXED SEARCH (grouped properly)
+        // Search by name or designation only
         if ($request->search) {
             $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('email', 'like', '%' . $request->search . '%')
-                  ->orWhere('phone', 'like', '%' . $request->search . '%');
+                  ->orWhere('designation', 'like', '%' . $request->search . '%');
             });
         }
 
@@ -61,23 +60,21 @@ class VolunteerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'   => 'required|string|max:255',
-            'email'  => 'required|email|unique:volunteers,email',
-            'phone'  => 'required|string|max:15',
-            'id_card'=> 'required|image|mimes:jpeg,jpg|max:2048',
+            'name'        => 'required|string|max:255',
+            'designation' => 'required|string|max:255',
+            'profile_pic' => 'required|image|mimes:jpeg,jpg,png|max:2048',
         ]);
 
         $path = null;
 
-        if ($request->hasFile('id_card')) {
-            $path = $request->file('id_card')->store('id_cards', 'public');
+        if ($request->hasFile('profile_pic')) {
+            $path = $request->file('profile_pic')->store('profile_pics', 'public');
         }
 
         Volunteer::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'id_card' => $path,
+            'name'        => $request->name,
+            'designation' => $request->designation,
+            'profile_pic' => $path,
         ]);
 
         return redirect()->route('dashboard.volunteers')
@@ -105,27 +102,23 @@ class VolunteerController extends Controller
         $volunteer = Volunteer::findOrFail($id);
 
         $request->validate([
-            'name'   => 'required|string|max:255',
-            'email'  => 'required|email|unique:volunteers,email,' . $id,
-            'phone'  => 'required|string|max:15',
-            'id_card'=> 'nullable|image|mimes:jpeg,jpg|max:2048',
+            'name'        => 'required|string|max:255',
+            'designation' => 'required|string|max:255',
+            'profile_pic' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ]);
 
-        if ($request->hasFile('id_card')) {
-
-            // delete old file
-            if ($volunteer->id_card) {
-                Storage::disk('public')->delete($volunteer->id_card);
+        if ($request->hasFile('profile_pic')) {
+            // Delete old file
+            if ($volunteer->profile_pic) {
+                Storage::disk('public')->delete($volunteer->profile_pic);
             }
 
-            $path = $request->file('id_card')->store('id_cards', 'public');
-            $volunteer->id_card = $path;
+            $volunteer->profile_pic = $request->file('profile_pic')->store('profile_pics', 'public');
         }
 
         $volunteer->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
+            'name'        => $request->name,
+            'designation' => $request->designation,
         ]);
 
         return redirect()->route('dashboard.volunteers')
@@ -141,8 +134,8 @@ class VolunteerController extends Controller
     {
         $volunteer = Volunteer::findOrFail($id);
 
-        if ($volunteer->id_card) {
-            Storage::disk('public')->delete($volunteer->id_card);
+        if ($volunteer->profile_pic) {
+            Storage::disk('public')->delete($volunteer->profile_pic);
         }
 
         $volunteer->delete();
