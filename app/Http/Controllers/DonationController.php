@@ -169,10 +169,9 @@ class DonationController extends Controller
 
 
 
-    // Admin Donor List + Search
+    // Admin Donor List + Search + Filter
     public function adminIndex(Request $request)
     {
-
         $query = DB::table('donations')
                 ->select(
                     'donations.*',
@@ -183,19 +182,36 @@ class DonationController extends Controller
                 );
 
         if ($request->search) {
-
             $query->where(function($q) use ($request){
                 $q->where('donor_name','like','%'.$request->search.'%')
                 ->orWhere('donor_email','like','%'.$request->search.'%')
                 ->orWhere('donor_phone','like','%'.$request->search.'%');
             });
+        }
 
+        // Apply filters
+        if ($request->filled('need_80g')) {
+            $query->where('need_80g', $request->need_80g);
+        }
+
+        if ($request->filled('payment_status')) {
+            $query->where('payment_status', $request->payment_status);
+        }
+
+        if ($request->filled('donation_purpose')) {
+            $query->where('donation_purpose', $request->donation_purpose);
         }
 
         $donors = $query->orderBy('donations.id','desc')->paginate(15);
 
-        return view('layouts.donors_show', compact('donors'));
+        // Fetch distinct donation purposes for the filter dropdown
+        $purposes = DB::table('donations')
+            ->whereNotNull('donation_purpose')
+            ->where('donation_purpose', '!=', '')
+            ->distinct()
+            ->pluck('donation_purpose');
 
+        return view('layouts.donors_show', compact('donors', 'purposes'));
     }
 
 
@@ -357,9 +373,23 @@ class DonationController extends Controller
             'condition_d' => 'Retain for tax filing'
         ];
 
+        // Convert amount to words
+        $amount = $donation->amount;
+        $formatter = new \NumberFormatter('en_IN', \NumberFormatter::SPELLOUT);
+        $amount_in_words = ucfirst($formatter->format($amount));
+
         $pdf = Pdf::loadView('frontend.form.from10AC', [
-            'form' => $form,
-            'donation' => $donation
+            'receipt_no'      => $donation->receipt_number ?? 'N/A',
+            'donor_name'      => $donation->name ?? $donation->donor_name ?? 'Anonymous',
+            'donor_address'   => trim(($donation->address ?? $donation->donor_address ?? '') . ', ' . ($donation->donor_city ?? '') . ', ' . ($donation->donor_state ?? '') . ' - ' . ($donation->donor_pincode ?? ''), ', -'),
+            'donor_pan'       => $donation->donor_pan ?? 'N/A',
+            'amount'          => number_format($amount, 2),
+            'transaction_id'  => $donation->razorpay_payment_id ?? 'N/A',
+            'payment_mode'    => 'Online (Razorpay)',
+            'amount_in_words' => $amount_in_words,
+            'registration_no' => '80G-REG-001',
+            'email'           => 'info@suvabani.org',
+            'org_address'     => 'Suvabani Foundation, West Bengal, India',
         ]);
 
         return $pdf->download('80G_'.$donation->receipt_number.'.pdf');

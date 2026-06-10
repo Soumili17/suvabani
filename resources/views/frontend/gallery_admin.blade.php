@@ -127,7 +127,7 @@
                 <label>Category</label>
                 <select name="category">
                     <option value="">-- Select Category --</option>
-                    @foreach(['Child Welfare', 'Women Empowerment', 'Healthcare Support', 'Education for All'] as $category)
+                    @foreach(['Child Welfare', 'Women Empowerment', 'Healthcare Support', 'Education for All', 'Food Distribution', 'Free Medical Camp', 'Skill Development'] as $category)
                         <option value="{{ $category }}" @selected(old('category') === $category)>{{ $category }}</option>
                     @endforeach
                 </select>
@@ -144,7 +144,7 @@
             </div>
 
             <div class="form-group" id="imageField">
-                <label>Upload Image</label>
+                <label>Upload Image <small style="font-weight:normal; color:#888;">(JPEG/PNG/GIF/WebP, max 5MB)</small></label>
                 <input type="file" name="image" accept="image/*" onchange="previewImage(event)">
                 <img id="imagePreview" class="preview" alt="Image preview">
                 @error('image') <div class="error">{{ $message }}</div> @enderror
@@ -233,17 +233,20 @@ function extractYouTubeId(url){
     return match ? match[1] : null;
 }
 
-document.querySelector('input[name="video_url"]').addEventListener('input', function(){
-    const iframe = document.getElementById('videoPreview');
-    const videoId = extractYouTubeId(this.value);
+const videoUrlInput = document.querySelector('input[name="video_url"]');
+if (videoUrlInput) {
+    videoUrlInput.addEventListener('input', function(){
+        const iframe = document.getElementById('videoPreview');
+        const videoId = extractYouTubeId(this.value);
 
-    if(videoId){
-        iframe.src = 'https://www.youtube.com/embed/' + videoId;
-        iframe.style.display = 'block';
-    } else {
-        iframe.style.display = 'none';
-    }
-});
+        if(videoId){
+            iframe.src = 'https://www.youtube.com/embed/' + videoId;
+            iframe.style.display = 'block';
+        } else {
+            iframe.style.display = 'none';
+        }
+    });
+}
 
 toggleFields(document.getElementById('typeSelect').value);
 </script>

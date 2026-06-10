@@ -34,7 +34,12 @@
 <h4 style="color:#003f88; margin-bottom:8px;">📷 Document 1: Passport-size Photo</h4>
 <p style="color:#555; font-size:13px; margin-bottom:10px;">Please upload a clear, recent passport-size photograph of yourself.</p>
 <label for="photo">Select Photo (JPEG/PNG):</label>
-<input type="file" id="photo" name="photo" accept="image/*">
+<input
+    type="file"
+    id="photo"
+    name="photo"
+    accept="image/*"
+    capture="user"> 
 <img id="photoPreview" src="#" alt="Photo Preview" style="display:none;">
 <br>
 <!--  -->

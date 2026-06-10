@@ -8,26 +8,56 @@ table{ width:100%; border-collapse:collapse; margin-top:20px; } th,td{ border:1p
 
 <h2 class="page-title">All Donations</h2>
 
-@if($donors->isEmpty())
-<p>No donors found.</p>
-@else
-<form method="GET" action="{{ route('dashboard.donors') }}" style="margin-bottom:15px;">
+{{-- FILTER FORM (always visible) --}}
+<form method="GET" action="{{ route('dashboard.donors') }}" style="margin-bottom:20px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; background:#f8fafc; padding:15px; border-radius:8px; border:1px solid #e2e8f0;">
 
-<input type="text" 
-name="search" 
-placeholder="Search name, email or phone"
-value="{{ request('search') }}"
-style="padding:8px;width:250px;">
+    {{-- Search --}}
+    <input type="text"
+        name="search"
+        placeholder="🔍 Search name, email or phone"
+        value="{{ request('search') }}"
+        style="padding:8px 12px; width:230px; border:1px solid #ccc; border-radius:6px; font-size:14px;">
 
-<button type="submit" class="btn-action">
-Search
-</button>
+    {{-- 80G Filter --}}
+    <select name="need_80g" style="padding:8px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; background:#fff;">
+        <option value="">📄 All 80G Status</option>
+        <option value="1" {{ request('need_80g') === '1' ? 'selected' : '' }}>✅ Yes (80G Required)</option>
+        <option value="0" {{ request('need_80g') === '0' ? 'selected' : '' }}>❌ No 80G</option>
+    </select>
 
-<a href="{{ route('dashboard.donors') }}" class="btn-action">
-Reset
-</a>
+    {{-- Payment Status Filter --}}
+    <select name="payment_status" style="padding:8px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; background:#fff;">
+        <option value="">💳 All Payment Status</option>
+        <option value="Paid"    {{ request('payment_status') === 'Paid'    ? 'selected' : '' }}>✅ Paid</option>
+        <option value="Pending" {{ request('payment_status') === 'Pending' ? 'selected' : '' }}>⏳ Pending</option>
+        <option value="Failed"  {{ request('payment_status') === 'Failed'  ? 'selected' : '' }}>❌ Failed</option>
+    </select>
+
+    {{-- Donation Purpose Filter --}}
+    @if(isset($purposes) && $purposes->isNotEmpty())
+    <select name="donation_purpose" style="padding:8px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; background:#fff;">
+        <option value="">🎯 All Purposes</option>
+        @foreach($purposes as $purpose)
+            <option value="{{ $purpose }}" {{ request('donation_purpose') === $purpose ? 'selected' : '' }}>{{ $purpose }}</option>
+        @endforeach
+    </select>
+    @endif
+
+    <button type="submit" class="btn-action" style="padding:8px 18px;">
+        Filter
+    </button>
+
+    <a href="{{ route('dashboard.donors') }}" class="btn-action" style="padding:8px 18px; background:#6c757d;">
+        Reset
+    </a>
 
 </form>
+
+@if($donors->isEmpty())
+<p style="color:#666; padding:15px; background:#fff3cd; border-radius:6px; border-left:4px solid #ffc107;">
+    ⚠️ No donors found matching the selected filters.
+</p>
+@else
 <table>
 
 <tr>

@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,29 +7,32 @@
 
 body{
     margin:0;
-    font-family: Arial, Helvetica, sans-serif;
-    background:#ffffff;
+    padding:0;
+    font-family:Arial, Helvetica, sans-serif;
 }
 
 /* CARD */
 .card{
     width:350px;
     height:220px;
-    border:3px solid #ff003c; /* RED BORDER */
+    border:2px solid #ff003c;
     border-radius:12px;
     overflow:hidden;
     background:#fff;
+    position:relative;
+    box-sizing:border-box;
 }
 
 /* HEADER */
 .header{
-    background:#2d0b91; /* WEBSITE BLUE */
+    height:38px;
+    line-height:38px;
+    background:#2d0b91;
     color:#fff;
     text-align:center;
     font-size:16px;
     font-weight:bold;
-    padding:10px 0;
-    letter-spacing:0.5px;
+    border-bottom:2px solid #ff003c;
 }
 
 /* MAIN CONTENT */
@@ -39,102 +41,116 @@ body{
     border-collapse:collapse;
 }
 
-/* PHOTO SECTION */
-.photo{
-    width:90px;
-    padding:8px;
-    text-align:center;
+.content td{
     vertical-align:top;
 }
 
+/* PHOTO */
+.photo{
+    width:82px;
+    padding:8px 5px 0 8px;
+}
+
 .photo img{
-    width:78px;
-    height:95px;
+    width:68px;
+    height:82px;
     object-fit:cover;
-    border:2px solid #2d0b91; /* BLUE */
+    border:2px solid #2d0b91;
     border-radius:4px;
 }
 
 /* DETAILS */
 .details{
-    padding:8px 5px;
+    width:170px;
+    padding-top:8px;
     font-size:12px;
-    vertical-align:top;
     color:#000;
 }
 
 .details p{
-    margin:4px 0;
+    margin:0 0 5px 0;
 }
 
 .member-id{
-    color:#ff003c; /* RED */
+    color:#ff003c;
+    font-size:15px;
     font-weight:bold;
-    font-size:14px;
 }
 
-/* RIGHT LOGO */
+/* LOGO */
 .side-logo{
-    width:80px;
+    width:70px;
     text-align:center;
-    vertical-align:middle;
+    padding-top:18px;
 }
 
 .side-logo img{
-    width:65px;
-    height:65px;
+    width:55px;
+    height:55px;
     object-fit:contain;
 }
 
 /* FOOTER */
 .footer{
+    position:absolute;
+    bottom:0;
+    left:0;
     width:100%;
-    border-top:1px solid #ddd;
-    background:#f8f8f8;
+    height:65px;
+    border-top:1px solid #dcdcdc;
+    background:#fafafa;
 }
 
-.footer td{
-    padding:6px;
+.footer-table{
+    width:100%;
+    height:65px;
+    border-collapse:collapse;
+}
+
+.footer-table td{
     vertical-align:middle;
 }
 
 /* SIGNATURE */
-.signature{
-    width:50%;
+.signature-cell{
+    width:55%;
+    padding-left:10px;
 }
 
-.signature img{
+.signature-cell img{
+    width:70px;
     height:40px;
-    width:auto;
+    object-fit:contain;
     display:block;
 }
 
 .sign-label{
-    font-size:9px;
-    margin-top:2px;
+    font-size:8px;
     color:#000;
+    margin-top:2px;
 }
 
 /* VALID MEMBER */
-.valid-text{
-    width:50%;
+.valid-cell{
+    width:45%;
     text-align:right;
+    padding-right:10px;
 }
 
 .valid-title{
-    font-size:16px;
+    color:#2d0b91;
+    font-size:15px;
     font-weight:bold;
-    color:#2d0b91; /* BLUE */
+    line-height:16px;
 }
 
 .valid-date{
-    font-size:11px;
+    margin-top:3px;
+    font-size:10px;
     color:#000;
-    margin-top:2px;
 }
 
 </style>
-
 </head>
 
 <body>
@@ -146,8 +162,9 @@ body{
         SUVABANI FOUNDATION
     </div>
 
-    <!-- BODY -->
+    <!-- CONTENT -->
     <table class="content">
+
         <tr>
 
             <!-- PHOTO -->
@@ -184,48 +201,58 @@ body{
 
             </td>
 
-            <!-- RIGHT SIDE LOGO -->
+            <!-- LOGO -->
             <td class="side-logo">
                 <img src="{{ public_path('assests/images/formlogo.png') }}">
             </td>
 
         </tr>
+
     </table>
 
     <!-- FOOTER -->
-    <table class="footer">
-        <tr>
+    <div class="footer">
 
-            <!-- SIGNATURE -->
-            <td class="signature">
+        <table class="footer-table">
 
-                <img src="{{ public_path('assests/images/sign_suvoda.png') }}">
+            <tr>
 
-                <div class="sign-label">
-                    President Signature
-                </div>
+                <!-- SIGNATURE -->
+                <td class="signature-cell">
 
-            </td>
+                    <!-- IMPORTANT:
+                         Rotate the actual PNG file and save it as:
+                         sign_suvoda_rotated.png
+                    -->
+                    <img src="{{ public_path('assests/images/sign_suvoda.png') }}">
 
-            <!-- VALID MEMBER -->
-            <td class="valid-text">
+                    <div class="sign-label">
+                        President Signature
+                    </div>
 
-                <div class="valid-title">
-                    Valid Member
-                </div>
+                </td>
 
-                <div class="valid-date">
-                    Valid Upto:
-                    {{ date('d-m-Y', strtotime(($member->approved_at ?? $member->created_at) . ' + 3 months')) }}
-                </div>
+                <!-- VALID MEMBER -->
+                <td class="valid-cell">
 
-            </td>
+                    <div class="valid-title">
+                        Active Member
+                    </div>
 
-        </tr>
-    </table>
+                    <div class="valid-date">
+                        Valid Upto:
+                        {{ date('d-m-Y', strtotime(($member->approved_at ?? $member->created_at).' +3 months')) }}
+                    </div>
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    </div>
 
 </div>
 
 </body>
 </html>
-```

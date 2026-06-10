@@ -57,8 +57,8 @@ class GalleryController extends Controller
             'title'       => 'required|string|max:255',
             'category'    => 'required|string',
             'type'        => 'required|in:image,youtube',
-            'image'       => 'required_if:type,image|image|mimes:jpeg,jpg,png|max:2048',
-            'video_url'   => 'required_if:type,youtube|url',
+            'image'       => 'nullable|required_if:type,image|image|mimes:jpeg,jpg,png,gif,webp|max:5120',
+            'video_url'   => 'nullable|required_if:type,youtube|url',
         ]);
 
         $data = [

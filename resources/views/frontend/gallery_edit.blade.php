@@ -102,7 +102,7 @@
             @error('image') <div class="error">{{ $message }}</div> @enderror
         </div>
 
-        <div class="form-group" id="videoField">
+        <div class="form-group" id="videoField" style="display:none;">
             <label>YouTube URL</label>
             <input type="text" name="video_url" value="{{ old('video_url', $gallery->video_url) }}" placeholder="https://youtube.com/watch?v=...">
             @error('video_url') <div class="error">{{ $message }}</div> @enderror
