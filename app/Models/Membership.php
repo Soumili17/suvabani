@@ -14,6 +14,7 @@ class Membership extends Model
         'fullname',
         'dob',
         'gender',
+        'blood_group',
         'nationality',
         'occupation',
         'address',

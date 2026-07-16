@@ -178,7 +178,7 @@ body{
 
     <tr>
         <td><strong>Date of Issue</strong></td>
-        <td>{{ date('d-m-Y') }}</td>
+        <td>{{ $created_at }}</td>
     </tr>
 
 </table>
@@ -215,7 +215,7 @@ body{
     having PAN
     <strong>{{ $donor_pan }}</strong>,
     a sum of
-    <strong>₹ {{ $amount }}</strong>
+    <strong>INR {{ $amount }}</strong>
     (Rupees {{ $amount_in_words }} Only)
     towards donation to
     <strong>SUVABANI FOUNDATION</strong>
@@ -231,7 +231,7 @@ body{
 
     <tr>
         <td>Donation Date</td>
-        <td>{{ date('d F Y') }}</td>
+        <td>{{ $created_at }}</td>
     </tr>
 
     <tr>
@@ -272,8 +272,8 @@ body{
     and is eligible for deduction under Section 80G of the Income Tax Act,
     subject to the provisions and conditions prescribed therein.
 
-    The approval has been granted vide Registration Number
-    <strong>{{ $registration_no }}</strong>.
+    The approval has been granted vide Certificate Number
+    <strong>{{ $receipt_no }}</strong>.
 
 </div>
 

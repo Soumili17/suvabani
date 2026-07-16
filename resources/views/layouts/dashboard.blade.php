@@ -23,6 +23,7 @@
         <a href="{{ route('dashboard.gallery') }}">Gallery</a>
         <a href="{{ route('dashboard.home_video') }}">Home Video</a>
         <a href="{{ route('dashboard.governing_body.index') }}">Governing Body</a>
+        <a href="{{ route('dashboard.notices') }}">Notices</a>
     </div>
 </div>
 

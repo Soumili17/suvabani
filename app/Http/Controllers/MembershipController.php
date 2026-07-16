@@ -52,19 +52,20 @@ class MembershipController extends Controller
             'fullname'       => 'required|string|max:255',
             'dob'            => 'required|date',
             'gender'         => 'required',
-            'nationality'    => 'required|string',
-            'occupation'     => 'required|string',
-            'address'        => 'required|string',
+            'blood_group'    => 'nullable|string|max:20',
+            'nationality'    => 'nullable|string',
+            'occupation'     => 'nullable|string',
+            'address'        => 'nullable|string',
             'phone'          => 'required|digits:10|unique:memberships,phone',
             'email'          => 'required|email|unique:memberships,email',
-            'idproof'        => 'required',
-            'idnumber'       => 'required|string',
+            'idproof'        => 'nullable',
+            'idnumber'       => 'nullable|string',
             'photo'          => 'required|image|max:2048',
-            'signature'      => 'required|image|max:1024',
-            'idfile'         => 'required|file|max:4096',
+            'signature'      => 'nullable|image|max:1024',
+            'idfile'         => 'nullable|file|max:4096',
             'membership_type'=> 'required',
             'membertype'     => 'required',
-            'time'           => 'required',
+            'time'           => 'nullable',
             'declaration_date'=> 'required|date',
         ]);
 
@@ -73,17 +74,18 @@ class MembershipController extends Controller
             $member = Membership::create([
 
                 // FILES
-                'photo'     => $request->file('photo')->store('photos', 'public'),
-                'signature' => $request->file('signature')->store('signatures', 'public'),
-                'idfile'    => $request->file('idfile')->store('idproofs', 'public'),
+                'photo'     => $request->file('photo') ? $request->file('photo')->store('photos', 'public') : null,
+                'signature' => $request->file('signature') ? $request->file('signature')->store('signatures', 'public') : null,
+                'idfile'    => $request->file('idfile') ? $request->file('idfile')->store('idproofs', 'public') : null,
 
                 // BASIC INFO
                 'fullname'    => trim($request->fullname),
                 'dob'         => $request->dob,
                 'gender'      => $request->gender,
-                'nationality' => $request->nationality,
-                'occupation'  => $request->occupation,
-                'address'     => $request->address,
+                'blood_group' => $request->blood_group ? trim($request->blood_group) : null,
+                'nationality' => $request->nationality ? trim($request->nationality) : null,
+                'occupation'  => $request->occupation ? trim($request->occupation) : null,
+                'address'     => $request->address ? trim($request->address) : null,
                 'phone'       => $request->phone,
                 'email'       => $request->email,
 
@@ -105,7 +107,7 @@ class MembershipController extends Controller
                 // OTHER
                 'experience' => $request->experience,
                 'languages'  => $request->languages,
-                'time'       => json_encode($request->time), // safe for JSON column
+                'time'       => $request->time ? json_encode($request->time) : null,
                 'reason'     => $request->reason,
                 'ref_name'   => $request->ref_name,
                 'ref_mobile' => $request->ref_mobile,
@@ -347,7 +349,7 @@ class MembershipController extends Controller
         // 🔍 SEARCH
         if ($request->search) {
             $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
+                $q->where('fullname', 'like', '%' . $request->search . '%')
                 ->orWhere('email', 'like', '%' . $request->search . '%')
                 ->orWhere('phone', 'like', '%' . $request->search . '%')
                 ->orWhere('membership_id', 'like', '%' . $request->search . '%');

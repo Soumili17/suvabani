@@ -80,7 +80,7 @@ th{
 @forelse($members as $member)
 <tr>
     <td>{{ $member->membership_id ?? 'N/A' }}</td>
-    <td>{{ $member->name }}</td>
+    <td>{{ $member->fullname }}</td>
     <td>{{ $member->phone }}</td>
     <td>{{ $member->email }}</td>
 

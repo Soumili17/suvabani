@@ -285,6 +285,21 @@ class DonationController extends Controller
 
     }
 
+    // Download Invoice (direct URL)
+    public function downloadInvoice($id)
+    {
+        $donation = Donation::findOrFail($id);
+        // normalize fields expected by the invoice view
+        $donation->name = $donation->donor_name;
+        $donation->email = $donation->donor_email;
+        $donation->phone = $donation->donor_phone;
+        $donation->address = $donation->donor_address;
+
+        $pdf = Pdf::loadView('frontend.invoice_pdf', compact('donation'));
+
+        return $pdf->download('invoice_'.$donation->receipt_number.'.pdf');
+    }
+
 
 
     // Show 80G Form Page
@@ -335,7 +350,12 @@ class DonationController extends Controller
                 'donor_name as name',
                 'donor_phone as phone',
                 'donor_email as email',
-                'donor_address as address'
+                'donor_address as address',
+                'donor_city as city',
+                'donor_state as state',
+                'donor_pincode as pincode',
+                'donor_pan as pan',
+                'created_at'
             )
             ->first();
 
@@ -390,6 +410,7 @@ class DonationController extends Controller
             'registration_no' => '80G-REG-001',
             'email'           => 'info@suvabani.org',
             'org_address'     => 'Suvabani Foundation, West Bengal, India',
+            'created_at'      => date('d-m-Y', strtotime($donation->created_at)),
         ]);
 
         return $pdf->download('80G_'.$donation->receipt_number.'.pdf');

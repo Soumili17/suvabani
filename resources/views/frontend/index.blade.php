@@ -144,30 +144,37 @@
     <div class="row mt-4 g-4 text-center">
 
         <div class="col-lg-4 col-md-6 col-12">
-            <div class="box shadow-sm rounded overflow-hidden">
+            <div class="box shadow-sm rounded overflow-hidden" style="cursor:pointer;" onclick="window.location.href='{{ route('gallery') }}#food-distribution'">
                 <img src="{{ asset('assests/images/project/food.jpg') }}" alt="Food Project" class="img-fluid w-100" style="height: 220px; object-fit: cover;">
-                <button class="img-btn blue w-100 p-2 border-0 text-white" style="background:#003f88;">Food Distribution</button>
+                <button class="img-btn blue w-100 p-2 border-0 text-white" style="background:#003f88; pointer-events:none;">Food Distribution</button>
             </div>
         </div>
 
         <div class="col-lg-4 col-md-6 col-12">
-            <div class="box shadow-sm rounded overflow-hidden">
-                <img src="{{ asset('assests/images/project/medical.jpg') }}" alt="Medical Project" class="img-fluid w-100" style="height: 220px; object-fit: cover;">
-                <button class="img-btn green w-100 p-2 border-0 text-white" style="background:#0d6efd;">Free Medical Camp</button>
+            <div class="box shadow-sm rounded overflow-hidden" style="cursor:pointer;" onclick="window.location.href='{{ route('gallery') }}#support-for-seniors'">
+                <img src="{{ asset('assests/images/project/old.jpeg') }}" 
+                     alt="Helping the Needy" 
+                     class="img-fluid w-100" 
+                     style="height: 220px; object-fit: cover;">
+
+                <button class="img-btn w-100 p-2 border-0 text-white" 
+                        style="background:#0d6efd; pointer-events:none;">
+                    Support for Seniors
+                </button>
             </div>
         </div>
 
         <div class="col-lg-4 col-md-6 col-12">
-            <div class="box shadow-sm rounded overflow-hidden">
+            <div class="box shadow-sm rounded overflow-hidden" style="cursor:pointer;" onclick="window.location.href='{{ route('gallery') }}#skill-development'">
                 <img src="{{ asset('assests/images/project/skill.jpg') }}" alt="Skill Development" class="img-fluid w-100" style="height: 220px; object-fit: cover;">
-                <button class="img-btn teal w-100 p-2 border-0 text-white" style="background:#1a73e8;">Skill Development</button>
+                <button class="img-btn teal w-100 p-2 border-0 text-white" style="background:#1a73e8; pointer-events:none;">Skill Development</button>
             </div>
         </div>
 
     </div>
 
     <div class="projects-btn-wrap mt-4 text-center">
-        <a href="#" class="btn btn-primary rounded-pill px-4 py-2 fw-semibold">View All Projects →</a>
+        <a href="{{ route('gallery') }}" class="btn btn-primary rounded-pill px-4 py-2 fw-semibold">View All Projects →</a>
     </div>
 </section>
 

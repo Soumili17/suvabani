@@ -25,13 +25,13 @@
 </div>
 
 <!-- Progress Bar --> 
-<ul id="progressbar"> <li class="active">Photo</li> <li>Personal</li> <li>ID Proof</li> <li>Membership</li> <li>Interest</li> <li>Other</li> <li>Declaration</li> </ul> <form id="membershipForm" action="{{ route('membership.submit') }}" method="POST" enctype="multipart/form-data"> @csrf
+<ul id="progressbar"> <li class="active">Info</li> <li>Membership</li> <li>Declaration</li> </ul> <form id="membershipForm" action="{{ route('membership.submit') }}" method="POST" enctype="multipart/form-data"> @csrf
 
 
-<!-- PHOTO UPLOAD -->
+<!-- PAGE 1: PERSONAL INFO & PHOTO -->
 <fieldset class="active">
-<legend>Upload Photo</legend>
-<h4 style="color:#003f88; margin-bottom:8px;">📷 Document 1: Passport-size Photo</h4>
+<legend>Personal Details</legend>
+<h4 style="color:#003f88; margin-bottom:8px;">📷 passport-size Photo</h4>
 <p style="color:#555; font-size:13px; margin-bottom:10px;">Please upload a clear, recent passport-size photograph of yourself.</p>
 <label for="photo">Select Photo (JPEG/PNG):</label>
 <input
@@ -39,67 +39,48 @@
     id="photo"
     name="photo"
     accept="image/*"
-    capture="user"> 
+    > 
 <img id="photoPreview" src="#" alt="Photo Preview" style="display:none;">
-<br>
-<!--  -->
-<button type="button" class="nextBtn">Next</button>
-<!--  -->
-</fieldset>
+<hr>
 
-<!-- PERSONAL DETAILS -->
-<fieldset>
-<legend>Personal Details</legend>
 <label for="fullname">Your Full Name:</label>
 <input type="text" name="fullname" id="fullname">
 
-    <div class="form-group half">
-      <label for="dob">Date of Birth: <span style="color:red;">*</span></label>
-      <input type="date" id="dob" name="dob" required>
-    </div>
+<div class="form-group half">
+  <label for="dob">Date of Birth: <span style="color:red;">*</span></label>
+  <input type="date" id="dob" name="dob" required>
+</div>
+
 <label>Gender:</label>
 <input type="radio" name="gender" value="Male"> Male
 <input type="radio" name="gender" value="Female"> Female
 <input type="radio" name="gender" value="Other"> Other
-<label for="nationality">Nationality:</label>
-<input type="text" id="nationality" name="nationality">
-<label for="occupation">Occupation:</label>
-<input type="text" id="occupation" name="occupation">
-<label for="address">Address:</label>
-<textarea id="address" name="address"></textarea>
+
+<label for="blood_group">Blood Group (Optional):</label>
+<select id="blood_group" name="blood_group">
+    <option value="">Select Blood Group</option>
+    <option value="A+">A+</option>
+    <option value="A-">A-</option>
+    <option value="B+">B+</option>
+    <option value="B-">B-</option>
+    <option value="AB+">AB+</option>
+    <option value="AB-">AB-</option>
+    <option value="O+">O+</option>
+    <option value="O-">O-</option>
+</select>
+
 <label for="phone">Phone:</label>
 <input type="text" id="phone" name="phone">
-<label for="email">Email:</label>
+
+<label for="email">Email / Gmail:</label>
 <input type="email" id="email" name="email">
 <br>
 <!--  -->
-<button type="button" class="prevBtn">Previous</button>
 <button type="button" class="nextBtn">Next</button>
 <!--  -->
 </fieldset>
 
-<!-- ID PROOF -->
-<fieldset>
-<legend>ID Proof</legend>
-<h4 style="color:#003f88; margin-bottom:8px;">🪪 Document 2: Aadhar / PAN Card</h4>
-<p style="color:#555; font-size:13px; margin-bottom:10px;">Select your government-issued ID type and upload a copy (PDF, JPEG, or PNG).</p>
-<label>Select ID Type:</label>
-<input type="radio" name="idproof" value="Aadhar"> Aadhaar
-<input type="radio" name="idproof" value="PAN"> PAN
-<input type="radio" name="idproof" value="Voter"> Voter ID
-<input type="radio" name="idproof" value="Passport"> Passport
-<label for="idnumber">ID Number:</label>
-<input type="text" id="idnumber" name="idnumber">
-<label for="idfile">Upload ID Proof (PDF/JPEG/PNG):</label>
-<input type="file" id="idfile" name="idfile" accept=".pdf,.jpg,.jpeg,.png">
-<br>
-<!--  -->
-<button type="button" class="prevBtn">Previous</button>
-<button type="button" class="nextBtn">Next</button>
-<!--  -->
-</fieldset>
-
-<!-- MEMBERSHIP TYPE -->
+<!-- PAGE 2: MEMBERSHIP TYPE -->
 <fieldset>
 <legend>Membership Type</legend>
 <label>
@@ -138,56 +119,11 @@
 <!--  -->
 </fieldset>
 
-<!-- AREAS OF INTEREST -->
-<fieldset>
-<legend>Areas of Interest</legend>
-<input type="checkbox" name="interest[]" value="Child Education"> Child Education
-<input type="checkbox" name="interest[]" value="Senior Citizens Welfare"> Senior Citizens Welfare
-<input type="checkbox" name="interest[]" value="Health & Nutrition"> Health & Nutrition
-<input type="checkbox" name="interest[]" value="Disaster Relief"> Disaster Relief
-<input type="checkbox" name="interest[]" value="Water & Sanitation"> Water & Sanitation
-<input type="checkbox" name="interest[]" value="Tribal & Rural Development"> Tribal & Rural Development
-<input type="checkbox" name="interest[]" value="Other"> Other: <input type="text" name="interest_other">
-<br>
-<!--  -->
-<button type="button" class="prevBtn">Previous</button>
-<button type="button" class="nextBtn">Next</button>
-<!--  -->
-</fieldset>
-
-<!-- OTHER INFORMATION -->
-<fieldset>
-<legend>Other Information</legend>
-<label>Previous Experience:</label>
-<textarea name="experience"></textarea>
-<label>Languages Known:</label>
-<input type="text" name="languages">
-<label>Time You Can Dedicate:</label>
-<input type="radio" name="time" value="1-2 hrs"> 1-2 hrs
-<input type="radio" name="time" value="3-5 hrs"> 3-5 hrs
-<input type="radio" name="time" value="Weekends only"> Weekends only
-<input type="radio" name="time" value="Full-time"> Full-time
-<label>Reason for Joining:</label>
-<textarea name="reason"></textarea>
-<label>Reference (if any):</label>
-Name: <input type="text" name="ref_name">
-Mobile: <input type="text" name="ref_mobile">
-<br>
-<!--  -->
-<button type="button" class="prevBtn">Previous</button>
-<button type="button" class="nextBtn">Next</button>
-<!--  -->
-</fieldset>
-
-<!-- DECLARATION WITH SIGNATURE IMAGE -->
+<!-- PAGE 3: DECLARATION -->
 <fieldset>
 <legend>Declaration</legend>
 <p>I hereby declare that the information provided is true and correct. I agree to follow the constitution, rules, and code of conduct of SUVABANI FOUNDATION.</p>
-<h4 style="color:#003f88; margin:12px 0 6px;">✍️ Document 3: Your Signature</h4>
-<p style="color:#555; font-size:13px; margin-bottom:10px;">Please upload a clear image of your signature on a plain white background (JPEG/PNG).</p>
-<label for="signature">Upload Signature (JPEG/PNG):</label>
-<input type="file" id="signature" name="signature" accept="image/*">
-<img id="signaturePreview" src="#" alt="Signature Preview" style="display:none;">
+
 <label for="declaration_date" style="margin-top:12px;">Date of Declaration:</label>
 <input type="date" name="declaration_date" id="declaration_date">
 <br>
@@ -239,48 +175,29 @@ document.querySelectorAll('.prevBtn').forEach(btn=>{
     }
 });
 
+// ---------- PHOTO PREVIEW ----------
+document.getElementById('photo').onchange = evt => {
+    const [file] = evt.target.files;
+    if (file) {
+        const preview = document.getElementById('photoPreview');
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'block';
+    }
+};
+
 // ---------- VALIDATION ----------
 function validateStep(step){
     switch(step){
         case 0:
             if(!form.photo.files.length) return alert('Upload photo'), false;
-        break;
-
-        case 1:
             if(!form.fullname.value.trim()) return alert('Name required'), false;
             if(!form.dob.value) return alert('DOB required'), false;
             if(!form.querySelector('[name="gender"]:checked')) return alert('Select gender'), false;
-            if(!form.nationality.value.trim()) return alert('Nationality required'), false;
-            if(!form.occupation.value.trim()) return alert('Occupation required'), false;
-            if(!form.address.value.trim()) return alert('Address required'), false;
             if(!/^\d{10}$/.test(form.phone.value)) return alert('Invalid phone'), false;
             if(!/^\S+@\S+\.\S+$/.test(form.email.value)) return alert('Invalid email'), false;
         break;
 
-        case 2:
-            const idType = form.querySelector('[name="idproof"]:checked');
-            if(!idType) return alert('Select ID proof'), false;
-
-            const idNumber = form.idnumber.value.trim();
-
-            if(!idNumber) return alert('Enter ID number'), false;
-
-            if(idType.value === "Aadhar"){
-                if(!/^\d{12}$/.test(idNumber)){
-                    return alert('Aadhaar must be exactly 12 digits'), false;
-                }
-            }
-
-            if(idType.value === "PAN"){
-                if(!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(idNumber)){
-                    return alert('Invalid PAN format (ABCDE1234F)'), false;
-                }
-            }
-
-            if(!form.idfile.files.length) return alert('Upload ID file'), false;
-            break;
-
-        case 3:
+        case 1:
             const membershipType = form.querySelector('[name="membership_type"]:checked');
             if(!membershipType) return alert('Select membership'), false;
 
@@ -294,16 +211,7 @@ function validateStep(step){
             }
         break;
 
-        case 4:
-            if(!form.querySelector('[name="interest[]"]:checked')) return alert('Select interest'), false;
-        break;
-
-        case 5:
-            if(!form.querySelector('[name="time"]:checked')) return alert('Select time'), false;
-        break;
-
-        case 6:
-            if(!form.signature.files.length) return alert('Upload signature'), false;
+        case 2:
             if(!form.declaration_date.value) return alert('Select date'), false;
         break;
     }

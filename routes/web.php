@@ -8,6 +8,7 @@ use App\Http\Controllers\DonationController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\VolunteerController;
+use App\Http\Controllers\NoticeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,7 @@ Route::get('/donate', [DonationController::class, 'create'])->name('donate');
 Route::post('/donate', [DonationController::class, 'store'])->name('donate.store');
 Route::post('/create-order', [DonationController::class, 'createOrder']);
 Route::post('/validate-donation', [DonationController::class, 'validateForm']); // ✅ ADD THIS
+Route::get('/donation/invoice/{id}', [DonationController::class, 'downloadInvoice'])->name('donation.invoice');
 
 /*
 |--------------------------------------------------------------------------
@@ -266,6 +268,44 @@ Route::prefix('dashboard')->middleware('admin.auth')->group(function(){
 
     Route::delete('/governing-body/{id}', [GoverningBodyController::class, 'destroy'])
         ->name('dashboard.governing_body.delete');
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| PUBLIC NOTICE ROUTES (accessible by all guests)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/notices/{id}/view', [NoticeController::class, 'view'])->name('notices.view');
+Route::get('/notices/{id}/download', [NoticeController::class, 'download'])->name('notices.download');
+
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN NOTICE ROUTES
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('dashboard')->middleware('admin.auth')->group(function () {
+
+    Route::get('/notices', [NoticeController::class, 'adminIndex'])
+        ->name('dashboard.notices');
+
+    Route::get('/notices/create', [NoticeController::class, 'create'])
+        ->name('dashboard.notices.create');
+
+    Route::post('/notices', [NoticeController::class, 'store'])
+        ->name('dashboard.notices.store');
+
+    Route::get('/notices/{id}/edit', [NoticeController::class, 'edit'])
+        ->name('dashboard.notices.edit');
+
+    Route::put('/notices/{id}', [NoticeController::class, 'update'])
+        ->name('dashboard.notices.update');
+
+    Route::delete('/notices/{id}', [NoticeController::class, 'destroy'])
+        ->name('dashboard.notices.delete');
 });
 
 

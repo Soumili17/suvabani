@@ -118,8 +118,8 @@ body{
 }
 
 .signature-cell img{
-    width:70px;
-    height:40px;
+    width:45px;
+    height:24px;
     object-fit:contain;
     display:block;
 }
@@ -127,7 +127,7 @@ body{
 .sign-label{
     font-size:8px;
     color:#000;
-    margin-top:2px;
+    margin-top:-2px; /* was 2px */
 }
 
 /* VALID MEMBER */

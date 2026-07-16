@@ -88,6 +88,7 @@
 <div class="row"><div class="label">Name</div><div class="value">{{ $member->fullname ?? $member->name ?? 'N/A' }}</div></div>
 <div class="row"><div class="label">DOB</div><div class="value">{{ $member->dob ?? 'N/A' }}</div></div>
 <div class="row"><div class="label">Gender</div><div class="value">{{ $member->gender ?? 'N/A' }}</div></div>
+<div class="row"><div class="label">Blood Group</div><div class="value">{{ $member->blood_group ?? 'N/A' }}</div></div>
 <div class="row"><div class="label">Nationality</div><div class="value">{{ $member->nationality ?? 'N/A' }}</div></div>
 <div class="row"><div class="label">Occupation</div><div class="value">{{ $member->occupation ?? 'N/A' }}</div></div>
 <div class="row"><div class="label">Address</div><div class="value">{{ $member->address ?? 'N/A' }}</div></div>
