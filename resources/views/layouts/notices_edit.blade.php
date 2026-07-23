@@ -25,6 +25,19 @@
         @enderror
     </div>
 
+    <div style="margin-bottom:20px;">
+        <label for="description" style="display:block; font-weight:600; margin-bottom:6px; color:#333;">
+            Description
+        </label>
+        <textarea id="description" name="description" rows="5"
+                  style="width:100%; padding:10px 14px; border:1px solid #ccc; border-radius:8px;
+                         font-size:15px; outline:none; resize:vertical;"
+                  onfocus="this.style.borderColor='#0f9d94'" onblur="this.style.borderColor='#ccc'">{{ old('description', $notice->description) }}</textarea>
+        @error('description')
+            <p style="color:red; font-size:13px; margin-top:4px;">{{ $message }}</p>
+        @enderror
+    </div>
+
     {{-- Current PDF --}}
     <div style="margin-bottom:20px; padding:14px 18px; background:#f0fafa; border-radius:10px;
                 border:1px solid #c8ede9;">

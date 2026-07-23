@@ -246,6 +246,41 @@ form.addEventListener('submit', async (e)=>{
         }
     }
 
+    // =========================
+    // BACKEND VALIDATION FIRST (Check unique phone & email)
+    // =========================
+    try {
+        const valRes = await fetch("/validate-membership", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "Accept": "application/json"
+            },
+            body: new FormData(form)
+        });
+
+        const valData = await valRes.json();
+
+        if (!valRes.ok) {
+            if (valData.errors) {
+                const firstErr = Object.values(valData.errors)[0][0];
+                alert(firstErr);
+                // Return to step 0 if error is phone/email related
+                if (valData.errors.phone || valData.errors.email) {
+                    current = 0;
+                    showStep(0);
+                }
+            } else {
+                alert(valData.message || "Validation failed");
+            }
+            return;
+        }
+    } catch(err) {
+        console.error(err);
+        alert("Validation check failed. Please check your internet connection.");
+        return;
+    }
+
     const membershipType = form.querySelector('[name="membership_type"]:checked');
 
     // =========================

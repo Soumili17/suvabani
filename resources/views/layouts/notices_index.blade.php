@@ -16,6 +16,7 @@
         <tr>
             <th>#</th>
             <th>Title</th>
+            <th>Description</th>
             <th>Uploaded On</th>
             <th style="text-align:center;">Actions</th>
         </tr>
@@ -25,6 +26,7 @@
         <tr>
             <td>{{ $index + 1 }}</td>
             <td>{{ $notice->title }}</td>
+            <td>{{ \Illuminate\Support\Str::limit($notice->description, 100) ?: '—' }}</td>
             <td>{{ $notice->created_at->format('d M Y') }}</td>
             <td style="text-align:center; white-space:nowrap;">
                 {{-- View PDF --}}

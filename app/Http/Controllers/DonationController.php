@@ -22,13 +22,13 @@ class DonationController extends Controller
     public function validateForm(Request $request)
     {
         $rules = [
+            'donor_name'  => 'required|string|max:255',
             'donor_phone' => 'required',
-            'amount' => 'required|numeric|min:1',
-            'need_80g' => 'required',
+            'amount'      => 'required|numeric|min:1',
+            'need_80g'    => 'required',
         ];
 
         if ($request->need_80g === "Yes") {
-            $rules['donor_name'] = 'required';
             $rules['donor_email'] = 'required|email';
             $rules['donor_address'] = 'required';
             $rules['donor_city'] = 'required';
@@ -48,16 +48,16 @@ class DonationController extends Controller
         // STEP 1: VALIDATION FIRST
         // =========================
         $rules = [
-            'donor_phone' => 'required',
-            'amount' => 'required|numeric|min:1',
-            'need_80g' => 'required',
+            'donor_name'          => 'required|string|max:255',
+            'donor_phone'         => 'required',
+            'amount'              => 'required|numeric|min:1',
+            'need_80g'            => 'required',
             'razorpay_payment_id' => 'required',
-            'razorpay_order_id' => 'required',
-            'razorpay_signature' => 'required'
+            'razorpay_order_id'   => 'required',
+            'razorpay_signature'  => 'required'
         ];
 
         if ($request->need_80g === "Yes") {
-            $rules['donor_name'] = 'required';
             $rules['donor_email'] = 'required|email';
             $rules['donor_address'] = 'required';
             $rules['donor_city'] = 'required';
@@ -98,7 +98,7 @@ class DonationController extends Controller
 
             // 🔹 Insert donation directly into donations table
             $donationId = DB::table('donations')->insertGetId([
-                'donor_name' => $request->donor_name ?? 'Anonymous',
+                'donor_name' => trim($request->donor_name),
                 'donor_email' => $request->donor_email ?? '',
                 'donor_phone' => $request->donor_phone,
                 'donor_address' => $request->donor_address ?? '',

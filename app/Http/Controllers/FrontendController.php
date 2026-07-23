@@ -14,7 +14,8 @@ class FrontendController extends Controller
         $recentProjects = [];
         $homeGallery = Gallery::latest()->take(6)->get();
         $video = \App\Models\HomeVideo::first();
+        $notices = \App\Models\Notice::latest()->get();
 
-        return view('frontend.index', compact('heroBanners', 'recentProjects', 'homeGallery', 'video'));
+        return view('frontend.index', compact('heroBanners', 'recentProjects', 'homeGallery', 'video', 'notices'));
     }
 }

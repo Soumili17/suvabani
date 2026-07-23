@@ -32,12 +32,13 @@ class NoticeController extends Controller
     }
 
     /**
-     * Store a new notice (title + PDF upload).
+     * Store a new notice (title, description, and PDF upload).
      */
     public function store(Request $request)
     {
         $request->validate([
             'title'    => 'required|string|max:255',
+            'description' => 'nullable|string|max:5000',
             'pdf_file' => 'required|file|mimes:pdf|max:10240', // max 10 MB
         ]);
 
@@ -45,6 +46,7 @@ class NoticeController extends Controller
 
         Notice::create([
             'title'     => $request->title,
+            'description' => $request->description,
             'file_path' => $path,
         ]);
 
@@ -61,7 +63,7 @@ class NoticeController extends Controller
     }
 
     /**
-     * Update a notice (title and optionally replace the PDF).
+     * Update a notice (title, description, and optionally replace the PDF).
      */
     public function update(Request $request, $id)
     {
@@ -69,10 +71,12 @@ class NoticeController extends Controller
 
         $request->validate([
             'title'    => 'required|string|max:255',
+            'description' => 'nullable|string|max:5000',
             'pdf_file' => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
         $notice->title = $request->title;
+        $notice->description = $request->description;
 
         if ($request->hasFile('pdf_file')) {
             // Delete old file

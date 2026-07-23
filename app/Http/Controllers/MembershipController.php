@@ -41,6 +41,30 @@ class MembershipController extends Controller
         }
     }
 
+    public function validateForm(Request $request)
+    {
+        $request->validate([
+            'fullname'       => 'required|string|max:255',
+            'dob'            => 'required|date',
+            'gender'         => 'required',
+            'phone'          => 'required|digits:10|unique:memberships,phone',
+            'email'          => 'required|email|unique:memberships,email',
+            'photo'          => 'required|image|max:2048',
+            'membership_type'=> 'required',
+            'membertype'     => 'required',
+            'declaration_date'=> 'required|date',
+        ], [
+            'phone.required' => 'Phone number is required.',
+            'phone.digits'   => 'Phone number must be exactly 10 digits.',
+            'phone.unique'   => 'This mobile number is already registered for a membership.',
+            'email.required' => 'Email address is required.',
+            'email.email'    => 'Please enter a valid email address.',
+            'email.unique'   => 'This email address is already registered for a membership.',
+        ]);
+
+        return response()->json(['status' => true]);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | SUBMIT APPLICATION
@@ -67,6 +91,9 @@ class MembershipController extends Controller
             'membertype'     => 'required',
             'time'           => 'nullable',
             'declaration_date'=> 'required|date',
+        ], [
+            'phone.unique' => 'This mobile number is already registered for a membership.',
+            'email.unique' => 'This email address is already registered for a membership.',
         ]);
 
         try {
@@ -197,18 +224,24 @@ class MembershipController extends Controller
     {
         $member = Membership::findOrFail($id);
 
-        $api = new Api(config('services.razorpay.key'), config('services.razorpay.secret'));
-
         try {
+            if ($member->razorpay_subscription_id && $member->subscription_status !== 'Cancelled') {
+                $api = new Api(config('services.razorpay.key'), config('services.razorpay.secret'));
+                $subscription = $api->subscription->fetch($member->razorpay_subscription_id);
 
-            if ($member->razorpay_subscription_id) {
-                $api->subscription
-                    ->fetch($member->razorpay_subscription_id)
-                    ->cancel();
-                $member->subscription_status = 'Cancelled';
+                // Passing false explicitly prevents Razorpay from waiting until the
+                // end of the billing cycle before stopping future charges.
+                if (!in_array($subscription['status'], ['cancelled', 'completed', 'expired'], true)) {
+                    $subscription = $subscription->cancel(['cancel_at_cycle_end' => false]);
+                }
+
+                if (!in_array($subscription['status'], ['cancelled', 'completed', 'expired'], true)) {
+                    throw new \RuntimeException('Razorpay did not confirm that the subscription was cancelled.');
+                }
             }
 
             $member->approval_status = 'Deactivated';
+            $member->subscription_status = 'Cancelled';
             $member->save();
 
             return back()->with('success', 'Member deactivated and autopay cancelled');
@@ -327,6 +360,11 @@ class MembershipController extends Controller
                 $subId = $event['payload']['subscription']['entity']['id'];
 
                 Membership::where('razorpay_subscription_id', $subId)
+                    ->where('approval_status', '!=', 'Deactivated')
+                    ->where(function ($query) {
+                        $query->whereNull('subscription_status')
+                            ->orWhere('subscription_status', '!=', 'Cancelled');
+                    })
                     ->update(['subscription_status' => 'Active']);
                 break;
 

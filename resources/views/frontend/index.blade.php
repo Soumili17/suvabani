@@ -85,6 +85,49 @@
     </div>
 </section>
 
+<!-- NOTICES SECTION -->
+<section class="notices container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="m-0" style="color: #003f88;"><i class="fas fa-bullhorn me-2" style="color: #003f88;"></i>Official Notices & Announcements</h2>
+    </div>
+
+    @if(!isset($notices) || $notices->isEmpty())
+        <div class="alert alert-info text-center shadow-sm">No official notices available at the moment.</div>
+    @else
+        <div class="table-responsive shadow-sm rounded">
+            <table class="table table-hover align-middle mb-0" style="background:#fff;">
+                <thead style="background:#003f88; color:#fff;">
+                    <tr>
+                        <th style="width: 90px;" class="text-center">Sl. No.</th>
+                        <th>Notice Title</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th class="text-end" style="width: 170px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($notices as $notice)
+                        <tr>
+                            <td class="text-center fw-bold" style="color:#003f88;">{{ $loop->iteration }}</td>
+                            <td class="fw-semibold">{{ $notice->title }}</td>
+                            <td class="text-muted">{{ Str::limit($notice->description, 90) ?: '-' }}</td>
+                            <td style="white-space: nowrap;">{{ $notice->created_at ? $notice->created_at->format('d M Y') : '-' }}</td>
+                            <td class="text-end" style="white-space: nowrap;">
+                                <a href="{{ route('notices.view', $notice->id) }}" target="_blank" class="btn btn-sm btn-outline-primary me-1" title="View PDF">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                                <a href="{{ route('notices.download', $notice->id) }}" class="btn btn-sm btn-primary" title="Download PDF">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
+</section>
+
 <section class="home-video py-5 bg-light">
     <h2>{{ $video->title ?? 'Our Work in Action' }}</h2>
 

@@ -158,6 +158,11 @@ input:focus, textarea:focus {
 
 <!-- BASIC -->
 <div class="form-group">
+<label>Full Name *</label>
+<input type="text" name="donor_name" required placeholder="Enter your full name">
+</div>
+
+<div class="form-group">
 <label>Phone Number *</label>
 <input type="text" name="donor_phone" required>
 </div>
@@ -169,11 +174,6 @@ input:focus, textarea:focus {
 
 <!-- EXTRA (80G) -->
 <div id="extraFields" class="hidden">
-
-<div class="form-group">
-<label>Full Name *</label>
-<input type="text" name="donor_name">
-</div>
 
 <div class="form-group">
 <label>Address *</label>

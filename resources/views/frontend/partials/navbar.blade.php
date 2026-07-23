@@ -128,7 +128,7 @@
 }
 .notice-item {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     padding: 10px 16px;
     border-bottom: 1px solid #f0f0f0;
@@ -156,6 +156,12 @@
 .notice-item-title i {
     color: #dc3545;
     flex-shrink: 0;
+}
+.notice-item-description {
+    margin: 4px 0 0;
+    color: #5f6368;
+    font-size: 12px;
+    line-height: 1.35;
 }
 .notice-item-actions {
     display: flex;
@@ -242,10 +248,16 @@
                 @if(isset($navbarNotices) && $navbarNotices->isNotEmpty())
                     @foreach($navbarNotices as $notice)
                         <div class="notice-item">
-                            <span class="notice-item-title" title="{{ $notice->title }}">
-                                <i class="fas fa-file-pdf"></i>
-                                {{ Str::limit($notice->title, 38) }}
-                            </span>
+                            <div style="min-width:0; flex:1;">
+                                <span class="notice-item-title" title="{{ $notice->title }}">
+                                    <span style="background: #003f88; color: #fff; padding: 1px 6px; border-radius: 4px; font-size: 11px; margin-right: 5px; font-weight: bold;">Sl. {{ $loop->iteration }}</span>
+                                    <i class="fas fa-file-pdf"></i>
+                                    {{ Str::limit($notice->title, 34) }}
+                                </span>
+                                @if($notice->description)
+                                    <p class="notice-item-description">{{ Str::limit($notice->description, 85) }}</p>
+                                @endif
+                            </div>
                             <div class="notice-item-actions">
                                 <a href="{{ route('notices.view', $notice->id) }}"
                                    target="_blank"

@@ -50,7 +50,7 @@ Route::get('/donation/invoice/{id}', [DonationController::class, 'downloadInvoic
 */
 
 Route::post('/membership/submit', [MembershipController::class, 'submit'])->name('membership.submit');
-
+Route::post('/validate-membership', [MembershipController::class, 'validateForm']);
 Route::post('/create-membership-subscription', [MembershipController::class, 'createSubscription']);
 
 Route::post('/membership/search', [MembershipController::class, 'searchMember'])->name('membership.search');
