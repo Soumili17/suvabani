@@ -23,7 +23,7 @@ contact@suvabanifoundation.com
 <p>
 Name: {{ $donation->name ?? 'N/A' }} <br>
 Phone: {{ $donation->phone ?? 'N/A' }} <br>
-Email: {{ $donation->address ?? 'N/A' }}
+Email: {{ $donation->email ?? 'N/A' }}
 </p>
 
 <hr>
