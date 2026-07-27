@@ -119,10 +119,12 @@ N/A
 
 <!-- MEMBERSHIP -->
 <div class="section">
-<h3>Membership</h3>
+<h3>Membership Details</h3>
 
-<div class="row"><div class="label">Membership Type</div><div class="value">{{ $member->membership_type }}</div></div>
-<div class="row"><div class="label">Paid Amount</div><div class="value">₹ {{ $member->paid_amount }}</div></div>
+<div class="row"><div class="label">Member Type</div><div class="value"><span class="badge {{ ($member->membership ?? '') === 'Paid' ? 'approved' : 'rejected' }}" style="background: {{ ($member->membership ?? '') === 'Paid' ? '#0f766e' : '#6c757d' }};">{{ ($member->membership ?? '') === 'Paid' ? 'Paid Member' : 'Non-Paid Member' }}</span></div></div>
+<div class="row"><div class="label">Category</div><div class="value">{{ $member->membertype ?? 'N/A' }}</div></div>
+<div class="row"><div class="label">1st Payment Date</div><div class="value">{{ $member->first_payment_date }}</div></div>
+<div class="row"><div class="label">Paid Amount</div><div class="value">{{ $member->paidamount ? '₹ '.$member->paidamount : 'N/A' }}</div></div>
 
 </div>
 

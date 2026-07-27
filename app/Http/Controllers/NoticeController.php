@@ -37,17 +37,19 @@ class NoticeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title'    => 'required|string|max:255',
+            'title'       => 'required|string|max:255',
             'description' => 'nullable|string|max:5000',
-            'pdf_file' => 'required|file|mimes:pdf|max:10240', // max 10 MB
+            'pdf_file'    => 'nullable|file|mimes:pdf|max:10240', // max 10 MB (optional)
         ]);
 
-        $path = $request->file('pdf_file')->store('notices', 'public');
+        $path = $request->hasFile('pdf_file') 
+            ? $request->file('pdf_file')->store('notices', 'public') 
+            : null;
 
         Notice::create([
-            'title'     => $request->title,
+            'title'       => $request->title,
             'description' => $request->description,
-            'file_path' => $path,
+            'file_path'   => $path,
         ]);
 
         return redirect()->route('dashboard.notices')->with('success', 'Notice uploaded successfully.');
@@ -70,17 +72,19 @@ class NoticeController extends Controller
         $notice = Notice::findOrFail($id);
 
         $request->validate([
-            'title'    => 'required|string|max:255',
+            'title'       => 'required|string|max:255',
             'description' => 'nullable|string|max:5000',
-            'pdf_file' => 'nullable|file|mimes:pdf|max:10240',
+            'pdf_file'    => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
         $notice->title = $request->title;
         $notice->description = $request->description;
 
         if ($request->hasFile('pdf_file')) {
-            // Delete old file
-            Storage::disk('public')->delete($notice->file_path);
+            // Delete old file if exists
+            if ($notice->file_path) {
+                Storage::disk('public')->delete($notice->file_path);
+            }
             // Store new file
             $notice->file_path = $request->file('pdf_file')->store('notices', 'public');
         }
@@ -96,7 +100,9 @@ class NoticeController extends Controller
     public function destroy($id)
     {
         $notice = Notice::findOrFail($id);
-        Storage::disk('public')->delete($notice->file_path);
+        if ($notice->file_path) {
+            Storage::disk('public')->delete($notice->file_path);
+        }
         $notice->delete();
 
         return redirect()->route('dashboard.notices')->with('success', 'Notice deleted successfully.');
@@ -114,6 +120,10 @@ class NoticeController extends Controller
     public function view($id)
     {
         $notice = Notice::findOrFail($id);
+        if (!$notice->file_path) {
+            abort(404, 'No PDF file attached to this notice.');
+        }
+
         $filePath = storage_path('app/public/' . $notice->file_path);
 
         if (!file_exists($filePath)) {
@@ -132,6 +142,10 @@ class NoticeController extends Controller
     public function download($id)
     {
         $notice = Notice::findOrFail($id);
+        if (!$notice->file_path) {
+            abort(404, 'No PDF file attached to this notice.');
+        }
+
         $filePath = storage_path('app/public/' . $notice->file_path);
 
         if (!file_exists($filePath)) {

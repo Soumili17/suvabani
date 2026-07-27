@@ -41,7 +41,7 @@
 
     <div style="margin-bottom:24px;">
         <label for="pdf_file" style="display:block; font-weight:600; margin-bottom:6px; color:#333;">
-            PDF File <span style="color:red;">*</span>
+            PDF File <span style="color:#777; font-weight:normal; font-size:13px;">(Optional)</span>
         </label>
 
         <label for="pdf_file"
@@ -51,12 +51,12 @@
                onmouseover="this.style.background='#dff5f4'" onmouseout="this.style.background='#f0fafa'">
             <i class="fas fa-file-pdf" style="font-size:28px; color:#dc3545;"></i>
             <div>
-                <span id="file-label" style="font-size:15px; color:#333;">Click to choose a PDF file</span>
+                <span id="file-label" style="font-size:15px; color:#333;">Click to choose a PDF file (Optional)</span>
                 <p style="font-size:12px; color:#777; margin:2px 0 0;">Max size: 10 MB</p>
             </div>
             <input type="file" id="pdf_file" name="pdf_file" accept="application/pdf"
-                   style="display:none;" required
-                   onchange="document.getElementById('file-label').textContent = this.files[0]?.name || 'Click to choose a PDF file'">
+                   style="display:none;"
+                   onchange="document.getElementById('file-label').textContent = this.files[0]?.name || 'Click to choose a PDF file (Optional)'">
         </label>
 
         @error('pdf_file')

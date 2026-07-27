@@ -42,4 +42,23 @@ class Membership extends Model
     protected $casts = [
         'interest' => 'array'
     ];
+
+    /**
+     * Accessor for membership_type (Paid or Non-Paid)
+     */
+    public function getMembershipTypeAttribute()
+    {
+        return $this->attributes['membership'] ?? 'Non-Paid';
+    }
+
+    /**
+     * Accessor for 1st Payment Date
+     */
+    public function getFirstPaymentDateAttribute()
+    {
+        if (($this->attributes['membership'] ?? '') === 'Paid') {
+            return $this->created_at ? $this->created_at->format('d M Y') : 'N/A';
+        }
+        return 'N/A';
+    }
 }

@@ -47,8 +47,8 @@ class MembershipController extends Controller
             'fullname'       => 'required|string|max:255',
             'dob'            => 'required|date',
             'gender'         => 'required',
-            'phone'          => 'required|digits:10|unique:memberships,phone',
-            'email'          => 'required|email|unique:memberships,email',
+            'phone'          => 'required|digits:10',
+            'email'          => 'required|email',
             'photo'          => 'required|image|max:2048',
             'membership_type'=> 'required',
             'membertype'     => 'required',
@@ -56,10 +56,8 @@ class MembershipController extends Controller
         ], [
             'phone.required' => 'Phone number is required.',
             'phone.digits'   => 'Phone number must be exactly 10 digits.',
-            'phone.unique'   => 'This mobile number is already registered for a membership.',
             'email.required' => 'Email address is required.',
             'email.email'    => 'Please enter a valid email address.',
-            'email.unique'   => 'This email address is already registered for a membership.',
         ]);
 
         return response()->json(['status' => true]);
@@ -80,8 +78,8 @@ class MembershipController extends Controller
             'nationality'    => 'nullable|string',
             'occupation'     => 'nullable|string',
             'address'        => 'nullable|string',
-            'phone'          => 'required|digits:10|unique:memberships,phone',
-            'email'          => 'required|email|unique:memberships,email',
+            'phone'          => 'required|digits:10',
+            'email'          => 'required|email',
             'idproof'        => 'nullable',
             'idnumber'       => 'nullable|string',
             'photo'          => 'required|image|max:2048',
@@ -91,9 +89,6 @@ class MembershipController extends Controller
             'membertype'     => 'required',
             'time'           => 'nullable',
             'declaration_date'=> 'required|date',
-        ], [
-            'phone.unique' => 'This mobile number is already registered for a membership.',
-            'email.unique' => 'This email address is already registered for a membership.',
         ]);
 
         try {

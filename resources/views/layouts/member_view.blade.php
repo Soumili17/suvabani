@@ -67,6 +67,8 @@ th{
 <tr>
     <th>ID</th>
     <th>Name</th>
+    <th>Member Type</th>
+    <th>1st Payment Date</th>
     <th>Phone</th>
     <th>Email</th>
     <th>Status</th>
@@ -81,6 +83,14 @@ th{
 <tr>
     <td>{{ $member->membership_id ?? 'N/A' }}</td>
     <td>{{ $member->fullname }}</td>
+    <td>
+        @if(($member->membership ?? '') === 'Paid')
+            <span style="background:#0f766e; color:white; padding:3px 8px; border-radius:4px; font-size:12px; font-weight:600;">Paid Member</span>
+        @else
+            <span style="background:#6c757d; color:white; padding:3px 8px; border-radius:4px; font-size:12px; font-weight:600;">Non-Paid Member</span>
+        @endif
+    </td>
+    <td>{{ $member->first_payment_date }}</td>
     <td>{{ $member->phone }}</td>
     <td>{{ $member->email }}</td>
 
@@ -90,7 +100,7 @@ th{
         </span>
     </td>
 
-    <td>{{ $member->payment_status }}</td>
+    <td>{{ $member->payment_status ?: 'N/A' }}</td>
 
     <td class="actions">
         <a href="{{ route('dashboard.members.view', $member->id) }}">View</a>
@@ -99,7 +109,7 @@ th{
 </tr>
 @empty
 <tr>
-    <td colspan="7">No members found</td>
+    <td colspan="9">No members found</td>
 </tr>
 @endforelse
 

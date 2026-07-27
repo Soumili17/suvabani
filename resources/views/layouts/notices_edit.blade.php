@@ -39,6 +39,7 @@
     </div>
 
     {{-- Current PDF --}}
+    @if($notice->file_path)
     <div style="margin-bottom:20px; padding:14px 18px; background:#f0fafa; border-radius:10px;
                 border:1px solid #c8ede9;">
         <p style="margin:0 0 8px; font-weight:600; color:#333;">Current PDF:</p>
@@ -52,6 +53,12 @@
             </a>
         </div>
     </div>
+    @else
+    <div style="margin-bottom:20px; padding:14px 18px; background:#f8f9fa; border-radius:10px;
+                border:1px solid #e9ecef; color:#6c757d;">
+        <i class="fas fa-info-circle me-1"></i> No PDF currently attached to this notice.
+    </div>
+    @endif
 
     {{-- Replace PDF (optional) --}}
     <div style="margin-bottom:24px;">

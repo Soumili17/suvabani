@@ -30,8 +30,12 @@
             <td>{{ $notice->created_at->format('d M Y') }}</td>
             <td style="text-align:center; white-space:nowrap;">
                 {{-- View PDF --}}
-                <a href="{{ route('notices.view', $notice->id) }}" target="_blank" class="btn-action"
-                   style="background:#1a73e8; margin-right:5px;">View PDF</a>
+                @if($notice->file_path)
+                    <a href="{{ route('notices.view', $notice->id) }}" target="_blank" class="btn-action"
+                       style="background:#1a73e8; margin-right:5px;">View PDF</a>
+                @else
+                    <span style="display:inline-block; padding:4px 8px; background:#e9ecef; color:#6c757d; border-radius:6px; font-size:13px; margin-right:5px;">Text Only</span>
+                @endif
 
                 {{-- Edit --}}
                 <a href="{{ route('dashboard.notices.edit', $notice->id) }}" class="btn-action"

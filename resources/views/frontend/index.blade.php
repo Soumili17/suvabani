@@ -86,7 +86,7 @@
 </section>
 
 <!-- NOTICES SECTION -->
-<section class="notices container my-5">
+<section class="notices container-fluid px-3 px-md-5 my-5" style="max-width: 1400px;">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="m-0" style="color: #003f88;"><i class="fas fa-bullhorn me-2" style="color: #003f88;"></i>Official Notices & Announcements</h2>
     </div>
@@ -98,10 +98,10 @@
             <table class="table table-hover align-middle mb-0" style="background:#fff;">
                 <thead style="background:#003f88; color:#fff;">
                     <tr>
-                        <th style="width: 90px;" class="text-center">Sl. No.</th>
-                        <th>Notice Title</th>
-                        <th>Description</th>
-                        <th>Date</th>
+                        <th style="width: 70px;" class="text-center">Sl. No.</th>
+                        <th style="width: 25%;">Notice Title</th>
+                        <th style="width: 45%;">Description</th>
+                        <th style="width: 120px;">Date</th>
                         <th class="text-end" style="width: 170px;">Action</th>
                     </tr>
                 </thead>
@@ -109,16 +109,20 @@
                     @foreach($notices as $notice)
                         <tr>
                             <td class="text-center fw-bold" style="color:#003f88;">{{ $loop->iteration }}</td>
-                            <td class="fw-semibold">{{ $notice->title }}</td>
-                            <td class="text-muted">{{ Str::limit($notice->description, 90) ?: '-' }}</td>
-                            <td style="white-space: nowrap;">{{ $notice->created_at ? $notice->created_at->format('d M Y') : '-' }}</td>
+                            <td class="fw-semibold" style="color: #111;">{{ $notice->title }}</td>
+                            <td class="text-dark" style="line-height: 1.5; font-size: 14.5px;">{{ $notice->description ?: '-' }}</td>
+                            <td style="white-space: nowrap; color: #555;">{{ $notice->created_at ? $notice->created_at->format('d M Y') : '-' }}</td>
                             <td class="text-end" style="white-space: nowrap;">
-                                <a href="{{ route('notices.view', $notice->id) }}" target="_blank" class="btn btn-sm btn-outline-primary me-1" title="View PDF">
-                                    <i class="fas fa-eye"></i> View
-                                </a>
-                                <a href="{{ route('notices.download', $notice->id) }}" class="btn btn-sm btn-primary" title="Download PDF">
-                                    <i class="fas fa-download"></i> Download
-                                </a>
+                                @if($notice->file_path)
+                                    <a href="{{ route('notices.view', $notice->id) }}" target="_blank" class="btn btn-sm btn-outline-primary me-1" title="View PDF">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                    <a href="{{ route('notices.download', $notice->id) }}" class="btn btn-sm btn-primary" title="Download PDF">
+                                        <i class="fas fa-download"></i> Download
+                                    </a>
+                                @else
+                                    <span class="badge bg-secondary font-weight-normal" style="font-weight: 500;">Notice Text Only</span>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
@@ -239,9 +243,16 @@
                 @foreach($homeGallery as $item)
                     <div class="col-lg-4 col-md-6 col-12">
                         <div class="home-gallery-card border rounded shadow-sm overflow-hidden h-100 d-flex flex-column" style="background: #f5f9ff;">
-                            <div class="home-gallery-media" style="height: 190px; background: #e9f1fb;">
+                            <div class="home-gallery-media d-flex align-items-center justify-content-center" style="height: 220px; background: #0f172a; overflow: hidden;">
                                 @if($item->type === 'image' && $item->image)
-                                    <img src="{{ asset('storage/'.$item->image) }}" alt="{{ $item->title }}" class="w-100 h-100" style="object-fit: cover;">
+                                    <img src="{{ asset('storage/'.$item->image) }}" 
+                                         alt="{{ $item->title }}" 
+                                         class="w-100 h-100" 
+                                         style="object-fit: contain; cursor: pointer; transition: transform 0.2s ease;" 
+                                         title="Click to view full size"
+                                         onmouseover="this.style.transform='scale(1.03)'"
+                                         onmouseout="this.style.transform='scale(1)'"
+                                         onclick="openGalleryLightbox('{{ asset('storage/'.$item->image) }}', '{{ addslashes($item->title) }}')">
                                 @elseif($item->type === 'youtube' && $item->video_url)
                                     <div class="ratio ratio-16x9 w-100 h-100">
                                         <iframe src="{{ youtubeEmbedUrl($item->video_url) }}" allowfullscreen></iframe>
@@ -261,8 +272,46 @@
     </div>
 </section>
 
+<!-- LIGHTBOX OVERLAY MODAL -->
+<div id="homeGalleryLightbox" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.92); z-index:99999; align-items:center; justify-content:center; flex-direction:column; padding:20px; box-sizing:border-box;" onclick="closeGalleryLightbox(event)">
+    <button style="position:absolute; top:20px; right:25px; color:#fff; font-size:32px; font-weight:bold; cursor:pointer; background:rgba(255,255,255,0.2); border:none; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; line-height:1;" onclick="closeGalleryLightbox(event)" title="Close">&times;</button>
+    <img id="homeLightboxImg" style="max-width:90vw; max-height:82vh; object-fit:contain; border-radius:8px; box-shadow:0 10px 30px rgba(0,0,0,0.8);" src="" alt="">
+    <div id="homeLightboxTitle" style="color:#fff; margin-top:15px; font-size:18px; font-weight:500; text-align:center;"></div>
+</div>
+
 @endsection
 
 @push('scripts')
 <script src="{{ asset('assests/js/script.js') }}"></script>
+<script>
+function openGalleryLightbox(src, title) {
+    const modal = document.getElementById('homeGalleryLightbox');
+    const img = document.getElementById('homeLightboxImg');
+    const titleEl = document.getElementById('homeLightboxTitle');
+    
+    img.src = src;
+    img.alt = title || '';
+    titleEl.textContent = title || '';
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeGalleryLightbox(e) {
+    const modal = document.getElementById('homeGalleryLightbox');
+    if (e.target.id === 'homeGalleryLightbox' || e.target.tagName === 'BUTTON' || e.target.parentElement?.tagName === 'BUTTON') {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('homeGalleryLightbox');
+        if (modal && modal.style.display === 'flex') {
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+    }
+});
+</script>
 @endpush
