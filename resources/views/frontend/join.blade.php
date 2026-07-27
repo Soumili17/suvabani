@@ -124,6 +124,8 @@
 <legend>Declaration</legend>
 <p>I hereby declare that the information provided is true and correct. I agree to follow the constitution, rules, and code of conduct of SUVABANI FOUNDATION.</p>
 
+<p style="font-style:italic; color:#555; margin-top:8px;">Note: For paid memberships, subscriptions may be set to auto-pay (recurring). By proceeding you acknowledge and authorise automatic payments for the chosen plan.</p>
+
 <label for="declaration_date" style="margin-top:12px;">Date of Declaration:</label>
 <input type="date" name="declaration_date" id="declaration_date">
 <br>

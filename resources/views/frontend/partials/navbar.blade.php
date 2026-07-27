@@ -234,53 +234,57 @@
         <a href="{{ route('gallery') }}">Gallery</a>
 
         {{-- Notices Dropdown --}}
-        <div class="notice-dropdown">
-            <button class="notice-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-bell"></i>&nbsp;Notices
-                <span class="caret">&#9660;</span>
-            </button>
+        @if(request()->routeIs('home'))
+            <a href="{{ route('home') }}#notices">Notices</a>
+        @else
+            <div class="notice-dropdown">
+                <button class="notice-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-bell"></i>&nbsp;Notices
+                    <span class="caret">&#9660;</span>
+                </button>
 
-            <div class="notice-dropdown-menu" role="menu" aria-label="Notices">
-                <div class="notice-dropdown-header">
-                    <i class="fas fa-file-pdf"></i> Official Notices
-                </div>
-
-                @if(isset($navbarNotices) && $navbarNotices->isNotEmpty())
-                    @foreach($navbarNotices as $notice)
-                        <div class="notice-item">
-                            <div style="min-width:0; flex:1;">
-                                <span class="notice-item-title" title="{{ $notice->title }}">
-                                    <span style="background: #003f88; color: #fff; padding: 1px 6px; border-radius: 4px; font-size: 11px; margin-right: 5px; font-weight: bold;">Sl. {{ $loop->iteration }}</span>
-                                    <i class="fas fa-file-pdf"></i>
-                                    {{ Str::limit($notice->title, 34) }}
-                                </span>
-                                @if($notice->description)
-                                    <p class="notice-item-description">{{ Str::limit($notice->description, 85) }}</p>
-                                @endif
-                            </div>
-                            <div class="notice-item-actions">
-                                <a href="{{ route('notices.view', $notice->id) }}"
-                                   target="_blank"
-                                   class="notice-action-btn notice-action-view"
-                                   title="View PDF in browser">
-                                    <i class="fas fa-eye"></i> View
-                                </a>
-                                <a href="{{ route('notices.download', $notice->id) }}"
-                                   class="notice-action-btn notice-action-download"
-                                   title="Download PDF">
-                                    <i class="fas fa-download"></i>
-                                </a>
-                            </div>
-                        </div>
-                    @endforeach
-                @else
-                    <div class="notice-dropdown-empty">
-                        <i class="fas fa-inbox" style="font-size:22px; color:#ccc; display:block; margin-bottom:6px;"></i>
-                        No notices available at the moment.
+                <div class="notice-dropdown-menu" role="menu" aria-label="Notices">
+                    <div class="notice-dropdown-header">
+                        <i class="fas fa-file-pdf"></i> Official Notices
                     </div>
-                @endif
+
+                    @if(isset($navbarNotices) && $navbarNotices->isNotEmpty())
+                        @foreach($navbarNotices as $notice)
+                            <div class="notice-item">
+                                <div style="min-width:0; flex:1;">
+                                    <span class="notice-item-title" title="{{ $notice->title }}">
+                                        <span style="background: #003f88; color: #fff; padding: 1px 6px; border-radius: 4px; font-size: 11px; margin-right: 5px; font-weight: bold;">Sl. {{ $loop->iteration }}</span>
+                                        <i class="fas fa-file-pdf"></i>
+                                        {{ Str::limit($notice->title, 34) }}
+                                    </span>
+                                    @if($notice->description)
+                                        <p class="notice-item-description">{{ Str::limit($notice->description, 85) }}</p>
+                                    @endif
+                                </div>
+                                <div class="notice-item-actions">
+                                    <a href="{{ route('notices.view', $notice->id) }}"
+                                       target="_blank"
+                                       class="notice-action-btn notice-action-view"
+                                       title="View PDF in browser">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                    <a href="{{ route('notices.download', $notice->id) }}"
+                                       class="notice-action-btn notice-action-download"
+                                       title="Download PDF">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="notice-dropdown-empty">
+                            <i class="fas fa-inbox" style="font-size:22px; color:#ccc; display:block; margin-bottom:6px;"></i>
+                            No notices available at the moment.
+                        </div>
+                    @endif
+                </div>
             </div>
-        </div>
+        @endif
         {{-- End Notices Dropdown --}}
 
         <a href="{{ route('donate') }}" class="btn-nav donate-btn-nav">Donate</a>
