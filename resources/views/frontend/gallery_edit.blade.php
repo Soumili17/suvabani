@@ -73,7 +73,7 @@
             <label>Category</label>
             <select name="category">
                 <option value="">-- Select Category --</option>
-                @foreach(['Child Welfare', 'Women Empowerment', 'Healthcare Support', 'Education for All'] as $category)
+                @foreach(['Child Welfare', 'Women Empowerment', 'Healthcare Support', 'Education for All', 'Food Distribution', 'Free Medical Camp', 'Skill Development'] as $category)
                     <option value="{{ $category }}" @selected(old('category', $gallery->category) === $category)>{{ $category }}</option>
                 @endforeach
             </select>
