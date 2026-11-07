@@ -59,6 +59,8 @@ th{
         <option value="Rejected" {{ request('status')=='Rejected'?'selected':'' }}>Rejected</option>
     </select>
 
+    <input type="text" name="referral_code" placeholder="Filter by Referral Code" value="{{ request('referral_code') }}" style="max-width:200px;">
+
     <button type="submit">Search</button>
 </form>
 
@@ -71,6 +73,7 @@ th{
     <th>1st Payment Date</th>
     <th>Phone</th>
     <th>Email</th>
+    <th>Referral Code</th>
     <th>Status</th>
     <th>Payment</th>
     <th>Actions</th>
@@ -95,12 +98,20 @@ th{
     <td>{{ $member->email }}</td>
 
     <td>
+        @if($member->referral_code)
+            <span style="background:#e0f2fe; color:#0369a1; padding:2px 8px; border-radius:12px; font-size:12px; font-weight:600;">{{ $member->referral_code }}</span>
+        @else
+            <span style="color:#aaa; font-size:12px;">—</span>
+        @endif
+    </td>
+
+    <td>
         <span class="badge {{ strtolower($member->approval_status) }}">
             {{ $member->approval_status }}
         </span>
     </td>
 
-    <td>{{ $member->payment_status ?: 'N/A' }}</td>
+    <td>{{ $member->paidamount ?: 'N/A' }}</td>
 
     <td class="actions">
         <a href="{{ route('dashboard.members.view', $member->id) }}">View</a>

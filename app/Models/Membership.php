@@ -34,6 +34,7 @@ class Membership extends Model
         'reason',
         'ref_name',
         'ref_mobile',
+        'referral_code',
         'declaration_date',
         'razorpay_payment_id',
         'razorpay_subscription_id'
@@ -61,4 +62,12 @@ class Membership extends Model
         }
         return 'N/A';
     }
+    /**
+    * Get all payment records for this membership.
+    */
+    public function payments()
+    {
+        return $this->hasMany(\App\Models\MembershipPayment::class);
+    }
+
 }

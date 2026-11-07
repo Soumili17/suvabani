@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class CampaignCategory extends Model
+{
+    protected $fillable = ['name'];
+
+    public function campaigns()
+    {
+        return $this->hasMany(Campaign::class);
+    }
+}
+?>

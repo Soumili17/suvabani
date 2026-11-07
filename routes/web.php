@@ -8,7 +8,11 @@ use App\Http\Controllers\DonationController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\VolunteerController;
+use App\Http\Controllers\VolunteerInquiryController;
 use App\Http\Controllers\NoticeController;
+use App\Http\Controllers\Admin\CampaignController as AdminCampaignController;
+use App\Http\Controllers\Frontend\CampaignController as FrontendCampaignController;
+use App\Http\Controllers\HeroBannerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +61,9 @@ Route::post('/membership/search', [MembershipController::class, 'searchMember'])
 
 Route::get('/membership/download/{id}', [MembershipController::class, 'downloadCard'])->name('membership.download');
 
+// View single member card (used when multiple members share same phone)
+Route::get('/membership/view/{id}', [MembershipController::class, 'viewMemberCard'])->name('member.download.single');
+
 /*
 |--------------------------------------------------------------------------
 | RAZORPAY WEBHOOK
@@ -92,7 +99,9 @@ Route::get('/logout', [AdminAuthController::class, 'logout'])->name('logout');
 |--------------------------------------------------------------------------
 */
 
-Route::get('/volunteers', [VolunteerController::class, 'index']);
+Route::get('/volunteers', [VolunteerController::class, 'index'])->name('volunteers');
+Route::post('/volunteer-inquiries', [VolunteerInquiryController::class, 'store'])
+    ->name('volunteer_inquiries.store');
 
 
 /*
@@ -126,6 +135,16 @@ Route::prefix('dashboard')->group(function(){    //->middleware('auth')
     // Delete
     Route::delete('/volunteers/{id}', [VolunteerController::class, 'destroy'])
         ->name('dashboard.volunteers.delete');
+});
+
+Route::prefix('dashboard')->middleware('admin.auth')->group(function () {
+    Route::get('/volunteer-inquiries', [VolunteerInquiryController::class, 'adminIndex'])
+        ->name('dashboard.volunteer_inquiries');
+    Route::get('/volunteer-inquiries/{id}/{document}', [VolunteerInquiryController::class, 'downloadDocument'])
+        ->whereIn('document', ['aadhar', 'pan'])
+        ->name('dashboard.volunteer_inquiries.document');
+    Route::delete('/volunteer-inquiries/{id}', [VolunteerInquiryController::class, 'destroy'])
+        ->name('dashboard.volunteer_inquiries.delete');
 });
 
 
@@ -199,8 +218,26 @@ Route::prefix('dashboard')->group(function () {
 
 });
 
+    // Campaign admin routes
+    Route::prefix('dashboard')->name('dashboard.')->middleware('admin.auth')->group(function () {
+            Route::resource('hero-banners', HeroBannerController::class)->except(['show'])->names('hero_banners');
+            Route::resource('campaigns', AdminCampaignController::class)->except(['show']);
+        Route::post('campaigns/{campaign}/publish', [AdminCampaignController::class, 'publish'])->name('campaigns.publish');
+        Route::post('campaigns/{campaign}/unpublish', [AdminCampaignController::class, 'unpublish'])->name('campaigns.unpublish');
+        Route::post('campaigns/{campaign}/feature', [AdminCampaignController::class, 'feature'])->name('campaigns.feature');
+        Route::get('campaigns/{campaign}/updates', [AdminCampaignController::class, 'updates'])->name('campaigns.updates');
+        Route::get('campaigns/{campaign}/donors', [AdminCampaignController::class, 'donors'])->name('campaigns.donors');
+        Route::post('campaigns/{campaign}/updates', [AdminCampaignController::class, 'storeUpdate'])->name('campaigns.updates.store');
+        Route::delete('campaign-updates/{update}', [AdminCampaignController::class, 'destroyUpdate'])->name('campaigns.updates.delete');
+    });
+
+    // Public campaign routes
+    Route::get('/campaigns', [FrontendCampaignController::class, 'index'])->name('campaigns.index');
+    Route::get('/campaigns/{slug}', [FrontendCampaignController::class, 'show'])->name('campaigns.show');
+
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\GoverningBodyController;
+use App\Http\Controllers\ProjectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -250,6 +287,9 @@ Route::prefix('dashboard')->middleware('admin.auth')->group(function(){
 |--------------------------------------------------------------------------
 */
 Route::prefix('dashboard')->middleware('admin.auth')->group(function(){
+
+    Route::resource('projects', ProjectController::class)->except(['show'])
+        ->names('dashboard.projects');
 
     Route::get('/governing-body', [GoverningBodyController::class, 'index'])
         ->name('dashboard.governing_body.index');

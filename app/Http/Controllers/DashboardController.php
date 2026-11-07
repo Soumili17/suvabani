@@ -7,13 +7,37 @@ use App\Models\Donation;
 use App\Models\Membership;
 use App\Models\Contact;
 use App\Models\HomeVideo;
+use App\Models\Campaign;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class DashboardController extends Controller
 {
     // Dashboard home
     public function index()
     {
-        return view('layouts.dashboard');
+        $stats = [
+            'running_campaigns' => Schema::hasTable('campaigns')
+                ? Campaign::whereIn('status', ['published', 'paused'])->where('visibility', 'public')->count()
+                : 0,
+            'total_donations' => Schema::hasTable('donations')
+                ? (float) DB::table('donations')->whereIn('payment_status', ['Paid', 'paid'])->sum('amount')
+                : 0,
+            'active_members' => Schema::hasTable('memberships')
+                ? (Schema::hasColumn('memberships', 'approval_status')
+                    ? Membership::where('approval_status', 'Approved')->count()
+                    : Membership::count())
+                : 0,
+            'successful_donors' => Schema::hasTable('donations')
+                ? DB::table('donations')
+                    ->whereIn('payment_status', ['Paid', 'paid'])
+                    ->whereNotNull('donor_name')
+                    ->distinct('donor_name')
+                    ->count('donor_name')
+                : 0,
+        ];
+
+        return view('layouts.dashboard', compact('stats'));
     }
 
     // Show all members

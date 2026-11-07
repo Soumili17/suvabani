@@ -8,6 +8,7 @@ class Donation extends Model
 {
     protected $fillable = [
         'donor_name',
+        'anonymous',
         'donor_email',
         'donor_phone',
         'donor_address',
@@ -16,7 +17,12 @@ class Donation extends Model
         'razorpay_payment_id',
         'razorpay_signature',
         'payment_status',
-        'receipt_number'
+        'receipt_number',
+        'campaign_id',
     ];
-}
 
+    public function campaign()
+    {
+        return $this->belongsTo(Campaign::class);
+    }
+}

@@ -131,8 +131,9 @@ class MembershipController extends Controller
                 'languages'  => $request->languages,
                 'time'       => $request->time ? json_encode($request->time) : null,
                 'reason'     => $request->reason,
-                'ref_name'   => $request->ref_name,
-                'ref_mobile' => $request->ref_mobile,
+                'ref_name'      => $request->ref_name,
+                'ref_mobile'    => $request->ref_mobile,
+                'referral_code' => $request->referral_code ? trim($request->referral_code) : null,
 
                 'declaration_date' => $request->declaration_date,
 
@@ -140,6 +141,20 @@ class MembershipController extends Controller
                 'razorpay_payment_id'      => $request->razorpay_payment_id,
                 'razorpay_subscription_id' => $request->razorpay_subscription_id
             ]);
+
+            if ($member->razorpay_payment_id && $member->membership === 'Paid') {
+                \App\Models\MembershipPayment::firstOrCreate(
+                    ['razorpay_payment_id' => $member->razorpay_payment_id],
+                    [
+                        'membership_id' => $member->id,
+                        'razorpay_subscription_id' => $member->razorpay_subscription_id,
+                        'amount' => $member->paidamount * 100,
+                        'currency' => 'INR',
+                        'payment_status' => 'captured',
+                        'paid_at' => now(),
+                    ]
+                );
+            }
 
             return response()->json([
                 'success' => true,
@@ -288,14 +303,22 @@ class MembershipController extends Controller
     {
         $request->validate(['mobile' => 'required']);
 
-        $member = Membership::where('phone', $request->mobile)
-            ->first(); // search regardless of approval status
+        $members = Membership::where('phone', $request->mobile)
+            ->orderBy('id', 'asc')
+            ->get(); // search regardless of approval status
 
-        if (!$member) {
+        if ($members->isEmpty()) {
             return back()->withErrors(['mobile' => 'No membership found with this mobile number.']);
         }
 
-        return view('frontend.member_download', compact('member'));
+        // If only one member found, keep single-member view (backward compatible)
+        if ($members->count() === 1) {
+            $member = $members->first();
+            return view('frontend.member_download', compact('member', 'members'));
+        }
+
+        // Multiple members: pass collection so user can choose
+        return view('frontend.member_download', compact('members'));
     }
 
 
@@ -316,6 +339,19 @@ class MembershipController extends Controller
             ->setPaper([0, 0, 520, 400]);
 
         return $pdf->download('card_' . $member->membership_id . '.pdf');
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | VIEW SINGLE MEMBER CARD (from multi-search result)
+    |--------------------------------------------------------------------------
+    */
+    public function viewMemberCard($id)
+    {
+        $member = Membership::findOrFail($id);
+        $members = collect([$member]); // wrap so the view knows it's single
+        return view('frontend.member_download', compact('member', 'members'));
     }
 
 
@@ -345,10 +381,30 @@ class MembershipController extends Controller
         switch ($event['event']) {
 
             case 'payment.captured':
-                $paymentId = $event['payload']['payment']['entity']['id'];
-
-                Membership::where('razorpay_payment_id', $paymentId)
-                    ->update(['payment_status' => 'Success']);
+                $payment = $event['payload']['payment']['entity'];
+                $paymentId = $payment['id'];
+                $subscriptionId = $payment['subscription_id'] ?? null;
+                // Find membership by subscription ID
+                $membership = Membership::where('razorpay_subscription_id', $subscriptionId)->first();
+                if ($membership) {
+                    // Update membership payment status if needed
+                    $membership->update(['payment_status' => 'Success']);
+                    // Idempotent creation of payment record
+                    \App\Models\MembershipPayment::firstOrCreate(
+                        ['razorpay_payment_id' => $paymentId],
+                        [
+                            'membership_id' => $membership->id,
+                            'razorpay_subscription_id' => $subscriptionId,
+                            'razorpay_invoice_id' => $payment['invoice_id'] ?? null,
+                            'amount' => $payment['amount'] ?? 0,
+                            'currency' => $payment['currency'] ?? 'INR',
+                            'payment_status' => $payment['status'] ?? 'captured',
+                            'payment_method' => $payment['method'] ?? null,
+                            'paid_at' => isset($payment['created_at']) ? \Carbon\Carbon::parse($payment['created_at']) : null,
+                            'raw_payload' => $event,
+                        ]
+                    );
+                }
                 break;
 
             case 'subscription.activated':
@@ -394,14 +450,20 @@ class MembershipController extends Controller
             $query->where('approval_status', $request->status);
         }
 
+        // 🏷️ REFERRAL CODE FILTER (mandatory: only filter if a code is entered)
+        if ($request->filled('referral_code')) {
+            $query->where('referral_code', 'like', '%' . $request->referral_code . '%');
+        }
+
         // 📄 PAGINATION
         $members = $query->latest()->paginate(15);
-
+        // print_r($members); // Debugging line to print the members collection
+        // die;
         return view('layouts.member_view', compact('members'));
     }
     public function view($id)
     {
-        $member = Membership::findOrFail($id);
+        $member = Membership::with('payments')->findOrFail($id);
 
         return view('layouts.members_show', compact('member'));
     }

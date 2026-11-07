@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Gallery;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
 
 class GalleryController extends Controller
 {
@@ -59,6 +60,8 @@ class GalleryController extends Controller
             'type'        => 'required|in:image,youtube',
             'image'       => 'nullable|required_if:type,image|image|mimes:jpeg,jpg,png,gif,webp|max:5120',
             'video_url'   => 'nullable|required_if:type,youtube|url',
+            'is_recent_project' => 'nullable|boolean',
+            'display_order' => 'nullable|integer|min:0',
         ]);
 
         $data = [
@@ -67,14 +70,21 @@ class GalleryController extends Controller
             'type'     => $request->type,
         ];
 
+        if (Schema::hasColumn('galleries', 'is_recent_project')) {
+            $data['is_recent_project'] = $request->type === 'image' && $request->boolean('is_recent_project');
+            $data['display_order'] = $request->integer('display_order', 0);
+        }
+
         // IMAGE UPLOAD
         if ($request->type === 'image') {
             $path = $request->file('image')->store('gallery', 'public');
             $data['image'] = $path;
+            $data['video_url'] = null;
         }
 
         // YOUTUBE LINK
         if ($request->type === 'youtube') {
+            $data['image'] = null;
             $data['video_url'] = $request->video_url;
         }
 
@@ -105,9 +115,9 @@ class GalleryController extends Controller
     {
         $item = Gallery::findOrFail($id);
 
-        $imageRule = ($request->type === 'image' && !$item->image)
-            ? 'required|image|mimes:jpeg,jpg,png|max:2048'
-            : 'nullable|image|mimes:jpeg,jpg,png|max:2048';
+        $imageRule = ($request->input('type') === 'image' && !$item->image)
+            ? 'required|image|mimes:jpeg,jpg,png,gif,webp|max:5120'
+            : 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:5120';
 
         $request->validate([
             'title'       => 'required|string|max:255',
@@ -115,6 +125,8 @@ class GalleryController extends Controller
             'type'        => 'required|in:image,youtube',
             'image'       => $imageRule,
             'video_url'   => 'nullable|required_if:type,youtube|url',
+            'is_recent_project' => 'nullable|boolean',
+            'display_order' => 'nullable|integer|min:0',
         ]);
 
         $data = [
@@ -122,6 +134,11 @@ class GalleryController extends Controller
             'category' => $request->category,
             'type'     => $request->type,
         ];
+
+        if (Schema::hasColumn('galleries', 'is_recent_project')) {
+            $data['is_recent_project'] = $request->type === 'image' && $request->boolean('is_recent_project');
+            $data['display_order'] = $request->integer('display_order', 0);
+        }
 
         if ($request->type === 'image') {
             $data['video_url'] = null;

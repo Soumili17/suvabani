@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\CampaignCategory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -21,5 +22,15 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        foreach ([
+            'Medical Support',
+            'Education',
+            'Food Distribution',
+            'Child Welfare',
+            'Community Development',
+        ] as $name) {
+            CampaignCategory::firstOrCreate(['name' => $name]);
+        }
     }
 }

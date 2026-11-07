@@ -10,6 +10,8 @@ class HeroBanner extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'subtitle', 'button_text', 'button_url', 'image_path', 'is_active'
+        'title', 'subtitle', 'button_text', 'button_url', 'image_path', 'is_active', 'display_order'
     ];
+
+    protected $casts = ['is_active' => 'boolean'];
 }

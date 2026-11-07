@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Donation;
+use App\Models\Campaign;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Razorpay\Api\Api;
 use Illuminate\Support\Facades\DB;
@@ -12,9 +13,32 @@ class DonationController extends Controller
 {
 
     // Donation Form
-    public function create()
+    public function create(Request $request)
     {
-        return view('frontend.donate');
+        $campaignKey = trim((string) $request->input('campaign'));
+        $campaign = $campaignKey !== ''
+            ? Campaign::where(function ($query) use ($campaignKey) {
+                    $query->where('slug', $campaignKey);
+                    if (ctype_digit($campaignKey)) {
+                        $query->orWhereKey((int) $campaignKey);
+                    }
+                })
+                ->where('status', 'published')
+                ->where('visibility', 'public')
+                ->with(['media' => fn ($query) => $query->orderBy('display_order')])
+                ->first()
+            : null;
+
+        $donors = $campaign
+            ? $campaign->donations()
+                ->whereIn('payment_status', ['Paid', 'paid'])
+                ->latest('donation_date')
+                ->latest()
+                ->take(20)
+                ->get(['donor_name', 'amount', 'anonymous', 'donation_date'])
+            : collect();
+
+        return view('frontend.donate', compact('campaign', 'donors'));
     }
 
 
@@ -26,6 +50,7 @@ class DonationController extends Controller
             'donor_phone' => 'required',
             'amount'      => 'required|numeric|min:1',
             'need_80g'    => 'required',
+            'anonymous'   => 'nullable|boolean',
         ];
 
         if ($request->need_80g === "Yes") {
@@ -52,10 +77,12 @@ class DonationController extends Controller
             'donor_phone'         => 'required',
             'amount'              => 'required|numeric|min:1',
             'need_80g'            => 'required',
+            'anonymous'          => 'nullable|boolean',
             'razorpay_payment_id' => 'required',
             'razorpay_order_id'   => 'required',
             'razorpay_signature'  => 'required'
         ];
+        $rules['campaign_id'] = 'nullable|exists:campaigns,id';
 
         if ($request->need_80g === "Yes") {
             $rules['donor_email'] = 'required|email';
@@ -69,6 +96,16 @@ class DonationController extends Controller
         }
 
         $request->validate($rules);
+
+        if ($request->filled('campaign_id')) {
+            abort_unless(
+                Campaign::whereKey($request->campaign_id)
+                    ->where('status', 'published')
+                    ->where('visibility', 'public')
+                    ->exists(),
+                404
+            );
+        }
 
 
         // =========================
@@ -84,8 +121,17 @@ class DonationController extends Controller
 
         try {
             $api->utility->verifyPaymentSignature($attributes);
+
+            $order = $api->order->fetch($request->razorpay_order_id);
+            if ((int) $order['amount'] !== (int) round((float) $request->amount * 100)) {
+                return back()->withErrors('Payment amount verification failed');
+            }
         } catch (SignatureVerificationError $e) {
             return back()->withErrors("Payment verification failed");
+        }
+
+        if (DB::table('donations')->where('razorpay_payment_id', $request->razorpay_payment_id)->exists()) {
+            return back()->with('success', 'This donation has already been processed.');
         }
 
 
@@ -99,6 +145,7 @@ class DonationController extends Controller
             // 🔹 Insert donation directly into donations table
             $donationId = DB::table('donations')->insertGetId([
                 'donor_name' => trim($request->donor_name),
+                'anonymous' => $request->boolean('anonymous'),
                 'donor_email' => $request->donor_email ?? '',
                 'donor_phone' => $request->donor_phone,
                 'donor_address' => $request->donor_address ?? '',
@@ -106,6 +153,7 @@ class DonationController extends Controller
                 'donor_state' => $request->donor_state ?? '',
                 'donor_pincode' => $request->donor_pincode ?? '',
                 'amount' => $request->amount,
+                'campaign_id' => $request->campaign_id,
                 'need_80g' => $request->need_80g === "Yes" ? 1 : 0,
                 'donor_pan' => $request->donor_pan ?? '',
                 'donation_purpose' => $request->donation_purpose ?? 'General Donation',
@@ -150,8 +198,25 @@ class DonationController extends Controller
 
     public function createOrder(Request $request)
     {
+        $request->validate([
+            'amount' => 'required|numeric|min:1',
+            'campaign_id' => 'nullable|exists:campaigns,id',
+        ]);
 
-        $amount = $request->amount;
+        $amount = (float) $request->amount;
+
+        if ($request->filled('campaign_id')) {
+            $campaign = Campaign::where('id', $request->campaign_id)
+                ->where('status', 'published')
+                ->where('visibility', 'public')
+                ->firstOrFail();
+
+            if ($campaign->minimum_donation_amount && ($amount * 100) < $campaign->minimum_donation_amount) {
+                return response()->json([
+                    'message' => 'The donation is below the campaign minimum amount.',
+                ], 422);
+            }
+        }
 
         $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
 
@@ -163,7 +228,8 @@ class DonationController extends Controller
 
         return response()->json([
             'order_id' => $order['id'],
-            'amount' => $order['amount']
+            'amount' => $order['amount'],
+            'campaign_id' => $request->campaign_id,
         ]);
     }
 

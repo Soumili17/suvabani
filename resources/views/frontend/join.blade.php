@@ -112,6 +112,10 @@
 <input type="radio" name="membertype" value="Student Member"> Student Member
 <input type="radio" name="membertype" value="Donor Member"> Donor Member
 <input type="radio" name="membertype" value="Advisory Member"> Advisory Member
+
+<hr>
+<label for="referral_code" style="margin-top:10px;">Referral Code <span style="color:#888; font-weight:400; font-size:13px;">(Optional)</span></label>
+<input type="text" id="referral_code" name="referral_code" placeholder="Enter referral code if you have one">
 <br>
 <!--  -->
 <button type="button" class="prevBtn">Previous</button>
@@ -406,5 +410,19 @@ dateInput.max = today;
 // ---------- MODAL ----------
 function closeModal(){
     document.getElementById("successModal").style.display="none";
+    // Reset form back to first step
+    form.reset();
+    document.getElementById('photoPreview').style.display = 'none';
+    document.getElementById('photoPreview').src = '#';
+    current = 0;
+    showStep(0);
+    // Re-enable plan radio buttons in case Non-Paid was selected
+    document.querySelectorAll('[name="plan_id"]').forEach(p => p.disabled = false);
+    // Reset declaration date
+    const dateInput = document.getElementById('declaration_date');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
+    dateInput.min = today;
+    dateInput.max = today;
 }
 </script>@endsection

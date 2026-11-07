@@ -73,7 +73,7 @@
             <label>Category</label>
             <select name="category">
                 <option value="">-- Select Category --</option>
-                @foreach(['Child Welfare', 'Women Empowerment', 'Healthcare Support', 'Education for All', 'Food Distribution', 'Free Medical Camp', 'Skill Development'] as $category)
+                @foreach(['Child Welfare', 'Women Empowerment', 'Healthcare Support', 'Education for All', 'Food Distribution', 'Support for Seniors', 'Skill Development'] as $category)
                     <option value="{{ $category }}" @selected(old('category', $gallery->category) === $category)>{{ $category }}</option>
                 @endforeach
             </select>
@@ -106,6 +106,23 @@
             <label>YouTube URL</label>
             <input type="text" name="video_url" value="{{ old('video_url', $gallery->video_url) }}" placeholder="https://youtube.com/watch?v=...">
             @error('video_url') <div class="error">{{ $message }}</div> @enderror
+        </div>
+
+        <div class="form-group">
+            <label>
+                <input type="hidden" name="is_recent_project" value="0">
+                <input type="checkbox" name="is_recent_project" value="1"
+                       @checked(old('is_recent_project', $gallery->is_recent_project))>
+                Show in Recent Projects
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>Recent Project Order</label>
+            <input type="number" name="display_order" min="0"
+                   value="{{ old('display_order', $gallery->display_order ?? 0) }}">
+            <small style="color:#666;">Lower numbers appear first.</small>
+            @error('display_order') <div class="error">{{ $message }}</div> @enderror
         </div>
 
         <button type="submit" class="btn-submit">Update</button>

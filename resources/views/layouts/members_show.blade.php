@@ -124,8 +124,52 @@ N/A
 <div class="row"><div class="label">Member Type</div><div class="value"><span class="badge {{ ($member->membership ?? '') === 'Paid' ? 'approved' : 'rejected' }}" style="background: {{ ($member->membership ?? '') === 'Paid' ? '#0f766e' : '#6c757d' }};">{{ ($member->membership ?? '') === 'Paid' ? 'Paid Member' : 'Non-Paid Member' }}</span></div></div>
 <div class="row"><div class="label">Category</div><div class="value">{{ $member->membertype ?? 'N/A' }}</div></div>
 <div class="row"><div class="label">1st Payment Date</div><div class="value">{{ $member->first_payment_date }}</div></div>
-<div class="row"><div class="label">Paid Amount</div><div class="value">{{ $member->paidamount ? '₹ '.$member->paidamount : 'N/A' }}</div></div>
+<div class="row"><div class="label">Monthly Amount (Paid)</div><div class="value">{{ $member->paidamount ? '₹ '.$member->paidamount.' / month' : 'N/A' }}</div></div>
+<div class="row">
+    <div class="label">Referral Code</div>
+    <div class="value">
+        @if($member->referral_code)
+            <span style="background:#e0f2fe; color:#0369a1; padding:3px 10px; border-radius:12px; font-size:13px; font-weight:600;">{{ $member->referral_code }}</span>
+        @else
+            <span style="color:#aaa;">N/A</span>
+        @endif
+    </div>
+</div>
 
+</div>
+
+<!-- PAYMENT HISTORY -->
+<div class="section">
+<h3>Payment History</h3>
+
+@if($member->payments->isEmpty())
+    <p style="color:#999;">No payment records found.</p>
+@else
+    <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; min-width:650px;">
+            <thead>
+                <tr>
+                    <th style="padding:8px; border:1px solid #ddd; text-align:left;">Date</th>
+                    <th style="padding:8px; border:1px solid #ddd; text-align:left;">Amount</th>
+                    <th style="padding:8px; border:1px solid #ddd; text-align:left;">Status</th>
+                    <th style="padding:8px; border:1px solid #ddd; text-align:left;">Payment method</th>
+                    <th style="padding:8px; border:1px solid #ddd; text-align:left;">Payment ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($member->payments->sortByDesc('paid_at') as $payment)
+                    <tr>
+                        <td style="padding:8px; border:1px solid #ddd;">{{ $payment->paid_at?->format('d M Y, h:i A') ?? 'N/A' }}</td>
+                        <td style="padding:8px; border:1px solid #ddd;">{{ $payment->currency }} {{ number_format($payment->amount / 100, 2) }}</td>
+                        <td style="padding:8px; border:1px solid #ddd;">{{ ucfirst($payment->payment_status) }}</td>
+                        <td style="padding:8px; border:1px solid #ddd;">{{ $payment->payment_method ?? 'N/A' }}</td>
+                        <td style="padding:8px; border:1px solid #ddd;">{{ $payment->razorpay_payment_id }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+@endif
 </div>
 
 <!-- OTHER -->

@@ -15,5 +15,12 @@ class Gallery extends Model
         'image',
         'type',
         'video_url',
+        'is_recent_project',
+        'display_order',
+    ];
+
+    protected $casts = [
+        'is_recent_project' => 'boolean',
+        'display_order' => 'integer',
     ];
 }
